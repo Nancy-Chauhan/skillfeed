@@ -1,0 +1,63 @@
+import { z } from "zod/v4";
+import { callClaude } from "@/lib/claude/client";
+import { ROLES, LEVELS } from "@/lib/utils/constants";
+import type { CategorizedArticle } from "@/lib/utils/types";
+
+const ArticleSchema = z.object({
+  title: z.string(),
+  summary: z.string(),
+  level: z.enum(LEVELS),
+  roles: z.array(z.enum(ROLES)).min(1),
+  keywords: z.array(z.string()).min(1),
+  url: z.string().nullable(),
+});
+
+const ResponseSchema = z.object({
+  articles: z.array(ArticleSchema),
+});
+
+const SYSTEM_PROMPT = `You are an article categorizer for a developer learning newsletter platform called SkillFeed.
+
+Given a raw newsletter email, extract each distinct article/topic into a structured format.
+
+For each article, provide:
+- title: A clear, concise title
+- summary: 2-3 sentence summary of the key takeaway
+- level: One of "beginner", "intermediate", "senior" based on assumed reader expertise
+- roles: Array of relevant roles from: "backend", "devops", "security", "solutions_engineer", "ai_engineer", "general". Pick all that apply.
+- keywords: Array of 3-8 specific technical keywords (technologies, concepts, tools)
+- url: The original article URL if present, otherwise null
+
+Rules:
+- If the email contains multiple articles/topics, extract each separately
+- If the email is not a newsletter or has no extractable articles, return an empty articles array
+- Be specific with keywords — prefer "LangChain" over "AI framework"
+- Level should reflect the assumed reader, not the topic complexity
+- Always respond with valid JSON matching the schema
+
+Respond with JSON only, no markdown fences, no explanation.`;
+
+export async function categorizeArticles(
+  subject: string,
+  body: string
+): Promise<CategorizedArticle[]> {
+  const userMessage = `Email Subject: ${subject}\n\nEmail Body:\n${body}`;
+
+  const response = await callClaude(SYSTEM_PROMPT, userMessage);
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(response);
+  } catch {
+    console.error("Failed to parse Claude response as JSON:", response.slice(0, 200));
+    return [];
+  }
+
+  const result = ResponseSchema.safeParse(parsed);
+  if (!result.success) {
+    console.error("Claude response failed schema validation:", result.error);
+    return [];
+  }
+
+  return result.data.articles;
+}
