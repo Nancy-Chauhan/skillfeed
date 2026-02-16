@@ -4,6 +4,14 @@
     Stop reading 500 duplicate articles. Read the one that matters.
     <br />
     <br />
+    <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js" /></a>
+    <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white" alt="TypeScript" /></a>
+    <a href="https://supabase.com"><img src="https://img.shields.io/badge/Supabase-PostgreSQL-3FCF8E?logo=supabase&logoColor=white" alt="Supabase" /></a>
+    <a href="https://docs.anthropic.com"><img src="https://img.shields.io/badge/Claude_AI-Anthropic-D4A574?logo=anthropic&logoColor=white" alt="Claude AI" /></a>
+    <a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?logo=tailwindcss&logoColor=white" alt="Tailwind CSS" /></a>
+    <a href="https://bun.sh"><img src="https://img.shields.io/badge/Bun-Runtime-F9F1E1?logo=bun&logoColor=black" alt="Bun" /></a>
+    <br />
+    <br />
     <a href="#getting-started"><strong>Get Started</strong></a>
     &nbsp;&middot;&nbsp;
     <a href="#architecture"><strong>Architecture</strong></a>
