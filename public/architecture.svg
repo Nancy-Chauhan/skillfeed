@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680" fill="none" font-family="Inter, -apple-system, system-ui, sans-serif">
+  <style>
+    .box { stroke-width: 2; rx: 10; }
+    .label { font-size: 13px; font-weight: 600; fill: #1e1e1e; }
+    .sublabel { font-size: 11px; fill: #6b7280; }
+    .arrow { stroke: #374151; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    .arrow-dashed { stroke: #9ca3af; stroke-width: 1.5; fill: none; stroke-dasharray: 6 4; marker-end: url(#arrowhead-gray); }
+    .section-label { font-size: 10px; font-weight: 700; fill: #9ca3af; letter-spacing: 1.5px; text-transform: uppercase; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#374151"/>
+    </marker>
+    <marker id="arrowhead-gray" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="680" fill="#fafafa" rx="16"/>
+
+  <!-- Section: INGESTION -->
+  <text x="50" y="30" class="section-label">INGESTION</text>
+
+  <!-- RSS Feeds -->
+  <rect x="40" y="50" width="160" height="65" class="box" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="120" y="76" class="label" text-anchor="middle">RSS Feeds</text>
+  <text x="120" y="96" class="sublabel" text-anchor="middle">HN, Dev.to, Google AI, AWS, Meta</text>
+
+  <!-- AgentMail -->
+  <rect x="40" y="150" width="160" height="65" class="box" fill="#d1fae5" stroke="#6ee7b7"/>
+  <text x="120" y="176" class="label" text-anchor="middle">AgentMail</text>
+  <text x="120" y="196" class="sublabel" text-anchor="middle">Svix webhook verification</text>
+
+  <!-- Arrows to Queue -->
+  <path d="M200,82 L290,115" class="arrow"/>
+  <path d="M200,182 L290,145" class="arrow"/>
+
+  <!-- Ingestion Queue -->
+  <rect x="290" y="95" width="190" height="65" class="box" fill="#fef3c7" stroke="#fcd34d"/>
+  <text x="385" y="121" class="label" text-anchor="middle">Ingestion Queue</text>
+  <text x="385" y="141" class="sublabel" text-anchor="middle">Async + exponential retry</text>
+
+  <!-- Arrow to Categorizer -->
+  <path d="M480,127 L560,127" class="arrow"/>
+
+  <!-- Claude Categorizer -->
+  <rect x="560" y="95" width="190" height="65" class="box" fill="#e9d5ff" stroke="#c084fc"/>
+  <text x="655" y="121" class="label" text-anchor="middle">Claude AI</text>
+  <text x="655" y="141" class="sublabel" text-anchor="middle">Article Categorizer</text>
+
+  <!-- Arrow down to DB -->
+  <path d="M655,160 L655,230" class="arrow"/>
+
+  <!-- Section: DATABASE -->
+  <text x="50" y="245" class="section-label">DATABASE</text>
+
+  <!-- Supabase DB -->
+  <rect x="250" y="250" width="520" height="75" class="box" fill="#fed7aa" stroke="#fdba74"/>
+  <text x="510" y="280" class="label" text-anchor="middle">Supabase (PostgreSQL + RLS)</text>
+  <text x="510" y="300" class="sublabel" text-anchor="middle">articles  |  users  |  newsletters_sent  |  newsletter_events  |  ingestion_jobs</text>
+
+  <!-- Section: USER ONBOARDING -->
+  <text x="50" y="370" class="section-label">ONBOARDING</text>
+
+  <!-- User Onboarding -->
+  <rect x="40" y="385" width="160" height="65" class="box" fill="#cffafe" stroke="#67e8f9"/>
+  <text x="120" y="411" class="label" text-anchor="middle">User Sign-up</text>
+  <text x="120" y="431" class="sublabel" text-anchor="middle">Profile + resume</text>
+
+  <!-- Arrow to Profile Parser -->
+  <path d="M200,417 L280,417" class="arrow"/>
+
+  <!-- Claude Profile Parser -->
+  <rect x="280" y="385" width="190" height="65" class="box" fill="#e9d5ff" stroke="#c084fc"/>
+  <text x="375" y="411" class="label" text-anchor="middle">Claude AI</text>
+  <text x="375" y="431" class="sublabel" text-anchor="middle">Profile Parser</text>
+
+  <!-- Arrow up to DB -->
+  <path d="M375,385 L375,325" class="arrow"/>
+
+  <!-- Section: DAILY NEWSLETTER -->
+  <text x="520" y="370" class="section-label">DAILY NEWSLETTER (7 AM UTC)</text>
+
+  <!-- Cron Job -->
+  <rect x="565" y="385" width="170" height="55" class="box" fill="#fecaca" stroke="#fca5a5"/>
+  <text x="650" y="411" class="label" text-anchor="middle">Vercel Cron</text>
+  <text x="650" y="429" class="sublabel" text-anchor="middle">generate-all</text>
+
+  <!-- Arrow from DB to Cron -->
+  <path d="M650,325 L650,385" class="arrow"/>
+
+  <!-- Arrows from Cron to 3 steps -->
+  <path d="M580,440 L420,490" class="arrow"/>
+  <path d="M650,440 L650,490" class="arrow"/>
+  <path d="M720,440 L820,490" class="arrow"/>
+
+  <!-- Match -->
+  <rect x="320" y="490" width="180" height="60" class="box" fill="#dbeafe" stroke="#93c5fd"/>
+  <text x="410" y="515" class="label" text-anchor="middle">Match Articles</text>
+  <text x="410" y="533" class="sublabel" text-anchor="middle">PostgreSQL RPC (top 15)</text>
+
+  <!-- Compose -->
+  <rect x="560" y="490" width="180" height="60" class="box" fill="#e9d5ff" stroke="#c084fc"/>
+  <text x="650" y="515" class="label" text-anchor="middle">Claude AI</text>
+  <text x="650" y="533" class="sublabel" text-anchor="middle">Newsletter Composer</text>
+
+  <!-- Send -->
+  <rect x="760" y="490" width="120" height="60" class="box" fill="#d1fae5" stroke="#6ee7b7"/>
+  <text x="820" y="515" class="label" text-anchor="middle">Resend</text>
+  <text x="820" y="533" class="sublabel" text-anchor="middle">Email delivery</text>
+
+  <!-- Arrow to Inbox -->
+  <path d="M820,550 L820,600" class="arrow"/>
+
+  <!-- Developer Inbox -->
+  <rect x="710" y="600" width="170" height="60" class="box" fill="#cffafe" stroke="#67e8f9"/>
+  <text x="795" y="626" class="label" text-anchor="middle">Developer Inbox</text>
+  <text x="795" y="644" class="sublabel" text-anchor="middle">Personalized daily brief</text>
+
+  <!-- Dashed arrow to Tracking -->
+  <path d="M710,630 L570,630" class="arrow-dashed"/>
+
+  <!-- Tracking -->
+  <rect x="380" y="605" width="190" height="50" class="box" fill="#f3f4f6" stroke="#d1d5db"/>
+  <text x="475" y="626" class="label" text-anchor="middle" fill="#6b7280">Engagement Tracking</text>
+  <text x="475" y="643" class="sublabel" text-anchor="middle">Opens, clicks, feedback</text>
+
+  <!-- Dashed arrow back to DB -->
+  <path d="M475,605 L475,325" class="arrow-dashed"/>
+</svg>

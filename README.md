@@ -1,5 +1,7 @@
 <p align="center">
-  <h1 align="center">SkillFeed</h1>
+  <img src="public/logo-light.svg" alt="SkillFeed" width="280" />
+  <br />
+  <br />
   <p align="center">
     Stop reading 500 duplicate articles. Read the one that matters.
     <br />
@@ -50,42 +52,9 @@ SkillFeed is an AI-powered newsletter aggregator that delivers **one personalize
 
 ## Architecture
 
-```
-                     ┌──────────────┐
-                     │  RSS Feeds   │
-                     │  (5 sources) │
-                     └──────┬───────┘
-                            │
-                            ▼
-┌──────────────┐    ┌──────────────┐    ┌──────────────────┐
-│  AgentMail   │───▶│  Ingestion   │───▶│  Claude AI       │
-│  (webhooks)  │    │  Queue       │    │  Categorizer     │
-└──────────────┘    └──────┬───────┘    └────────┬─────────┘
-                           │                     │
-                           ▼                     ▼
-                    ┌─────────────────────────────────┐
-                    │         Supabase (PostgreSQL)    │
-                    │  articles │ users │ newsletters  │
-                    └────────────────┬────────────────-┘
-                                     │
-                              ┌──────┴──────┐
-                              │  Daily Cron │
-                              │  (7 AM UTC) │
-                              └──────┬──────┘
-                                     │
-                    ┌────────────────-┼────────────────-┐
-                    ▼                ▼                  ▼
-             ┌────────────┐  ┌────────────┐  ┌──────────────┐
-             │  Match     │  │  Compose   │  │  Send via    │
-             │  Articles  │  │  with AI   │  │  Resend      │
-             └────────────┘  └────────────┘  └──────┬───────┘
-                                                    │
-                                                    ▼
-                                             ┌────────────┐
-                                             │  Developer  │
-                                             │  Inbox      │
-                                             └────────────┘
-```
+<p align="center">
+  <img src="public/architecture.svg" alt="SkillFeed Architecture" width="800" />
+</p>
 
 ### Data Flow
 
