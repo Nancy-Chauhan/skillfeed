@@ -38,10 +38,11 @@ export async function Header() {
               </form>
             </>
           ) : (
-            <Link href="/login">
-              <Button className="rounded-md bg-white/[0.08] text-white/70 hover:bg-white/[0.12] hover:text-white px-4 h-8 cursor-pointer text-xs font-mono font-medium transition-all duration-200 border border-white/[0.06]">
-                get started
-              </Button>
+            <Link
+              href="/#waitlist"
+              className="font-mono text-[13px] text-white/30 hover:text-white/60 transition-colors duration-200 px-3 py-1.5 rounded-md hover:bg-white/[0.03]"
+            >
+              join waitlist
             </Link>
           )}
         </nav>

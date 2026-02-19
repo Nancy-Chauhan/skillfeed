@@ -1,8 +1,6 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import { RotatingText } from "./rotating-text";
 import { DistillationVisual } from "./distillation-visual";
+import { WaitlistForm } from "./waitlist-form";
 
 export function Hero() {
   return (
@@ -37,17 +35,9 @@ export function Hero() {
           bridges the gap, matched to your exact career path.
         </p>
 
-        {/* CTA */}
-        <div className="reveal-delay-3 flex items-center justify-center">
-          <Link href="/login">
-            <Button
-              size="lg"
-              className="rounded-md bg-violet-500 text-white hover:bg-violet-400 px-7 h-11 text-sm font-medium cursor-pointer transition-all duration-200"
-            >
-              Start for free
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-          </Link>
+        {/* Waitlist CTA */}
+        <div id="waitlist" className="reveal-delay-3">
+          <WaitlistForm />
         </div>
       </div>
 
