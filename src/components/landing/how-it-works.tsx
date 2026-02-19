@@ -51,11 +51,11 @@ export function HowItWorks() {
           {steps.map((step) => (
             <div key={step.number} className="relative rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden">
               {/* Step header — terminal style */}
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
-                <span className={`font-mono text-[11px] font-bold ${step.accent} opacity-60`}>
+              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02] overflow-hidden">
+                <span className={`font-mono text-[11px] font-bold ${step.accent} opacity-60 shrink-0`}>
                   {step.number}
                 </span>
-                <span className="font-mono text-[11px] text-white/20">
+                <span className="font-mono text-[11px] text-white/20 truncate">
                   {step.command}
                 </span>
               </div>

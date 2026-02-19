@@ -5,11 +5,11 @@ import { useState, useEffect, useCallback } from "react";
 const phrases = [
   "dev → AI engineer.",
   "backend → MLOps.",
-  "frontend → AI product eng.",
-  "junior → applied ML eng.",
+  "frontend → AI PM.",
+  "junior → ML eng.",
   "dev → LLM engineer.",
-  "IC → AI eng manager.",
-  "SWE → ML platform eng.",
+  "IC → eng manager.",
+  "SWE → ML platform.",
   "data eng → ML infra.",
 ];
 
@@ -36,7 +36,7 @@ export function RotatingText() {
   }, [cycle]);
 
   return (
-    <span className="inline-grid overflow-hidden leading-[1.3] whitespace-nowrap">
+    <span className="inline-grid overflow-hidden leading-[1.3] whitespace-nowrap max-w-full">
       <span
         className={`col-start-1 row-start-1 bg-gradient-to-r from-violet-400 to-emerald-400 bg-clip-text text-transparent pb-[0.05em] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           animationState === "exiting"

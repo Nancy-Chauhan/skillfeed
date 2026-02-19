@@ -22,10 +22,11 @@ export function Hero() {
         </div>
 
         {/* Headline */}
-        <h1 className="reveal-delay-1 text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[4rem] font-bold text-white leading-[1.15] tracking-[-0.03em] mb-5">
+        <h1 className="reveal-delay-1 text-[2rem] xs:text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[4rem] font-bold text-white leading-[1.15] tracking-[-0.03em] mb-5">
           Read what actually
           <br />
           <span className="text-white/30">gets you from </span>
+          <br className="sm:hidden" />
           <RotatingText />
         </h1>
 

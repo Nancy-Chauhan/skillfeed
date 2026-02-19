@@ -7,7 +7,7 @@ import { Footer } from "@/components/shared/footer";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#09090B] relative">
+    <div className="min-h-screen flex flex-col bg-[#09090B] relative overflow-x-hidden">
       {/* Dot grid overlay */}
       <div className="fixed inset-0 dot-grid pointer-events-none z-0" />
       <Header />

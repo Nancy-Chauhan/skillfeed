@@ -6,16 +6,16 @@ import { Star, Reply, MoreVertical, Archive, Trash2, ArrowLeft } from "lucide-re
 /* ── Scattered newsletter mini-cards (left side) ── */
 
 const newsletters = [
-  { name: "TLDR AI", subject: "GPT-5 is here, Llama 4 benchmarks, AI agents...", color: "border-violet-400/20" },
-  { name: "The Batch", subject: "Andrew Ng: Why RAG will dominate 2026", color: "border-sky-400/20" },
-  { name: "Ben's Bites", subject: "OpenAI ships Codex, Google fights back...", color: "border-orange-400/20" },
-  { name: "ByteByteGo", subject: "System Design: Real-time ML pipelines", color: "border-amber-400/20" },
-  { name: "The Neuron", subject: "AI spending hits $200B, Apple's new model...", color: "border-yellow-400/20" },
-  { name: "Import AI", subject: "Scaling laws plateau? New research says...", color: "border-pink-400/20" },
-  { name: "Alpha Signal", subject: "Top AI papers this week: diffusion, RLHF...", color: "border-red-400/20" },
-  { name: "Pragmatic Eng.", subject: "How Stripe built their AI assistant", color: "border-emerald-400/20" },
-  { name: "Superhuman", subject: "10 AI tools that replaced my entire stack", color: "border-cyan-400/20" },
-  { name: "AI Breakfast", subject: "Claude 4.5 deep-dive, Mistral updates...", color: "border-lime-400/20" },
+  { name: "TLDR AI", subject: "GPT-5 is here, Llama 4 benchmarks, AI agents...", color: "border-violet-400/20", domain: "tldr.tech" },
+  { name: "The Batch", subject: "Andrew Ng: Why RAG will dominate 2026", color: "border-sky-400/20", domain: "deeplearning.ai" },
+  { name: "Ben's Bites", subject: "OpenAI ships Codex, Google fights back...", color: "border-orange-400/20", domain: "bensbites.com" },
+  { name: "ByteByteGo", subject: "System Design: Real-time ML pipelines", color: "border-amber-400/20", domain: "bytebytego.com" },
+  { name: "The Neuron", subject: "AI spending hits $200B, Apple's new model...", color: "border-yellow-400/20", domain: "theneuron.ai" },
+  { name: "Import AI", subject: "Scaling laws plateau? New research says...", color: "border-pink-400/20", domain: "importai.net" },
+  { name: "Alpha Signal", subject: "Top AI papers this week: diffusion, RLHF...", color: "border-red-400/20", domain: "alphasignal.ai" },
+  { name: "Pragmatic Eng.", subject: "How Stripe built their AI assistant", color: "border-emerald-400/20", domain: "pragmaticengineer.com" },
+  { name: "Superhuman", subject: "10 AI tools that replaced my entire stack", color: "border-cyan-400/20", domain: "joinsuperhuman.ai" },
+  { name: "AI Breakfast", subject: "Claude 4.5 deep-dive, Mistral updates...", color: "border-lime-400/20", domain: "aibreakfast.beehiiv.com" },
 ];
 
 // Fixed positions so they look scattered / overlapping like a messy desk
@@ -62,7 +62,12 @@ export function DistillationVisual() {
               <div className={`rounded-md border ${nl.color} bg-[#0d0d10] p-2.5 shadow-[0_2px_8px_rgba(0,0,0,0.3)] hover:scale-[1.02] transition-transform duration-300`}>
                 {/* Mini email row */}
                 <div className="flex items-start gap-2">
-                  <div className="w-5 h-5 rounded-full bg-white/[0.06] shrink-0 mt-0.5" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${nl.domain}&sz=64`}
+                    alt={nl.name}
+                    className="w-5 h-5 rounded shrink-0 mt-0.5"
+                  />
                   <div className="min-w-0 flex-1">
                     <p className="text-[10px] text-white/40 font-medium truncate">{nl.name}</p>
                     <p className="text-[9px] text-white/20 truncate leading-relaxed">{nl.subject}</p>
@@ -85,11 +90,16 @@ export function DistillationVisual() {
           {newsletters.slice(0, 6).map((nl, i) => (
             <div
               key={nl.name}
-              className={`shrink-0 w-[200px] rounded-md border ${nl.color} bg-[#0d0d10] p-2.5`}
+              className={`shrink-0 w-[170px] sm:w-[200px] rounded-md border ${nl.color} bg-[#0d0d10] p-2.5`}
               style={{ transform: `rotate(${i % 2 === 0 ? "-1" : "1"}deg)` }}
             >
               <div className="flex items-start gap-2">
-                <div className="w-5 h-5 rounded-full bg-white/[0.06] shrink-0 mt-0.5" />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://www.google.com/s2/favicons?domain=${nl.domain}&sz=64`}
+                  alt={nl.name}
+                  className="w-5 h-5 rounded shrink-0 mt-0.5"
+                />
                 <div className="min-w-0 flex-1">
                   <p className="text-[10px] text-white/40 font-medium truncate">{nl.name}</p>
                   <p className="text-[9px] text-white/20 truncate leading-relaxed">{nl.subject}</p>
@@ -99,31 +109,20 @@ export function DistillationVisual() {
           ))}
         </div>
 
-        {/* ─── Center: Funnel ─── */}
+        {/* ─── Center: Arrow ─── */}
         <div className="hidden md:flex flex-col items-center justify-center h-full">
-          <svg width="48" height="200" viewBox="0 0 48 200" fill="none" className="overflow-visible">
-            {/* Funnel lines */}
-            <path d="M0 10 Q24 70 24 95" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-            <path d="M48 10 Q24 70 24 95" stroke="rgba(255,255,255,0.06)" strokeWidth="1" />
-            <path d="M8 30 Q24 75 24 95" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-            <path d="M40 30 Q24 75 24 95" stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />
-
-            {/* Dashed output line */}
-            <line x1="24" y1="95" x2="24" y2="185" stroke="rgba(167,139,250,0.15)" strokeWidth="1" strokeDasharray="3 3">
-              <animate attributeName="stroke-dashoffset" from="6" to="0" dur="0.8s" repeatCount="indefinite" />
-            </line>
-
-            {/* Convergence glow */}
-            <circle cx="24" cy="95" r="3" fill="rgba(167,139,250,0.5)">
-              <animate attributeName="r" values="2.5;5;2.5" dur="2s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.4;0.8;0.4" dur="2s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="24" cy="95" r="10" fill="rgba(167,139,250,0.06)">
-              <animate attributeName="r" values="8;14;8" dur="2s" repeatCount="indefinite" />
-            </circle>
-
-            <path d="M20 180 L24 187 L28 180" stroke="rgba(167,139,250,0.25)" strokeWidth="1.5" fill="none" />
-          </svg>
+          <div className="flex flex-col items-center gap-2">
+            {/* Dashed line */}
+            <div className="w-px h-16 border-l border-dashed border-white/[0.08]" />
+            {/* Arrow icon */}
+            <div className="w-8 h-8 rounded-full bg-violet-400/10 border border-violet-400/[0.15] flex items-center justify-center">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M3 7 L11 7 M8 4 L11 7 L8 10" stroke="rgba(167,139,250,0.6)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            {/* Dashed line */}
+            <div className="w-px h-16 border-l border-dashed border-white/[0.08]" />
+          </div>
         </div>
 
         {/* Mobile: simple arrow */}
@@ -170,23 +169,23 @@ export function DistillationVisual() {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[12px] text-white/60 font-medium">SkillFeed</span>
-                    <span className="text-[10px] text-white/15">&lt;brief@skillfeed.dev&gt;</span>
+                    <span className="text-[10px] text-white/15 hidden sm:inline">&lt;brief@skillfeed.dev&gt;</span>
                   </div>
                   <span className="text-[10px] text-white/15">to me</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-white/10">7:00 AM</span>
+                <span className="text-[10px] text-white/10 hidden sm:inline">7:00 AM</span>
                 <Reply className="w-3.5 h-3.5 text-white/10" />
-                <MoreVertical className="w-3.5 h-3.5 text-white/10" />
+                <MoreVertical className="w-3.5 h-3.5 text-white/10 hidden sm:block" />
               </div>
             </div>
 
             {/* ── Newsletter body (rendered HTML email) ── */}
-            <div className="mx-4 mb-4 mt-1 rounded-lg border border-white/[0.06] bg-[#0a0a0c] overflow-hidden">
+            <div className="mx-2 sm:mx-4 mb-4 mt-1 rounded-lg border border-white/[0.06] bg-[#0a0a0c] overflow-hidden">
 
               {/* Newsletter header/branding */}
-              <div className="px-5 pt-5 pb-3 border-b border-white/[0.06] text-center">
+              <div className="px-3 sm:px-5 pt-5 pb-3 border-b border-white/[0.06] text-center">
                 <p className="font-mono text-[13px] font-semibold text-white/60 tracking-tight">
                   skillfeed<span className="text-violet-400">_</span>
                 </p>
@@ -194,13 +193,13 @@ export function DistillationVisual() {
               </div>
 
               {/* Career context bar */}
-              <div className="px-5 pt-4 pb-3">
-                <div className="flex items-center gap-2 py-2 px-3 rounded bg-violet-400/[0.04] border border-violet-400/[0.08]">
+              <div className="px-3 sm:px-5 pt-4 pb-3">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded bg-violet-400/[0.04] border border-violet-400/[0.08]">
                   <span className="text-[10px] text-white/25">Your path:</span>
                   <span className="text-[10px] text-white/40 font-medium">Backend Dev</span>
                   <span className="text-[10px] text-violet-400/50">→</span>
                   <span className="text-[10px] text-violet-400/70 font-medium">ML Engineer</span>
-                  <span className="text-[10px] text-white/15 ml-auto">intermediate → senior</span>
+                  <span className="text-[10px] text-white/15 sm:ml-auto">intermediate → senior</span>
                 </div>
                 <p className="text-[11px] text-white/25 leading-relaxed mt-2.5">
                   Good morning! We scanned <span className="text-white/40">16 sources</span>, filtered <span className="text-white/40">53 duplicates</span>, and found <span className="text-violet-400/60">3 articles</span> that match your transition to ML Engineer.
@@ -208,7 +207,7 @@ export function DistillationVisual() {
               </div>
 
               {/* Articles */}
-              <div className="px-5 pb-2 space-y-0">
+              <div className="px-3 sm:px-5 pb-2 space-y-0">
                 <NewsletterArticle
                   number={1}
                   match={96}
@@ -240,7 +239,7 @@ export function DistillationVisual() {
               </div>
 
               {/* Newsletter footer */}
-              <div className="px-5 py-3 border-t border-white/[0.06] text-center space-y-1.5">
+              <div className="px-3 sm:px-5 py-3 border-t border-white/[0.06] text-center space-y-1.5">
                 <p className="text-[10px] text-white/15">
                   Curated for <span className="text-white/25">Backend Dev</span> <span className="text-violet-400/40">→</span> <span className="text-violet-400/50">ML Engineer</span>
                 </p>

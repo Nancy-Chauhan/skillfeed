@@ -15,7 +15,7 @@ export function CTA() {
             <span className="ml-2 font-mono text-[11px] text-white/15">get-started</span>
           </div>
 
-          <div className="p-10 md:p-16 text-center space-y-5">
+          <div className="p-6 sm:p-10 md:p-16 text-center space-y-5">
             <h2 className="text-2xl md:text-[2.25rem] font-bold text-white tracking-[-0.02em] leading-tight">
               Where do you want to be
               <br />

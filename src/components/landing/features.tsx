@@ -65,7 +65,7 @@ export function Features() {
           {features.map((feature, i) => (
             <div
               key={feature.key}
-              className={`group rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 ${
+              className={`group rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 overflow-hidden ${
                 i === 0 || i === 3 ? "md:col-span-2 p-7" : "md:col-span-1 p-6"
               }`}
             >
@@ -74,7 +74,7 @@ export function Features() {
                   <feature.icon className={`w-[18px] h-[18px] ${feature.accent}`} strokeWidth={1.5} />
                 </div>
                 <div className="space-y-2 pt-0.5 min-w-0">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 flex-wrap">
                     <h3 className="text-[15px] font-semibold text-white/90 font-mono">
                       {feature.title}
                     </h3>

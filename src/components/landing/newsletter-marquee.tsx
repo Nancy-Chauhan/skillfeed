@@ -26,8 +26,8 @@ export function NewsletterMarquee() {
         </p>
       </div>
       <div className="relative">
-        <div className="absolute left-0 top-0 bottom-0 w-32 md:w-48 z-10 bg-gradient-to-r from-[#09090B] to-transparent pointer-events-none" />
-        <div className="absolute right-0 top-0 bottom-0 w-32 md:w-48 z-10 bg-gradient-to-l from-[#09090B] to-transparent pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 z-10 bg-gradient-to-r from-[#09090B] to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 z-10 bg-gradient-to-l from-[#09090B] to-transparent pointer-events-none" />
 
         <div className="flex animate-marquee w-max">
           {[...newsletters, ...newsletters].map((item, i) => (
@@ -37,11 +37,11 @@ export function NewsletterMarquee() {
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src={`https://www.google.com/s2/favicons?domain=${item.domain}&sz=32`}
+                src={`https://www.google.com/s2/favicons?domain=${item.domain}&sz=64`}
                 alt={item.name}
-                width={14}
-                height={14}
-                className="rounded-sm opacity-40 grayscale"
+                width={16}
+                height={16}
+                className="rounded-sm opacity-70"
               />
               {item.name}
             </div>
