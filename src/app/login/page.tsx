@@ -39,12 +39,14 @@ export default function LoginPage() {
       });
 
       if (error) {
+        // Rate limit means the email was already sent recently — show success
         if (error.message.toLowerCase().includes("rate limit")) {
-          setError("Please wait a moment before requesting another link.");
+          setSent(true);
           setCooldown(COOLDOWN_SECONDS);
-        } else {
-          setError(error.message);
+          setLoading(false);
+          return;
         }
+        setError(error.message);
         setLoading(false);
         return;
       }
