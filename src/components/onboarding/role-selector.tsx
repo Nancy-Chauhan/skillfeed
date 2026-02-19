@@ -21,22 +21,22 @@ export function RoleSelector({ selected, onChange, label }: RoleSelectorProps) {
 
   return (
     <div className="space-y-3">
-      <Label className="text-sm text-[#A3A3A3] font-medium">{label}</Label>
-      <div className="grid grid-cols-2 gap-3">
+      <Label className="text-[13px] text-white/40">{label}</Label>
+      <div className="grid grid-cols-2 gap-2">
         {ROLES.map((role) => (
           <label
             key={role}
-            className={`flex items-center gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
+            className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all duration-200 ${
               selected.includes(role)
-                ? "border-[#00FF88]/30 bg-[#00FF88]/5"
-                : "border-[#262626] bg-[#1A1A1A] hover:border-[#333]"
+                ? "border-violet-500/30 bg-violet-500/[0.06]"
+                : "border-white/[0.04] hover:border-white/[0.08]"
             }`}
           >
             <Checkbox
               checked={selected.includes(role)}
               onCheckedChange={() => toggleRole(role)}
             />
-            <span className="text-sm text-white">{ROLE_LABELS[role]}</span>
+            <span className="text-sm text-white/60">{ROLE_LABELS[role]}</span>
           </label>
         ))}
       </div>

@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { RoleSelector } from "./role-selector";
-import { Zap, ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { LEVELS, LEVEL_LABELS, ROLE_LABELS, type Role, type Level } from "@/lib/utils/constants";
 
 interface FormData {
@@ -100,95 +100,82 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
     "Review your profile",
   ];
 
-  const stepSubtitles = [
-    "We'll personalize your newsletter based on this",
-    "Tell us about your current experience",
-    "Help us match articles to your career goals",
-    "Make sure everything looks good",
-  ];
-
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4 pt-20">
-      <div className="w-full max-w-2xl">
-        {/* Logo */}
-        <div className="flex items-center justify-center gap-2.5 mb-8">
-          <div className="w-8 h-8 rounded-lg bg-[#00FF88]/10 border border-[#00FF88]/20 flex items-center justify-center neon-box-glow">
-            <Zap className="w-4 h-4 text-[#00FF88]" strokeWidth={2.5} />
-          </div>
-          <span className="text-lg font-semibold text-white tracking-tight">
-            SkillFeed
+    <div className="min-h-screen bg-[#09090B] flex items-center justify-center p-4 pt-20 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-violet-500/[0.04] blur-[100px] pointer-events-none" />
+
+      <div className="w-full max-w-2xl relative z-10">
+        <div className="flex items-center justify-center mb-8">
+          <span className="font-mono text-sm font-semibold text-white tracking-tight">
+            skillfeed<span className="text-violet-400">_</span>
           </span>
         </div>
 
-        {/* Progress bar */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
-            {Array.from({ length: totalSteps }, (_, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium transition-all ${
-                    i + 1 < step
-                      ? "bg-[#00FF88] text-[#0A0A0A]"
-                      : i + 1 === step
-                        ? "bg-white text-[#0A0A0A]"
-                        : "bg-[#1A1A1A] text-[#525252] border border-[#262626]"
-                  }`}
-                >
-                  {i + 1 < step ? <Check className="w-3.5 h-3.5" /> : i + 1}
-                </div>
-                {i < totalSteps - 1 && (
-                  <div className={`hidden sm:block w-16 md:w-28 h-0.5 rounded-full transition-colors ${
-                    i + 1 < step ? "bg-[#00FF88]" : "bg-[#262626]"
-                  }`} />
-                )}
+        {/* Progress */}
+        <div className="mb-8 flex items-center justify-center gap-2">
+          {Array.from({ length: totalSteps }, (_, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <div
+                className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono text-xs transition-all duration-300 ${
+                  i + 1 < step
+                    ? "bg-violet-500 text-white"
+                    : i + 1 === step
+                      ? "bg-white text-[#09090B]"
+                      : "bg-white/[0.03] text-white/20 border border-white/[0.06]"
+                }`}
+              >
+                {i + 1 < step ? <Check className="w-3.5 h-3.5" /> : `0${i + 1}`}
               </div>
-            ))}
-          </div>
+              {i < totalSteps - 1 && (
+                <div className={`hidden sm:block w-12 md:w-20 h-px transition-colors duration-300 ${
+                  i + 1 < step ? "bg-violet-500/40" : "bg-white/[0.04]"
+                }`} />
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Card */}
-        <div className="bg-[#141414] rounded-2xl border border-[#262626] overflow-hidden" style={{ boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.03)' }}>
-          {/* Step header */}
+        <div className="gradient-border rounded-xl overflow-hidden bg-white/[0.02]">
           <div className="px-8 pt-8 pb-2">
-            <h1 className="text-2xl font-semibold text-white tracking-tight">
+            <p className="font-mono text-[11px] text-violet-400/60 mb-2">
+              step {String(step).padStart(2, "0")}/{String(totalSteps).padStart(2, "0")}
+            </p>
+            <h1 className="text-xl font-bold text-white tracking-tight">
               {stepTitles[step - 1]}
             </h1>
-            <p className="text-sm text-[#525252] mt-1">
-              {stepSubtitles[step - 1]}
-            </p>
           </div>
 
           <div className="px-8 py-6 space-y-6">
-            {/* Step 1: Basics */}
             {step === 1 && (
               <div className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-sm text-[#A3A3A3] font-medium">Name</Label>
+                  <Label htmlFor="name" className="text-[13px] text-white/40">Name</Label>
                   <Input
                     id="name"
                     placeholder="Your name"
                     value={formData.name}
                     onChange={(e) => update("name", e.target.value)}
-                    className="h-12 rounded-xl border-[#262626] focus:border-[#00FF88]/50 bg-[#1A1A1A] text-white placeholder:text-[#525252]"
+                    className="h-11 rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 focus:ring-1 focus:ring-violet-500/20"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label className="text-sm text-[#A3A3A3] font-medium">Email</Label>
+                  <Label className="text-[13px] text-white/40">Email</Label>
                   <Input
                     value={formData.email}
                     disabled
-                    className="h-12 rounded-xl border-[#262626] bg-[#0A0A0A] text-[#525252]"
+                    className="h-11 rounded-lg border-white/[0.04] bg-white/[0.02] text-white/25 font-mono text-sm"
                   />
                 </div>
               </div>
             )}
 
-            {/* Step 2: Current State */}
             {step === 2 && (
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="resume" className="text-sm text-[#A3A3A3] font-medium">
-                    Resume or background <span className="text-[#525252] font-normal">(optional)</span>
+                  <Label htmlFor="resume" className="text-[13px] text-white/40">
+                    Resume or background <span className="text-white/15">(optional)</span>
                   </Label>
                   <Textarea
                     id="resume"
@@ -196,7 +183,7 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
                     value={formData.resume_text}
                     onChange={(e) => update("resume_text", e.target.value)}
                     rows={4}
-                    className="rounded-xl border-[#262626] focus:border-[#00FF88]/50 bg-[#1A1A1A] text-white placeholder:text-[#525252] resize-none"
+                    className="rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 resize-none focus:ring-1 focus:ring-violet-500/20"
                   />
                 </div>
                 <RoleSelector
@@ -205,19 +192,19 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
                   label="Current roles"
                 />
                 <div className="space-y-3">
-                  <Label className="text-sm text-[#A3A3A3] font-medium">Current level</Label>
+                  <Label className="text-[13px] text-white/40">Current level</Label>
                   <RadioGroup
                     value={formData.current_level}
                     onValueChange={(v) => update("current_level", v as Level)}
-                    className="flex gap-3"
+                    className="flex gap-2"
                   >
                     {LEVELS.map((level) => (
                       <label
                         key={level}
-                        className={`flex items-center gap-2 px-4 py-3 rounded-xl border cursor-pointer transition-all text-sm ${
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all duration-200 text-sm ${
                           formData.current_level === level
-                            ? "border-[#00FF88]/30 bg-[#00FF88]/5 text-white"
-                            : "border-[#262626] bg-[#1A1A1A] text-[#737373] hover:border-[#333]"
+                            ? "border-violet-500/30 bg-violet-500/[0.08] text-white/80"
+                            : "border-white/[0.04] text-white/25 hover:border-white/[0.08]"
                         }`}
                       >
                         <RadioGroupItem value={level} />
@@ -229,11 +216,10 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
               </div>
             )}
 
-            {/* Step 3: Future State */}
             {step === 3 && (
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="prompt" className="text-sm text-[#A3A3A3] font-medium">
+                  <Label htmlFor="prompt" className="text-[13px] text-white/40">
                     Who do you want to become?
                   </Label>
                   <Textarea
@@ -242,7 +228,7 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
                     value={formData.prompt_text}
                     onChange={(e) => update("prompt_text", e.target.value)}
                     rows={4}
-                    className="rounded-xl border-[#262626] focus:border-[#00FF88]/50 bg-[#1A1A1A] text-white placeholder:text-[#525252] resize-none"
+                    className="rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 resize-none focus:ring-1 focus:ring-violet-500/20"
                   />
                 </div>
                 <RoleSelector
@@ -251,19 +237,19 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
                   label="Target roles"
                 />
                 <div className="space-y-3">
-                  <Label className="text-sm text-[#A3A3A3] font-medium">Target level</Label>
+                  <Label className="text-[13px] text-white/40">Target level</Label>
                   <RadioGroup
                     value={formData.target_level}
                     onValueChange={(v) => update("target_level", v as Level)}
-                    className="flex gap-3"
+                    className="flex gap-2"
                   >
                     {LEVELS.map((level) => (
                       <label
                         key={level}
-                        className={`flex items-center gap-2 px-4 py-3 rounded-xl border cursor-pointer transition-all text-sm ${
+                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all duration-200 text-sm ${
                           formData.target_level === level
-                            ? "border-[#00FF88]/30 bg-[#00FF88]/5 text-white"
-                            : "border-[#262626] bg-[#1A1A1A] text-[#737373] hover:border-[#333]"
+                            ? "border-violet-500/30 bg-violet-500/[0.08] text-white/80"
+                            : "border-white/[0.04] text-white/25 hover:border-white/[0.08]"
                         }`}
                       >
                         <RadioGroupItem value={level} />
@@ -275,74 +261,71 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
               </div>
             )}
 
-            {/* Step 4: Review */}
             {step === 4 && (
               <div className="space-y-5">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <p className="text-xs font-medium text-[#525252] uppercase tracking-wider">Name</p>
-                    <p className="text-white font-medium">{formData.name}</p>
+                  <div className="space-y-1">
+                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">name</p>
+                    <p className="text-white/80 text-sm font-medium">{formData.name}</p>
                   </div>
-                  <div className="space-y-1.5">
-                    <p className="text-xs font-medium text-[#525252] uppercase tracking-wider">Email</p>
-                    <p className="text-[#A3A3A3]">{formData.email}</p>
+                  <div className="space-y-1">
+                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">email</p>
+                    <p className="font-mono text-white/35 text-sm">{formData.email}</p>
                   </div>
                 </div>
-                <div className="h-px bg-[#262626]" />
+                <div className="h-px bg-white/[0.04]" />
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <p className="text-xs font-medium text-[#525252] uppercase tracking-wider">Current roles</p>
+                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">current roles</p>
                     <div className="flex flex-wrap gap-1.5">
                       {formData.current_roles.map((role) => (
-                        <Badge key={role} variant="secondary" className="bg-[#00FF88]/10 text-[#00FF88] border border-[#00FF88]/20 rounded-lg text-xs">
+                        <Badge key={role} variant="secondary" className="font-mono bg-white/[0.04] text-white/45 border border-white/[0.06] rounded-full text-[11px] px-2.5">
                           {ROLE_LABELS[role]}
                         </Badge>
                       ))}
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <p className="text-xs font-medium text-[#525252] uppercase tracking-wider">Target roles</p>
+                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">target roles</p>
                     <div className="flex flex-wrap gap-1.5">
                       {formData.target_roles.map((role) => (
-                        <Badge key={role} variant="secondary" className="bg-[#A78BFA]/10 text-[#A78BFA] border border-[#A78BFA]/20 rounded-lg text-xs">
+                        <Badge key={role} variant="secondary" className="font-mono bg-violet-500/[0.08] text-violet-400/70 border border-violet-500/[0.12] rounded-full text-[11px] px-2.5">
                           {ROLE_LABELS[role]}
                         </Badge>
                       ))}
                     </div>
                   </div>
                 </div>
-                <div className="h-px bg-[#262626]" />
-                <div className="space-y-1.5">
-                  <p className="text-xs font-medium text-[#525252] uppercase tracking-wider">Career goals</p>
-                  <p className="text-[#A3A3A3] text-sm leading-relaxed">{formData.prompt_text}</p>
+                <div className="h-px bg-white/[0.04]" />
+                <div className="space-y-1">
+                  <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">career goals</p>
+                  <p className="text-white/45 text-sm leading-relaxed">{formData.prompt_text}</p>
                 </div>
                 {formData.resume_text && (
                   <>
-                    <div className="h-px bg-[#262626]" />
-                    <div className="space-y-1.5">
-                      <p className="text-xs font-medium text-[#525252] uppercase tracking-wider">Resume</p>
-                      <p className="text-[#A3A3A3] text-sm line-clamp-3 leading-relaxed">{formData.resume_text}</p>
+                    <div className="h-px bg-white/[0.04]" />
+                    <div className="space-y-1">
+                      <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">resume</p>
+                      <p className="text-white/45 text-sm line-clamp-3 leading-relaxed">{formData.resume_text}</p>
                     </div>
                   </>
                 )}
               </div>
             )}
 
-            {/* Error */}
             {error && (
-              <div className="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-3">
-                <p className="text-sm text-red-400">{error}</p>
+              <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3">
+                <p className="text-sm text-red-400 font-mono">{error}</p>
               </div>
             )}
           </div>
 
-          {/* Navigation */}
-          <div className="px-8 py-5 border-t border-[#262626] flex justify-between">
+          <div className="px-8 py-4 border-t border-white/[0.04] flex justify-between">
             <Button
               variant="ghost"
               onClick={() => setStep((s) => s - 1)}
               disabled={step === 1}
-              className="text-[#525252] hover:text-white cursor-pointer rounded-xl"
+              className="text-white/20 hover:text-white/50 hover:bg-white/[0.04] cursor-pointer rounded-lg"
             >
               <ArrowLeft className="w-4 h-4 mr-1.5" />
               Back
@@ -351,7 +334,7 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
               <Button
                 onClick={() => setStep((s) => s + 1)}
                 disabled={!canProceed()}
-                className="rounded-xl bg-white text-[#0A0A0A] hover:bg-white/90 cursor-pointer px-6 font-semibold"
+                className="rounded-lg bg-white text-[#09090B] hover:bg-white/90 cursor-pointer px-6 font-medium transition-colors"
               >
                 Continue
                 <ArrowRight className="w-4 h-4 ml-1.5" />
@@ -360,9 +343,9 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
               <Button
                 onClick={handleSubmit}
                 disabled={loading}
-                className="rounded-xl bg-[#00FF88] text-[#0A0A0A] hover:bg-[#00FF88]/90 cursor-pointer px-6 font-semibold shadow-[0_0_20px_rgba(0,255,136,0.15)]"
+                className="rounded-lg bg-violet-500 text-white hover:bg-violet-400 cursor-pointer px-6 font-medium transition-all duration-200 shadow-[0_0_20px_rgba(167,139,250,0.2)]"
               >
-                {loading ? "Creating your profile..." : "Complete Setup"}
+                {loading ? "Creating..." : "Complete Setup"}
                 {!loading && <Check className="w-4 h-4 ml-1.5" />}
               </Button>
             )}

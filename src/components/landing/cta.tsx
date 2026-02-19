@@ -4,44 +4,43 @@ import { ArrowRight } from "lucide-react";
 
 export function CTA() {
   return (
-    <section className="py-24 md:py-32 px-6">
-      <div className="max-w-xl mx-auto">
-        <div className="relative rounded-2xl overflow-hidden p-10 md:p-14 text-center space-y-5 border border-white/[0.06] bg-white/[0.02]">
-          {/* Glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-24 bg-[#00FF88]/[0.06] blur-[60px] pointer-events-none" />
-
-          {/* Dot grid */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)",
-              backgroundSize: "24px 24px",
-            }}
-          />
-
-          <h2 className="relative text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
-            Ditch the duplicates.
-            <br />
-            <span className="text-[#00FF88]">Read what matters.</span>
-          </h2>
-          <p className="relative text-sm text-white/40 leading-relaxed max-w-sm mx-auto">
-            Set up your profile and get your first personalized
-            newsletter tomorrow morning.
-          </p>
-          <div className="relative">
-            <Link href="/login">
-              <Button
-                size="lg"
-                className="rounded-full bg-[#00FF88] text-[#0C0C0C] hover:bg-[#00FF88]/90 px-7 py-5 text-sm font-semibold cursor-pointer shadow-[0_0_30px_rgba(0,255,136,0.15)] hover:shadow-[0_0_50px_rgba(0,255,136,0.25)] transition-all duration-300 hover:scale-[1.02]"
-              >
-                Get Started Free
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </Link>
+    <section className="py-24 md:py-32 px-6 border-t border-white/[0.04]">
+      <div className="max-w-2xl mx-auto">
+        <div className="relative rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+          {/* Terminal header */}
+          <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02]">
+            <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
+            <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
+            <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
+            <span className="ml-2 font-mono text-[11px] text-white/15">get-started</span>
           </div>
-          <p className="relative text-[11px] text-white/20">
-            Free forever. Unsubscribe anytime.
-          </p>
+
+          <div className="p-10 md:p-16 text-center space-y-5">
+            <h2 className="text-2xl md:text-[2.25rem] font-bold text-white tracking-[-0.02em] leading-tight">
+              Where do you want to be
+              <br />
+              <span className="text-white/30">in 6 months?</span>
+            </h2>
+            <p className="text-sm text-white/25 leading-relaxed max-w-md mx-auto font-mono">
+              Define your career goal. We&apos;ll start curating the
+              exact content to get you there — first brief arrives
+              tomorrow morning.
+            </p>
+            <div className="flex items-center justify-center pt-3">
+              <Link href="/login">
+                <Button
+                  size="lg"
+                  className="rounded-md bg-violet-500 text-white hover:bg-violet-400 px-7 h-11 text-sm font-medium cursor-pointer transition-all duration-200"
+                >
+                  Set my career goal
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
+            </div>
+            <p className="font-mono text-[11px] text-white/10 pt-1">
+              free forever &middot; takes 3 minutes &middot; unsubscribe anytime
+            </p>
+          </div>
         </div>
       </div>
     </section>

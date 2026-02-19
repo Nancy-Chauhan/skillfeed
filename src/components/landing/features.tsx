@@ -1,74 +1,92 @@
-import { Target, Lightbulb, Route, Layers } from "lucide-react";
+import { GitCompareArrows, Lightbulb, Route, Layers } from "lucide-react";
 
 const features = [
   {
-    icon: Target,
-    title: "Matched to Your Goals",
+    key: "gap",
+    icon: GitCompareArrows,
+    title: "career.diff()",
     description:
-      "Filtered by your role, skill level, and career trajectory. Zero noise.",
-    iconColor: "text-[#00FF88]",
-    glowColor: "rgba(0, 255, 136, 0.06)",
+      "You tell us your current role and your dream role. We identify the skill gaps and match content that closes them.",
+    accent: "text-violet-400",
+    accentBg: "bg-violet-400/10",
+    tag: "current → target",
   },
   {
+    key: "context",
     icon: Lightbulb,
-    title: "\"Why This Matters\"",
+    title: "brief.whyThisMatters()",
     description:
-      "Every article includes a personalized explanation tied to your career journey.",
-    iconColor: "text-[#A78BFA]",
-    glowColor: "rgba(167, 139, 250, 0.06)",
+      "Every article comes with a personalized explanation — why it matters for YOUR specific career trajectory, not generic fluff.",
+    accent: "text-emerald-400",
+    accentBg: "bg-emerald-400/10",
+    tag: "personalized",
   },
   {
+    key: "roadmap",
     icon: Route,
-    title: "Actionable Roadmap",
+    title: "career.nextSteps()",
     description:
-      "Concrete next steps for your learning path. No fluff, just direction.",
-    iconColor: "text-[#22D3EE]",
-    glowColor: "rgba(34, 211, 238, 0.06)",
+      "Each brief includes actionable roadmap items. Concrete things to learn, build, or explore — tied to your goals.",
+    accent: "text-sky-400",
+    accentBg: "bg-sky-400/10",
+    tag: "actionable",
   },
   {
+    key: "sources",
     icon: Layers,
-    title: "500+ Sources, One Brief",
+    title: "feeds.distill(500)",
     description:
-      "We read every newsletter so you don't have to. One email, zero duplicates.",
-    iconColor: "text-[#F59E0B]",
-    glowColor: "rgba(245, 158, 11, 0.06)",
+      "We scan 500+ AI, dev, and engineering newsletters daily. You get 3-5 articles — zero duplicates, pure signal.",
+    accent: "text-amber-400",
+    accentBg: "bg-amber-400/10",
+    tag: "500+ sources",
   },
 ];
 
 export function Features() {
   return (
-    <section className="py-24 md:py-32 px-6">
+    <section id="features" className="py-24 md:py-32 px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center max-w-xl mx-auto mb-16 space-y-4">
-          <p className="text-xs text-white/30 uppercase tracking-[0.2em] font-medium">Why SkillFeed</p>
-          <h2 className="text-2xl md:text-3xl font-bold text-white tracking-tight leading-tight">
-            Why read 500 newsletters
+        {/* Section header */}
+        <div className="text-center max-w-xl mx-auto mb-14 md:mb-16 space-y-4">
+          <p className="font-mono text-[11px] text-emerald-400/60 uppercase tracking-[0.15em]">// features</p>
+          <h2 className="text-3xl md:text-[2.75rem] font-bold text-white tracking-[-0.02em] leading-tight">
+            Your career path
             <br />
-            <span className="text-[#00FF88]">when one is enough?</span>
+            <span className="text-white/30">drives every recommendation.</span>
           </h2>
-          <p className="text-sm text-white/35 leading-relaxed">
-            Most newsletters repeat the same stories. We deduplicate, personalize, and deliver only what matters.
+          <p className="text-sm text-white/25 leading-relaxed max-w-md mx-auto font-mono">
+            Not just what&apos;s trending — what&apos;s relevant to where you&apos;re headed.
           </p>
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          {features.map((feature) => (
+
+        {/* Bento grid — alternating wide/narrow */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {features.map((feature, i) => (
             <div
-              key={feature.title}
-              className="group relative rounded-xl border border-white/[0.06] bg-white/[0.02] p-7 space-y-4 hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300"
+              key={feature.key}
+              className={`group rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 ${
+                i === 0 || i === 3 ? "md:col-span-2 p-7" : "md:col-span-1 p-6"
+              }`}
             >
-              <div
-                className="absolute -top-16 -right-16 w-32 h-32 rounded-full blur-[60px] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                style={{ background: feature.glowColor }}
-              />
-              <div className="relative w-10 h-10 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                <feature.icon className={`w-5 h-5 ${feature.iconColor}`} strokeWidth={1.5} />
+              <div className="flex items-start gap-4">
+                <div className={`w-10 h-10 rounded-lg ${feature.accentBg} flex items-center justify-center shrink-0`}>
+                  <feature.icon className={`w-[18px] h-[18px] ${feature.accent}`} strokeWidth={1.5} />
+                </div>
+                <div className="space-y-2 pt-0.5 min-w-0">
+                  <div className="flex items-center gap-3">
+                    <h3 className="text-[15px] font-semibold text-white/90 font-mono">
+                      {feature.title}
+                    </h3>
+                    <span className={`text-[10px] font-mono ${feature.accent} opacity-50 px-1.5 py-0.5 rounded border border-current/20`}>
+                      {feature.tag}
+                    </span>
+                  </div>
+                  <p className="text-sm text-white/25 leading-relaxed">
+                    {feature.description}
+                  </p>
+                </div>
               </div>
-              <h3 className="relative text-[15px] font-semibold text-white/90">
-                {feature.title}
-              </h3>
-              <p className="relative text-sm text-white/35 leading-relaxed">
-                {feature.description}
-              </p>
             </div>
           ))}
         </div>

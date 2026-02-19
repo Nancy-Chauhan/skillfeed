@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, ArrowLeft, CheckCircle2, Zap } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -38,108 +38,73 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#0A0A0A]">
-      {/* Left side form */}
-      <div className="flex-1 flex flex-col justify-center px-8 md:px-16 lg:px-24 max-w-xl">
+    <div className="min-h-screen flex items-center justify-center bg-[#09090B] px-6 relative overflow-hidden">
+      {/* Background glow */}
+      <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full bg-violet-500/[0.05] blur-[120px] pointer-events-none" />
+
+      <div className="w-full max-w-sm relative z-10">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-sm text-[#525252] hover:text-[#A3A3A3] transition-colors mb-12"
+          className="inline-flex items-center gap-2 text-[13px] text-white/25 hover:text-white/50 transition-colors mb-10"
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back to home
+          <ArrowLeft className="w-3.5 h-3.5" />
+          Back
         </Link>
 
-        <div className="flex items-center gap-2.5 mb-10">
-          <div className="w-9 h-9 rounded-lg bg-[#00FF88]/10 border border-[#00FF88]/20 flex items-center justify-center neon-box-glow">
-            <Zap className="w-4.5 h-4.5 text-[#00FF88]" strokeWidth={2.5} />
-          </div>
-          <span className="text-xl font-semibold text-white tracking-tight">
-            SkillFeed
+        <div className="mb-8">
+          <span className="font-mono text-sm font-semibold text-white tracking-tight">
+            skillfeed<span className="text-violet-400">_</span>
           </span>
         </div>
 
         {sent ? (
-          <div className="space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-[#00FF88]/10 flex items-center justify-center">
-              <CheckCircle2 className="w-6 h-6 text-[#00FF88]" />
-            </div>
-            <h1 className="text-2xl font-semibold text-white">Check your email</h1>
-            <p className="text-[#737373] leading-relaxed">
-              We sent a magic link to <strong className="text-[#A3A3A3]">{email}</strong>.
-              <br />
+          <div className="space-y-4 reveal">
+            <CheckCircle2 className="w-7 h-7 text-emerald-400/80" />
+            <h1 className="text-xl font-bold text-white tracking-tight">Check your email</h1>
+            <p className="text-sm text-white/35 leading-relaxed">
+              We sent a magic link to <span className="font-mono text-violet-400/80">{email}</span>.
               Click it to sign in.
             </p>
           </div>
         ) : (
           <div className="space-y-6">
             <div className="space-y-2">
-              <h1 className="text-3xl font-semibold text-white tracking-tight">Welcome back</h1>
-              <p className="text-[#737373]">
-                Sign in to your personalized learning journey.
+              <h1 className="text-2xl font-bold text-white tracking-tight">Sign in</h1>
+              <p className="text-[13px] text-white/35">
+                Enter your email to continue.
               </p>
             </div>
-            <form onSubmit={handleLogin} className="space-y-5">
+            <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm text-[#A3A3A3]">
-                  Email address
+                <Label htmlFor="email" className="text-[13px] text-white/40">
+                  Email
                 </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#525252]" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="pl-10 h-12 rounded-xl border-[#262626] focus:border-[#00FF88]/50 bg-[#141414] text-white placeholder:text-[#525252]"
-                  />
-                </div>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  className="h-11 rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 font-mono text-sm focus:ring-1 focus:ring-violet-500/20"
+                />
               </div>
               {error && (
-                <p className="text-sm text-red-400">{error}</p>
+                <p className="text-sm text-red-400 font-mono">{error}</p>
               )}
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 rounded-xl bg-[#00FF88] text-[#0A0A0A] hover:bg-[#00FF88]/90 cursor-pointer text-sm font-semibold shadow-[0_0_20px_rgba(0,255,136,0.15)] hover:shadow-[0_0_30px_rgba(0,255,136,0.25)] transition-all"
+                className="w-full h-11 rounded-lg bg-violet-500 text-white hover:bg-violet-400 cursor-pointer text-sm font-medium transition-all duration-200 shadow-[0_0_20px_rgba(167,139,250,0.2)]"
               >
                 {loading ? "Sending..." : "Continue with Email"}
               </Button>
             </form>
-            <p className="text-xs text-[#525252] text-center">
-              We&apos;ll send you a magic link. No password needed.
+            <p className="font-mono text-[11px] text-white/15 text-center">
+              magic link &middot; no password needed
             </p>
           </div>
         )}
-      </div>
-
-      {/* Right side decorative */}
-      <div className="hidden lg:flex flex-1 items-center justify-center relative border-l border-[#262626]">
-        {/* Glow effects */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#00FF88]/8 blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-[#A78BFA]/8 blur-[100px] pointer-events-none" />
-
-        {/* Grid pattern */}
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-
-        <div className="relative text-center space-y-4 px-12">
-          <p className="text-4xl font-bold text-white/80 leading-tight tracking-tight">
-            Ditch the duplicates.
-            <br />
-            <span className="text-[#00FF88]/70 neon-glow">Read what matters.</span>
-          </p>
-          <p className="text-sm text-[#525252] max-w-sm mx-auto">
-            One personalized developer newsletter, curated by AI from 500+ sources.
-          </p>
-        </div>
       </div>
     </div>
   );

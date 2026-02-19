@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
-import { Mail, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 interface NewsletterCardProps {
   id: string;
@@ -20,34 +19,24 @@ export function NewsletterCard({
   const date = new Date(createdAt).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
-    year: "numeric",
   });
 
-  const statusColor =
-    deliveryStatus === "sent" || deliveryStatus === "delivered"
-      ? "bg-[#00FF88]/10 text-[#00FF88] border-[#00FF88]/20"
-      : deliveryStatus === "failed"
-        ? "bg-red-500/10 text-red-400 border-red-500/20"
-        : "bg-[#F59E0B]/10 text-[#F59E0B] border-[#F59E0B]/20";
+  const isOk = deliveryStatus === "sent" || deliveryStatus === "delivered";
 
   return (
     <Link href={`/newsletters/${id}`}>
-      <div className="group bg-[#141414] rounded-xl border border-[#262626] hover:border-[#00FF88]/20 transition-all cursor-pointer" style={{ boxShadow: 'inset 0 1px 0 0 rgba(255,255,255,0.03)' }}>
-        <div className="p-4 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-[#1A1A1A] border border-[#262626] flex items-center justify-center shrink-0 group-hover:border-[#00FF88]/20 transition-colors">
-            <Mail className="w-4.5 h-4.5 text-[#00FF88]" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate group-hover:text-[#00FF88] transition-colors">{subject}</p>
-            <p className="text-xs text-[#525252] mt-0.5">
-              {date} &middot; {articleCount} article{articleCount !== 1 ? "s" : ""}
-            </p>
-          </div>
-          <Badge variant="secondary" className={`${statusColor} border rounded-lg text-xs shrink-0 font-medium`}>
-            {deliveryStatus}
-          </Badge>
-          <ChevronRight className="w-4 h-4 text-[#333] group-hover:text-[#00FF88] transition-colors shrink-0" />
+      <div className="group flex items-center gap-4 px-4 py-3.5 rounded-xl border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.02] transition-all duration-200 cursor-pointer">
+        <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isOk ? "bg-emerald-400/60" : deliveryStatus === "failed" ? "bg-red-400/60" : "bg-amber-400/60"}`} />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-white/65 truncate group-hover:text-white/90 transition-colors">{subject}</p>
         </div>
+        <span className="font-mono text-[11px] text-white/15 shrink-0">
+          {articleCount} articles
+        </span>
+        <span className="font-mono text-[11px] text-white/10 shrink-0 w-12 text-right">
+          {date}
+        </span>
+        <ChevronRight className="w-3.5 h-3.5 text-white/10 group-hover:text-white/30 transition-colors shrink-0" />
       </div>
     </Link>
   );

@@ -1,58 +1,58 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { RotatingText } from "./rotating-text";
+import { DistillationVisual } from "./distillation-visual";
 
 export function Hero() {
   return (
-    <section className="relative flex items-center justify-center overflow-hidden pt-14">
-      {/* Ambient glow */}
+    <section className="relative flex flex-col items-center pt-14 overflow-hidden">
+      {/* Ambient gradient background */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[20%] left-[30%] w-[500px] h-[500px] rounded-full bg-[#00FF88]/[0.04] blur-[150px]" />
-        <div className="absolute bottom-[20%] right-[25%] w-[400px] h-[400px] rounded-full bg-[#A78BFA]/[0.03] blur-[120px]" />
+        <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[500px] h-[350px] rounded-full bg-violet-500/[0.05] blur-[120px] animate-subtle-glow" />
       </div>
 
-      {/* Dot grid */}
-      <div
-        className="absolute inset-0 opacity-[0.04]"
-        style={{
-          backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-        }}
-      />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-3xl mx-auto text-center px-6 pt-20 pb-12 space-y-7">
-        <div className="animate-fade-in-up">
-          <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-medium text-[#00FF88]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#00FF88] animate-pulse" />
-            AI-powered, curated for developers
+      <div className="relative z-10 max-w-3xl mx-auto text-center px-6 pt-32 md:pt-40 pb-12 md:pb-16">
+        {/* Badge */}
+        <div className="reveal mb-6">
+          <span className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-md bg-white/[0.03] border border-white/[0.06] font-mono text-[11px] text-violet-400 tracking-wide">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            AI-powered career growth
           </span>
         </div>
 
-        <h1 className="animate-fade-in-up-delay-1 text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-[1.08] tracking-tight">
-          Stop reading 500
+        {/* Headline */}
+        <h1 className="reveal-delay-1 text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[4rem] font-bold text-white leading-[1.15] tracking-[-0.03em] mb-5">
+          Read what actually
           <br />
-          duplicate articles.
-          <br />
-          <span className="text-[#00FF88]">Read the one that matters.</span>
+          <span className="text-white/30">gets you from </span>
+          <RotatingText />
         </h1>
 
-        <p className="animate-fade-in-up-delay-2 text-base md:text-lg text-white/40 max-w-lg mx-auto leading-relaxed">
-          One personalized daily brief from 500+ newsletters,
-          matched to your skills and career goals.
+        {/* Subtext — tighter to headline than CTA */}
+        <p className="reveal-delay-2 text-[15px] text-white/35 max-w-lg mx-auto leading-relaxed font-mono mb-8">
+          Tell us where you are and where you want to be.
+          We&apos;ll curate a daily brief from 500+ newsletters that
+          bridges the gap — matched to your exact career path.
         </p>
 
-        <div className="animate-fade-in-up-delay-3">
+        {/* CTA */}
+        <div className="reveal-delay-3 flex items-center justify-center">
           <Link href="/login">
             <Button
               size="lg"
-              className="rounded-full bg-[#00FF88] text-[#0C0C0C] hover:bg-[#00FF88]/90 px-7 py-5 text-sm font-semibold cursor-pointer shadow-[0_0_30px_rgba(0,255,136,0.15)] hover:shadow-[0_0_50px_rgba(0,255,136,0.25)] transition-all duration-300 hover:scale-[1.02]"
+              className="rounded-md bg-violet-500 text-white hover:bg-violet-400 px-7 h-11 text-sm font-medium cursor-pointer transition-all duration-200"
             >
-              Get Started Free
+              Start for free
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
         </div>
+      </div>
+
+      {/* Distillation visual */}
+      <div className="reveal-delay-4 relative z-10 w-full px-6 pb-20 md:pb-28">
+        <DistillationVisual />
       </div>
     </section>
   );
