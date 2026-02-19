@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="public/logo-light.svg" alt="SkillFeed" width="280" />
+  <code><b>skillfeed_</b></code>
   <br />
   <br />
   <p align="center">
-    Stop reading 500 duplicate articles. Read the one that matters.
+    Stop reading duplicate articles. Get the one brief that matters.
     <br />
     <br />
     <a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16-black?logo=next.js" alt="Next.js" /></a>
@@ -28,25 +28,25 @@
 
 ## About
 
-SkillFeed is an AI-powered newsletter aggregator that delivers **one personalized daily brief** to developers. It ingests content from 500+ newsletters, deduplicates articles using Claude AI, and matches them to each user's skills, role, and career goals.
+SkillFeed is an AI-powered newsletter aggregator that delivers **one personalized daily brief** to developers. It ingests content from 50+ sources (65 RSS feeds and 35 email newsletters), deduplicates articles using Claude AI, and matches them to each user's skills, role, and career goals.
 
 ### Key Features
 
-- **AI-Powered Curation** &mdash; Claude categorizes articles by role, level, and keywords, then composes personalized newsletters with "why it matters" context
-- **Smart Matching** &mdash; PostgreSQL RPC function matches articles using role overlap, level compatibility, and keyword intersection
-- **Multi-Source Ingestion** &mdash; Pulls from RSS feeds and email newsletters via AgentMail webhooks
-- **Engagement Tracking** &mdash; Open rates, click tracking, and per-article feedback (helpful / not helpful)
-- **One-Click Unsubscribe** &mdash; JWT-based unsubscribe with `List-Unsubscribe` header support
+- **AI-Powered Curation** - Claude categorizes articles by role, level, and keywords, then composes personalized newsletters with "why it matters" context
+- **Smart Matching** - PostgreSQL RPC function matches articles using role overlap, level compatibility, and keyword intersection
+- **Multi-Source Ingestion** - Pulls from RSS feeds and email newsletters via AgentMail webhooks
+- **Engagement Tracking** - Open rates, click tracking, and per-article feedback (helpful / not helpful)
+- **One-Click Unsubscribe** - JWT-based unsubscribe with `List-Unsubscribe` header support
 
 ### Built With
 
-- [Next.js 16](https://nextjs.org) &mdash; App Router, React 19, Server Components
-- [Supabase](https://supabase.com) &mdash; PostgreSQL, Auth, Row Level Security
-- [Claude API](https://docs.anthropic.com) &mdash; Article categorization, profile parsing, newsletter composition
-- [Resend](https://resend.com) + [React Email](https://react.email) &mdash; Transactional email delivery
-- [AgentMail](https://agentmail.to) &mdash; Email ingestion with Svix webhook verification
-- [Tailwind CSS v4](https://tailwindcss.com) + [ShadCN UI](https://ui.shadcn.com) &mdash; Component library
-- [Bun](https://bun.sh) &mdash; Runtime and package manager
+- [Next.js 16](https://nextjs.org) - App Router, React 19, Server Components
+- [Supabase](https://supabase.com) - PostgreSQL, Auth, Row Level Security
+- [Claude API](https://docs.anthropic.com) - Article categorization, profile parsing, newsletter composition
+- [Resend](https://resend.com) + [React Email](https://react.email) - Transactional email delivery
+- [AgentMail](https://agentmail.to) - Email ingestion with Svix webhook verification
+- [Tailwind CSS v4](https://tailwindcss.com) + [ShadCN UI](https://ui.shadcn.com) - Component library
+- [Bun](https://bun.sh) - Runtime and package manager
 
 <br />
 
@@ -58,11 +58,11 @@ SkillFeed is an AI-powered newsletter aggregator that delivers **one personalize
 
 ### Data Flow
 
-1. **Ingest** &mdash; Newsletter emails arrive via AgentMail webhooks (Svix-verified) or RSS script. Articles enter an async queue with exponential backoff retry.
-2. **Categorize** &mdash; Claude AI extracts title, summary, level, roles, keywords, and URL from each article.
-3. **Match** &mdash; The `match_articles_for_user()` PostgreSQL function finds the top 15 unread articles from the last 7 days matching each user's profile.
-4. **Compose** &mdash; Claude generates a personalized newsletter: featured articles with "why it matters", a learning roadmap, and quick reads.
-5. **Deliver** &mdash; Resend sends the email with HMAC-signed tracking pixels, click tracking, and feedback URLs.
+1. **Ingest** - 65 RSS feeds and email newsletters arrive via AgentMail webhooks (Svix-verified). Articles enter an async queue with exponential backoff retry.
+2. **Categorize** - Claude AI extracts title, summary, level, roles, keywords, and URL from each article.
+3. **Match** - The `match_articles_for_user()` PostgreSQL function finds the top 15 unread articles from the last 7 days matching each user's profile.
+4. **Compose** - Claude generates a personalized newsletter: featured articles with "why it matters" context and a learning roadmap.
+5. **Deliver** - Resend sends the email with HMAC-signed tracking pixels, click tracking, and feedback URLs.
 
 <br />
 
@@ -109,7 +109,7 @@ src/
 └── middleware.ts                     # Route protection
 
 supabase/migrations/                  # 9 sequential SQL migrations
-scripts/                              # setup-agentmail, seed-data, ingest-rss
+scripts/                              # setup-agentmail, seed-data, ingest-rss, newsletter-subscribe-list
 ```
 
 <br />
@@ -192,8 +192,11 @@ bun run dev
 # Seed test articles (optional)
 bun run scripts/seed-test-data.ts
 
-# Ingest from RSS feeds
+# Ingest from RSS feeds (65 sources)
 bun run scripts/ingest-rss.ts
+
+# View email newsletter subscribe list (35 sources)
+bun run scripts/newsletter-subscribe-list.ts
 
 # Set up AgentMail inbox (optional)
 bun run scripts/setup-agentmail.ts
@@ -245,7 +248,7 @@ curl -X POST http://localhost:3000/api/newsletters/generate \
 1. Push to GitHub
 2. Import project in [Vercel](https://vercel.com)
 3. Add all environment variables from `.env.example`
-4. Deploy &mdash; the cron job runs daily at 7 AM UTC via `vercel.json`
+4. Deploy - the cron job runs daily at 7 AM UTC via `vercel.json`
 
 ### Environment Variables
 
