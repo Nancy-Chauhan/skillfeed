@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 export function CTA() {
   return (
-    <section className="py-24 md:py-32 px-6 border-t border-white/[0.04]">
+    <section className="py-16 md:py-32 px-6 border-t border-white/[0.04]">
       <div className="max-w-2xl mx-auto">
         <div className="relative rounded-xl border border-white/[0.06] bg-white/[0.02] overflow-hidden">
           {/* Terminal header */}
@@ -15,7 +15,7 @@ export function CTA() {
             <span className="ml-2 font-mono text-[11px] text-white/15">get-started</span>
           </div>
 
-          <div className="p-6 sm:p-10 md:p-16 text-center space-y-5">
+          <div className="p-5 sm:p-8 md:p-16 text-center space-y-5">
             <h2 className="text-2xl md:text-[2.25rem] font-bold text-white tracking-[-0.02em] leading-tight">
               Where do you want to be
               <br />
@@ -23,7 +23,7 @@ export function CTA() {
             </h2>
             <p className="text-sm text-white/25 leading-relaxed max-w-md mx-auto font-mono">
               Define your career goal. We&apos;ll start curating the
-              exact content to get you there — first brief arrives
+              exact content to get you there. Your first brief arrives
               tomorrow morning.
             </p>
             <div className="flex items-center justify-center pt-3">

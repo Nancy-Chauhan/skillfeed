@@ -4,7 +4,7 @@ const steps = [
     command: "$ skillfeed init --profile",
     title: "Define your career arc",
     description:
-      "Tell us your current role, target role, skill level, and what you want to learn. Paste your resume or just describe your goals — AI handles the rest.",
+      "Tell us your current role, target role, skill level, and what you want to learn. Paste your resume or just describe your goals. AI handles the rest.",
     accent: "text-violet-400",
     output: "→ backend dev → ML engineer",
   },
@@ -13,7 +13,7 @@ const steps = [
     command: "$ skillfeed scan --match",
     title: "AI bridges the gap",
     description:
-      "We scan 500+ newsletters, deduplicate, and match articles to your specific skill gaps. Each one is scored by how relevant it is to your career transition.",
+      "We scan 50+ newsletters, deduplicate, and match articles to your specific skill gaps. Each one is scored by how relevant it is to your career transition.",
     accent: "text-emerald-400",
     output: "→ 53 filtered, 3 matched to your path",
   },
@@ -24,13 +24,13 @@ const steps = [
     description:
       "One email every morning with curated articles, personalized \"why this matters\" context, and a roadmap of concrete next steps for your journey.",
     accent: "text-sky-400",
-    output: "→ brief sent ✓ — roadmap included",
+    output: "→ brief sent ✓ + roadmap included",
   },
 ];
 
 export function HowItWorks() {
   return (
-    <section id="how-it-works" className="py-32 md:py-44 px-6 border-t border-white/[0.06]">
+    <section id="how-it-works" className="py-16 md:py-44 px-6 border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
         <div className="text-center max-w-xl mx-auto mb-20 space-y-5">
           <p className="font-mono text-[11px] text-emerald-400/60 uppercase tracking-[0.15em]">// how-it-works</p>

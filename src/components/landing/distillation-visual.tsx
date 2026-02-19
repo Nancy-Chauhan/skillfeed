@@ -81,7 +81,7 @@ export function DistillationVisual() {
             className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in"
             style={{ animationDelay: "1.2s", animationFillMode: "forwards" }}
           >
-            <span className="font-mono text-[10px] text-white/10">+490 more...</span>
+            <span className="font-mono text-[10px] text-white/10">+40 more...</span>
           </div>
         </div>
 
@@ -156,7 +156,7 @@ export function DistillationVisual() {
 
             {/* Subject */}
             <div className="px-4 pt-3 pb-1 flex items-start justify-between">
-              <h3 className="text-[13px] text-white/70 font-medium">Your Daily Brief — Feb 18</h3>
+              <h3 className="text-[13px] text-white/70 font-medium">Your Daily Brief, Feb 18</h3>
               <Star className="w-4 h-4 text-white/10 shrink-0 mt-0.5" />
             </div>
 
@@ -202,7 +202,7 @@ export function DistillationVisual() {
                   <span className="text-[10px] text-white/15 sm:ml-auto">intermediate → senior</span>
                 </div>
                 <p className="text-[11px] text-white/25 leading-relaxed mt-2.5">
-                  Good morning! We scanned <span className="text-white/40">16 sources</span>, filtered <span className="text-white/40">53 duplicates</span>, and found <span className="text-violet-400/60">3 articles</span> that match your transition to ML Engineer.
+                  Good morning! We scanned <span className="text-white/40">50+ sources</span>, filtered <span className="text-white/40">53 duplicates</span>, and found <span className="text-violet-400/60">3 articles</span> that match your transition to ML Engineer.
                 </p>
               </div>
 
@@ -213,7 +213,7 @@ export function DistillationVisual() {
                   match={96}
                   source="The Batch"
                   title="Fine-Tuning LLMs on Custom Datasets"
-                  reason="Key skill gap for your Backend → ML transition. You know APIs — this teaches you the model layer."
+                  reason="Key skill gap for your Backend → ML transition. You know APIs. This teaches you the model layer."
                   delay={0.2}
                   revealed={emailRevealed}
                 />
@@ -222,7 +222,7 @@ export function DistillationVisual() {
                   match={92}
                   source="TLDR AI"
                   title="RAG vs Fine-Tuning: When to Use What"
-                  reason="You listed 'production ML systems' as a goal — this is the decision framework senior ML engineers use daily."
+                  reason="You listed 'production ML systems' as a goal. This is the decision framework senior ML engineers use daily."
                   delay={0.5}
                   revealed={emailRevealed}
                 />
@@ -231,7 +231,6 @@ export function DistillationVisual() {
                   match={89}
                   source="Alpha Signal"
                   title="Building AI Agents with Tool Use"
-                  reason="Bridges your backend experience with ML — agent architectures use the API patterns you already know."
                   delay={0.8}
                   revealed={emailRevealed}
                   isLast
@@ -239,26 +238,13 @@ export function DistillationVisual() {
               </div>
 
               {/* Newsletter footer */}
-              <div className="px-3 sm:px-5 py-3 border-t border-white/[0.06] text-center space-y-1.5">
-                <p className="text-[10px] text-white/15">
-                  Curated for <span className="text-white/25">Backend Dev</span> <span className="text-violet-400/40">→</span> <span className="text-violet-400/50">ML Engineer</span>
-                </p>
-                <p className="text-[9px] text-white/8">
-                  <span className="underline">Unsubscribe</span> &middot; <span className="underline">Update preferences</span> &middot; <span className="underline">View in browser</span>
-                </p>
-                <p className="text-[8px] text-white/5 pt-1">
-                  SkillFeed Inc. &middot; San Francisco, CA
+              <div className="px-3 sm:px-5 py-3 border-t border-white/[0.06] text-center">
+                <p className="text-[9px] text-white/10">
+                  Curated for <span className="text-white/20">Backend Dev</span> <span className="text-violet-400/30">→</span> <span className="text-violet-400/40">ML Engineer</span> &middot; <span className="underline">Unsubscribe</span> &middot; <span className="underline">Preferences</span>
                 </p>
               </div>
             </div>
 
-            {/* Gmail reply bar */}
-            <div className="px-4 py-2.5 border-t border-white/[0.06] bg-white/[0.02] flex items-center gap-3">
-              <button className="flex-1 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1.5 text-left">
-                <span className="text-[11px] text-white/15">Click here to reply</span>
-              </button>
-              <Reply className="w-4 h-4 text-white/10" />
-            </div>
           </div>
         </div>
       </div>
@@ -280,7 +266,7 @@ function NewsletterArticle({
   match: number;
   source: string;
   title: string;
-  reason: string;
+  reason?: string;
   delay: number;
   revealed: boolean;
   isLast?: boolean;
@@ -307,9 +293,11 @@ function NewsletterArticle({
             <span className="text-[9px] text-white/20">{source}</span>
             <span className="text-[9px] text-emerald-400/50 bg-emerald-400/8 px-1.5 py-px rounded-sm">{match}% match</span>
           </div>
-          <p className="text-[10px] text-white/20 leading-relaxed italic">
-            &quot;{reason}&quot;
-          </p>
+          {reason && (
+            <p className="text-[10px] text-white/20 leading-relaxed italic">
+              &quot;{reason}&quot;
+            </p>
+          )}
           <p className="text-[10px] text-violet-400/40 hover:text-violet-400/60 cursor-default">
             Read article →
           </p>

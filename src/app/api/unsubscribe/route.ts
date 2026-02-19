@@ -45,7 +45,7 @@ function renderPage(message: string, success: boolean): string {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SkillFeed — Unsubscribe</title>
+  <title>SkillFeed | Unsubscribe</title>
   <style>
     body {
       font-family: Inter, -apple-system, sans-serif;

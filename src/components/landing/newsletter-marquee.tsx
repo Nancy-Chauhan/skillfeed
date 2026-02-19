@@ -22,7 +22,7 @@ export function NewsletterMarquee() {
     <section className="py-16 md:py-20 overflow-hidden border-t border-white/[0.04]">
       <div className="max-w-5xl mx-auto px-6 mb-8">
         <p className="text-center font-mono text-[11px] text-white/15 tracking-[0.15em] uppercase">
-          // scanning {newsletters.length}+ sources
+          // scanning 50+ sources
         </p>
       </div>
       <div className="relative">

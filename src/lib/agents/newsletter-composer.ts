@@ -17,17 +17,8 @@ const NewsletterSchema = z.object({
       })
     )
     .min(1)
-    .max(5),
+    .max(6),
   roadmap_items: z.array(z.string()).max(3),
-  quick_reads: z
-    .array(
-      z.object({
-        title: z.string(),
-        url: z.string().nullable().optional().default(null),
-        one_liner: z.string().optional().default(""),
-      })
-    )
-    .max(3),
   closing: z.string(),
 });
 
@@ -43,13 +34,12 @@ Your tone should be:
 - Growth-oriented
 
 Produce:
-- subject: A short, warm subject line (e.g., "Your AI Learning Brief — Feb 15")
+- subject: A short, warm subject line (e.g., "Your AI Learning Brief, Feb 15")
 - greeting: A personalized greeting referencing their specific career trajectory
-- featured_articles: 3-5 articles with:
+- featured_articles: 4-6 articles with:
   - title, summary, url, level (from the provided articles)
   - why_it_matters: 1-2 sentences explaining why THIS article matters for THIS user's specific goals. Reference their current skills and target role.
 - roadmap_items: 2-3 actionable next steps tailored to their learning trajectory. Be specific, not generic.
-- quick_reads: 2-3 articles with just a one-liner description
 - closing: A warm, encouraging closing that reinforces their growth journey
 
 Rules:

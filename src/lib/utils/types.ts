@@ -114,10 +114,5 @@ export interface ComposedNewsletter {
     level: Level;
   }[];
   roadmap_items: string[];
-  quick_reads: {
-    title: string;
-    url: string | null;
-    one_liner: string;
-  }[];
   closing: string;
 }

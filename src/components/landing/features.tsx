@@ -16,7 +16,7 @@ const features = [
     icon: Lightbulb,
     title: "brief.whyThisMatters()",
     description:
-      "Every article comes with a personalized explanation — why it matters for YOUR specific career trajectory, not generic fluff.",
+      "Every article comes with a personalized explanation: why it matters for YOUR specific career trajectory, not generic fluff.",
     accent: "text-emerald-400",
     accentBg: "bg-emerald-400/10",
     tag: "personalized",
@@ -26,7 +26,7 @@ const features = [
     icon: Route,
     title: "career.nextSteps()",
     description:
-      "Each brief includes actionable roadmap items. Concrete things to learn, build, or explore — tied to your goals.",
+      "Each brief includes actionable roadmap items. Concrete things to learn, build, or explore, tied to your goals.",
     accent: "text-sky-400",
     accentBg: "bg-sky-400/10",
     tag: "actionable",
@@ -34,18 +34,18 @@ const features = [
   {
     key: "sources",
     icon: Layers,
-    title: "feeds.distill(500)",
+    title: "feeds.distill(50)",
     description:
-      "We scan 500+ AI, dev, and engineering newsletters daily. You get 3-5 articles — zero duplicates, pure signal.",
+      "We scan 50+ AI, dev, and engineering newsletters daily. You get 3-5 articles. Zero duplicates, pure signal.",
     accent: "text-amber-400",
     accentBg: "bg-amber-400/10",
-    tag: "500+ sources",
+    tag: "50+ sources",
   },
 ];
 
 export function Features() {
   return (
-    <section id="features" className="py-24 md:py-32 px-6">
+    <section id="features" className="py-16 md:py-32 px-6">
       <div className="max-w-5xl mx-auto">
         {/* Section header */}
         <div className="text-center max-w-xl mx-auto mb-14 md:mb-16 space-y-4">
@@ -56,7 +56,7 @@ export function Features() {
             <span className="text-white/30">drives every recommendation.</span>
           </h2>
           <p className="text-sm text-white/25 leading-relaxed max-w-md mx-auto font-mono">
-            Not just what&apos;s trending — what&apos;s relevant to where you&apos;re headed.
+            Not just what&apos;s trending. What&apos;s relevant to where you&apos;re headed.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export function Features() {
             <div
               key={feature.key}
               className={`group rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 overflow-hidden ${
-                i === 0 || i === 3 ? "md:col-span-2 p-7" : "md:col-span-1 p-6"
+                i === 0 || i === 3 ? "md:col-span-2 p-5 md:p-7" : "md:col-span-1 p-5 md:p-6"
               }`}
             >
               <div className="flex items-start gap-4">

@@ -92,6 +92,12 @@ export async function POST(request: Request) {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL!;
   const unsubscribeUrl = `${appUrl}/api/unsubscribe?token=${unsubscribeToken}`;
 
+  // Collect only the article IDs the composer actually used
+  const usedTitles = new Set(
+    newsletter.featured_articles.map((a) => a.title)
+  );
+  const usedArticles = matchedArticles.filter((a) => usedTitles.has(a.title));
+
   // Insert newsletter record first (pending) to get the ID for tracking URLs
   const { data: newsletterRecord, error: insertError } = await supabase
     .from("newsletters_sent")
@@ -101,8 +107,8 @@ export async function POST(request: Request) {
       html_content: "", // placeholder, updated after render
       summary_text: newsletter.greeting,
       roadmap_items: newsletter.roadmap_items.map((text) => ({ text })),
-      article_ids: matchedArticles.map((a) => a.id),
-      match_scores: matchedArticles.map((a) => a.relevance_score),
+      article_ids: usedArticles.map((a) => a.id),
+      match_scores: usedArticles.map((a) => a.relevance_score),
       delivery_status: "pending",
       attempt_count: 0,
     })
@@ -136,13 +142,6 @@ export async function POST(request: Request) {
     }
   }
 
-  // Wrap quick read URLs with click tracking
-  for (const read of newsletter.quick_reads) {
-    const matched = matchedArticles.find((a) => a.title === read.title);
-    if (matched && read.url) {
-      read.url = buildClickTrackingUrl(appUrl, newsletterId, matched.id, typedUser.id, read.url);
-    }
-  }
 
   // Render email HTML with tracking
   const htmlContent = await render(
