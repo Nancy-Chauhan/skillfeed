@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -8,34 +8,53 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
+const COOLDOWN_SECONDS = 60;
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cooldown, setCooldown] = useState(0);
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [cooldown]);
 
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
+  const handleLogin = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (cooldown > 0) return;
+      setLoading(true);
+      setError(null);
 
-    if (error) {
-      setError(error.message);
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        if (error.message.toLowerCase().includes("rate limit")) {
+          setError("Please wait a moment before requesting another link.");
+          setCooldown(COOLDOWN_SECONDS);
+        } else {
+          setError(error.message);
+        }
+        setLoading(false);
+        return;
+      }
+
+      setSent(true);
+      setCooldown(COOLDOWN_SECONDS);
       setLoading(false);
-      return;
-    }
-
-    setSent(true);
-    setLoading(false);
-  }
+    },
+    [email, cooldown]
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#09090B] px-6 relative overflow-hidden">
@@ -64,6 +83,18 @@ export default function LoginPage() {
             <p className="text-sm text-white/35 leading-relaxed">
               We sent a magic link to <span className="font-mono text-violet-400/80">{email}</span>.
               Click it to sign in.
+            </p>
+            <p className="text-xs text-white/20 font-mono pt-2">
+              {cooldown > 0 ? (
+                <>Resend available in {cooldown}s</>
+              ) : (
+                <button
+                  onClick={() => setSent(false)}
+                  className="text-violet-400/60 hover:text-violet-400 transition-colors cursor-pointer underline underline-offset-2"
+                >
+                  Didn&apos;t get it? Send again
+                </button>
+              )}
             </p>
           </div>
         ) : (
@@ -94,10 +125,14 @@ export default function LoginPage() {
               )}
               <Button
                 type="submit"
-                disabled={loading}
-                className="w-full h-11 rounded-lg bg-violet-500 text-white hover:bg-violet-400 cursor-pointer text-sm font-medium transition-all duration-200 shadow-[0_0_20px_rgba(167,139,250,0.2)]"
+                disabled={loading || cooldown > 0}
+                className="w-full h-11 rounded-lg bg-violet-500 text-white hover:bg-violet-400 cursor-pointer text-sm font-medium transition-all duration-200 shadow-[0_0_20px_rgba(167,139,250,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Sending..." : "Continue with Email"}
+                {loading
+                  ? "Sending..."
+                  : cooldown > 0
+                    ? `Wait ${cooldown}s`
+                    : "Continue with Email"}
               </Button>
             </form>
             <p className="font-mono text-[11px] text-white/15 text-center">

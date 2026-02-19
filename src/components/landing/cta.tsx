@@ -1,4 +1,6 @@
-import { WaitlistForm } from "./waitlist-form";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
 
 export function CTA() {
   return (
@@ -25,7 +27,15 @@ export function CTA() {
               tomorrow morning.
             </p>
             <div className="flex items-center justify-center pt-3">
-              <WaitlistForm />
+              <Link href="/login">
+                <Button
+                  size="lg"
+                  className="rounded-md bg-violet-500 text-white hover:bg-violet-400 px-7 h-11 text-sm font-medium cursor-pointer transition-all duration-200"
+                >
+                  Set my career goal
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </Link>
             </div>
             <p className="font-mono text-[11px] text-white/10 pt-1">
               free forever &middot; takes 3 minutes &middot; unsubscribe anytime

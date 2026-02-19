@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireAuth } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 import { ProfileSummary } from "@/components/dashboard/profile-summary";
@@ -9,6 +10,19 @@ import type { User, NewsletterSent } from "@/lib/utils/types";
 
 export default async function DashboardPage() {
   const authUser = await requireAuth();
+
+  // Waitlist gate: only approved users can access dashboard
+  const admin = createAdminClient();
+  const { data: waitlistEntry } = await admin
+    .from("waitlist")
+    .select("status")
+    .eq("email", authUser.email)
+    .single();
+
+  if (!waitlistEntry || waitlistEntry.status !== "approved") {
+    redirect("/waitlist");
+  }
+
   const supabase = await createClient();
 
   const { data: profile } = await supabase
