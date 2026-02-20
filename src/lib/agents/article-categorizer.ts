@@ -24,7 +24,7 @@ For each article, provide:
 - title: A clear, concise title
 - summary: 2-3 sentence summary of the key takeaway
 - level: One of "beginner", "intermediate", "senior" based on assumed reader expertise
-- roles: Array of relevant roles from: "backend", "devops", "security", "solutions_engineer", "ai_engineer", "general". Pick all that apply.
+- roles: Array of relevant roles from: "frontend", "backend", "fullstack", "mobile", "data_engineer", "devops", "security", "product_manager", "engineering_manager", "solutions_engineer", "ai_engineer", "ml_engineer", "data_scientist", "mlops", "ai_product_manager". Pick all that apply.
 - keywords: Array of 3-8 specific technical keywords (technologies, concepts, tools)
 - url: The original article URL if present, otherwise null
 

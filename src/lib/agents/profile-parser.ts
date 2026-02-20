@@ -18,7 +18,7 @@ const SYSTEM_PROMPT = `You are a career profile analyzer for SkillFeed, a person
 Given a user's resume and/or career goals description, extract structured profile data.
 
 Provide:
-- current_roles: Array of their current role areas from: "backend", "devops", "security", "solutions_engineer", "ai_engineer", "general"
+- current_roles: Array of their current role areas from: "frontend", "backend", "fullstack", "mobile", "data_engineer", "devops", "security", "product_manager", "engineering_manager", "solutions_engineer", "ai_engineer", "ml_engineer", "data_scientist", "mlops", "ai_product_manager"
 - target_roles: Array of roles they want to grow into (same enum)
 - current_level: One of "beginner", "intermediate", "senior" — their current expertise level
 - target_level: One of "beginner", "intermediate", "senior" — where they want to be

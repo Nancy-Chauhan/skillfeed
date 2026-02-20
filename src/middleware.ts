@@ -48,6 +48,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // If logged in user hits login page, redirect to dashboard
+  // (dashboard has safety nets: redirects to /waitlist or /onboarding as needed)
   if (request.nextUrl.pathname === "/login" && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/dashboard";

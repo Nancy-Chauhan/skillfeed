@@ -1,49 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Badge } from "@/components/ui/badge";
 import { RoleSelector } from "./role-selector";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
-import { LEVELS, LEVEL_LABELS, ROLE_LABELS, type Role, type Level } from "@/lib/utils/constants";
+import { ArrowLeft, ArrowRight, Loader2, Check } from "lucide-react";
+import { CURRENT_ROLES, TARGET_ROLES, type Role } from "@/lib/utils/constants";
 
 interface FormData {
   name: string;
-  email: string;
-  resume_text: string;
   prompt_text: string;
   current_roles: Role[];
   target_roles: Role[];
-  current_level: Level;
-  target_level: Level;
+}
+
+interface ExistingProfile {
+  id: string;
+  current_roles: Role[];
+  target_roles: Role[];
+  prompt_text: string | null;
 }
 
 interface ProfileFormProps {
-  userEmail: string;
+  defaultName?: string;
+  redirectTo?: string;
+  existingProfile?: ExistingProfile;
 }
 
-export function ProfileForm({ userEmail }: ProfileFormProps) {
+export function ProfileForm({
+  defaultName = "",
+  redirectTo = "/waitlist",
+  existingProfile,
+}: ProfileFormProps) {
   const router = useRouter();
+  const isEdit = !!existingProfile;
   const [step, setStep] = useState(1);
+  const [direction, setDirection] = useState<1 | -1>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: userEmail,
-    resume_text: "",
-    prompt_text: "",
-    current_roles: [],
-    target_roles: [],
-    current_level: "beginner",
-    target_level: "intermediate",
+    name: defaultName,
+    prompt_text: existingProfile?.prompt_text ?? "",
+    current_roles: existingProfile?.current_roles ?? [],
+    target_roles: existingProfile?.target_roles ?? [],
   });
+  const [customCurrentRoles, setCustomCurrentRoles] = useState<string[]>([]);
+  const [customTargetRoles, setCustomTargetRoles] = useState<string[]>([]);
 
-  const totalSteps = 4;
+  const totalSteps = 3;
+
+  useEffect(() => {
+    if (step === 1) {
+      const t = setTimeout(() => nameInputRef.current?.focus(), 120);
+      return () => clearTimeout(t);
+    }
+  }, [step]);
 
   function update<K extends keyof FormData>(key: K, value: FormData[K]) {
     setFormData((prev) => ({ ...prev, [key]: value }));
@@ -52,16 +66,28 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
   function canProceed(): boolean {
     switch (step) {
       case 1:
-        return formData.name.trim().length > 0;
-      case 2:
-        return formData.current_roles.length > 0;
-      case 3:
-        return formData.target_roles.length > 0 && formData.prompt_text.trim().length > 0;
-      case 4:
         return true;
+      case 2:
+        return formData.current_roles.length > 0 || customCurrentRoles.length > 0;
+      case 3:
+        return (formData.target_roles.length > 0 || customTargetRoles.length > 0)
+          && formData.prompt_text.trim().length > 0;
       default:
         return false;
     }
+  }
+
+  function goToStep(target: number) {
+    setDirection(target > step ? 1 : -1);
+    setStep(target);
+  }
+
+  function handleNext() {
+    if (step < totalSteps && canProceed()) goToStep(step + 1);
+  }
+
+  function handleBack() {
+    if (step > 1) goToStep(step - 1);
   }
 
   async function handleSubmit() {
@@ -69,247 +95,165 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
     setError(null);
 
     try {
-      const res = await fetch("/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          resume_text: formData.resume_text || undefined,
-          prompt_text: formData.prompt_text || undefined,
-          current_roles: formData.current_roles,
-          target_roles: formData.target_roles,
-        }),
-      });
+      // Fold custom roles into prompt_text so the AI parser can extract context
+      const parts: string[] = [];
+      if (customCurrentRoles.length > 0) {
+        parts.push(`My current roles also include: ${customCurrentRoles.join(", ")}.`);
+      }
+      if (customTargetRoles.length > 0) {
+        parts.push(`I also want to transition into: ${customTargetRoles.join(", ")}.`);
+      }
+      parts.push(formData.prompt_text);
+      const promptText = parts.join(" ");
+
+      const payload = {
+        name: formData.name.trim() || undefined,
+        prompt_text: promptText,
+        current_roles: formData.current_roles,
+        target_roles: formData.target_roles,
+      };
+
+      const res = isEdit
+        ? await fetch(`/api/users/${existingProfile.id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          })
+        : await fetch("/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error ?? "Failed to create profile");
+        throw new Error(data.error ?? "Something went wrong");
       }
 
-      router.push("/dashboard");
+      router.push(redirectTo);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setLoading(false);
     }
   }
 
-  const stepTitles = [
-    "Let's get to know you",
-    "Where are you today?",
-    "Where do you want to go?",
-    "Review your profile",
+  const firstName = formData.name.trim().split(/\s+/)[0];
+
+  const steps = [
+    {
+      title: "What should we call you?",
+      subtitle: "Optional — skip if you'd rather not say.",
+    },
+    {
+      title: firstName ? `Nice to meet you, ${firstName}.` : "What do you do?",
+      subtitle: "Select everything that fits your current work.",
+    },
+    {
+      title: "Now, where do you want to be?",
+      subtitle: "Pick your targets and tell us your goals — our AI handles the rest.",
+    },
   ];
 
+  const animStyle = { "--step-direction": `${direction * 20}px` } as React.CSSProperties;
+
   return (
-    <div className="min-h-screen bg-[#09090B] flex items-center justify-center p-4 pt-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#09090B] flex items-center justify-center p-4 pt-16 sm:pt-20 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[400px] h-[200px] bg-violet-500/[0.04] blur-[100px] pointer-events-none" />
+      <div className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-violet-500/[0.03] blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-2xl relative z-10">
-        <div className="flex items-center justify-center mb-8">
+        {/* Logo */}
+        <div className="flex items-center justify-center mb-6">
           <span className="font-mono text-sm font-semibold text-white tracking-tight">
             skillfeed<span className="text-violet-400">_</span>
           </span>
         </div>
 
-        {/* Progress */}
-        <div className="mb-8 flex items-center justify-center gap-2">
-          {Array.from({ length: totalSteps }, (_, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <div
-                className={`w-8 h-8 rounded-lg flex items-center justify-center font-mono text-xs transition-all duration-300 ${
-                  i + 1 < step
-                    ? "bg-violet-500 text-white"
-                    : i + 1 === step
-                      ? "bg-white text-[#09090B]"
-                      : "bg-white/[0.03] text-white/20 border border-white/[0.06]"
-                }`}
-              >
-                {i + 1 < step ? <Check className="w-3.5 h-3.5" /> : `0${i + 1}`}
-              </div>
-              {i < totalSteps - 1 && (
-                <div className={`hidden sm:block w-12 md:w-20 h-px transition-colors duration-300 ${
-                  i + 1 < step ? "bg-violet-500/40" : "bg-white/[0.04]"
-                }`} />
-              )}
-            </div>
-          ))}
+        {/* Progress bar */}
+        <div className="mb-10 max-w-[200px] mx-auto">
+          <div className="h-[2px] bg-white/[0.06] rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-violet-500 to-violet-400 rounded-full transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              style={{ width: `${(step / totalSteps) * 100}%` }}
+            />
+          </div>
         </div>
 
         {/* Card */}
         <div className="gradient-border rounded-xl overflow-hidden bg-white/[0.02]">
-          <div className="px-8 pt-8 pb-2">
-            <p className="font-mono text-[11px] text-violet-400/60 mb-2">
-              step {String(step).padStart(2, "0")}/{String(totalSteps).padStart(2, "0")}
-            </p>
-            <h1 className="text-xl font-bold text-white tracking-tight">
-              {stepTitles[step - 1]}
+          {/* Header — animated per step */}
+          <div className="px-6 sm:px-8 pt-8 pb-2">
+            <h1
+              key={`title-${step}`}
+              className="text-2xl sm:text-3xl font-bold text-white tracking-tight animate-step-enter"
+              style={animStyle}
+            >
+              {steps[step - 1].title}
             </h1>
+            <p
+              key={`sub-${step}`}
+              className="text-sm text-white/25 mt-2 animate-step-enter"
+              style={{ ...animStyle, animationDelay: "40ms" }}
+            >
+              {steps[step - 1].subtitle}
+            </p>
           </div>
 
-          <div className="px-8 py-6 space-y-6">
+          {/* Content — animated per step */}
+          <div
+            key={`content-${step}`}
+            className="px-6 sm:px-8 py-6 space-y-6 min-h-[220px] animate-step-enter"
+            style={{ ...animStyle, animationDelay: "70ms" }}
+          >
             {step === 1 && (
-              <div className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="name" className="text-[13px] text-white/40">Name</Label>
-                  <Input
-                    id="name"
-                    placeholder="Your name"
-                    value={formData.name}
-                    onChange={(e) => update("name", e.target.value)}
-                    className="h-11 rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 focus:ring-1 focus:ring-violet-500/20"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label className="text-[13px] text-white/40">Email</Label>
-                  <Input
-                    value={formData.email}
-                    disabled
-                    className="h-11 rounded-lg border-white/[0.04] bg-white/[0.02] text-white/25 font-mono text-sm"
-                  />
-                </div>
+              <div className="space-y-3 pt-2">
+                <Input
+                  ref={nameInputRef}
+                  id="name"
+                  placeholder="Your name"
+                  value={formData.name}
+                  onChange={(e) => update("name", e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") handleNext(); }}
+                  className="h-12 rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white text-lg placeholder:text-white/15 focus:ring-1 focus:ring-violet-500/20"
+                />
+                <p className="font-mono text-[11px] text-white/10">
+                  press Enter ↵
+                </p>
               </div>
             )}
 
             {step === 2 && (
-              <div className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="resume" className="text-[13px] text-white/40">
-                    Resume or background <span className="text-white/15">(optional)</span>
-                  </Label>
-                  <Textarea
-                    id="resume"
-                    placeholder="Paste your resume or describe your experience..."
-                    value={formData.resume_text}
-                    onChange={(e) => update("resume_text", e.target.value)}
-                    rows={4}
-                    className="rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 resize-none focus:ring-1 focus:ring-violet-500/20"
-                  />
-                </div>
-                <RoleSelector
-                  selected={formData.current_roles}
-                  onChange={(roles) => update("current_roles", roles)}
-                  label="Current roles"
-                />
-                <div className="space-y-3">
-                  <Label className="text-[13px] text-white/40">Current level</Label>
-                  <RadioGroup
-                    value={formData.current_level}
-                    onValueChange={(v) => update("current_level", v as Level)}
-                    className="flex gap-2"
-                  >
-                    {LEVELS.map((level) => (
-                      <label
-                        key={level}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all duration-200 text-sm ${
-                          formData.current_level === level
-                            ? "border-violet-500/30 bg-violet-500/[0.08] text-white/80"
-                            : "border-white/[0.04] text-white/25 hover:border-white/[0.08]"
-                        }`}
-                      >
-                        <RadioGroupItem value={level} />
-                        <span>{LEVEL_LABELS[level]}</span>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                </div>
-              </div>
+              <RoleSelector
+                roles={CURRENT_ROLES}
+                selected={formData.current_roles}
+                onChange={(roles) => update("current_roles", roles)}
+                customRoles={customCurrentRoles}
+                onCustomRolesChange={setCustomCurrentRoles}
+                label="Your roles"
+              />
             )}
 
             {step === 3 && (
               <div className="space-y-6">
+                <RoleSelector
+                  roles={TARGET_ROLES}
+                  selected={formData.target_roles}
+                  onChange={(roles) => update("target_roles", roles)}
+                  customRoles={customTargetRoles}
+                  onCustomRolesChange={setCustomTargetRoles}
+                  label="Target roles"
+                />
                 <div className="space-y-2">
-                  <Label htmlFor="prompt" className="text-[13px] text-white/40">
-                    Who do you want to become?
-                  </Label>
+                  <p className="text-[13px] text-white/40">Your background & goals</p>
                   <Textarea
                     id="prompt"
-                    placeholder="Describe your career goals, what you want to learn, where you see yourself in 1-2 years..."
+                    placeholder={"e.g. I'm a backend engineer with 3 years of experience in Python and Go. I want to move into ML engineering — specifically building and deploying production ML systems..."}
                     value={formData.prompt_text}
                     onChange={(e) => update("prompt_text", e.target.value)}
                     rows={4}
                     className="rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 resize-none focus:ring-1 focus:ring-violet-500/20"
                   />
                 </div>
-                <RoleSelector
-                  selected={formData.target_roles}
-                  onChange={(roles) => update("target_roles", roles)}
-                  label="Target roles"
-                />
-                <div className="space-y-3">
-                  <Label className="text-[13px] text-white/40">Target level</Label>
-                  <RadioGroup
-                    value={formData.target_level}
-                    onValueChange={(v) => update("target_level", v as Level)}
-                    className="flex gap-2"
-                  >
-                    {LEVELS.map((level) => (
-                      <label
-                        key={level}
-                        className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-all duration-200 text-sm ${
-                          formData.target_level === level
-                            ? "border-violet-500/30 bg-violet-500/[0.08] text-white/80"
-                            : "border-white/[0.04] text-white/25 hover:border-white/[0.08]"
-                        }`}
-                      >
-                        <RadioGroupItem value={level} />
-                        <span>{LEVEL_LABELS[level]}</span>
-                      </label>
-                    ))}
-                  </RadioGroup>
-                </div>
-              </div>
-            )}
-
-            {step === 4 && (
-              <div className="space-y-5">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">name</p>
-                    <p className="text-white/80 text-sm font-medium">{formData.name}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">email</p>
-                    <p className="font-mono text-white/35 text-sm">{formData.email}</p>
-                  </div>
-                </div>
-                <div className="h-px bg-white/[0.04]" />
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">current roles</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {formData.current_roles.map((role) => (
-                        <Badge key={role} variant="secondary" className="font-mono bg-white/[0.04] text-white/45 border border-white/[0.06] rounded-full text-[11px] px-2.5">
-                          {ROLE_LABELS[role]}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">target roles</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {formData.target_roles.map((role) => (
-                        <Badge key={role} variant="secondary" className="font-mono bg-violet-500/[0.08] text-violet-400/70 border border-violet-500/[0.12] rounded-full text-[11px] px-2.5">
-                          {ROLE_LABELS[role]}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                <div className="h-px bg-white/[0.04]" />
-                <div className="space-y-1">
-                  <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">career goals</p>
-                  <p className="text-white/45 text-sm leading-relaxed">{formData.prompt_text}</p>
-                </div>
-                {formData.resume_text && (
-                  <>
-                    <div className="h-px bg-white/[0.04]" />
-                    <div className="space-y-1">
-                      <p className="font-mono text-[11px] text-white/15 uppercase tracking-wider">resume</p>
-                      <p className="text-white/45 text-sm line-clamp-3 leading-relaxed">{formData.resume_text}</p>
-                    </div>
-                  </>
-                )}
               </div>
             )}
 
@@ -320,10 +264,11 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
             )}
           </div>
 
-          <div className="px-8 py-4 border-t border-white/[0.04] flex justify-between">
+          {/* Navigation */}
+          <div className="px-6 sm:px-8 py-4 border-t border-white/[0.04] flex justify-between">
             <Button
               variant="ghost"
-              onClick={() => setStep((s) => s - 1)}
+              onClick={handleBack}
               disabled={step === 1}
               className="text-white/20 hover:text-white/50 hover:bg-white/[0.04] cursor-pointer rounded-lg"
             >
@@ -332,7 +277,7 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
             </Button>
             {step < totalSteps ? (
               <Button
-                onClick={() => setStep((s) => s + 1)}
+                onClick={handleNext}
                 disabled={!canProceed()}
                 className="rounded-lg bg-white text-[#09090B] hover:bg-white/90 cursor-pointer px-6 font-medium transition-colors"
               >
@@ -342,11 +287,20 @@ export function ProfileForm({ userEmail }: ProfileFormProps) {
             ) : (
               <Button
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={loading || !canProceed()}
                 className="rounded-lg bg-violet-500 text-white hover:bg-violet-400 cursor-pointer px-6 font-medium transition-all duration-200 shadow-[0_0_20px_rgba(167,139,250,0.2)]"
               >
-                {loading ? "Creating..." : "Complete Setup"}
-                {!loading && <Check className="w-4 h-4 ml-1.5" />}
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                    {isEdit ? "Saving..." : "Joining..."}
+                  </>
+                ) : (
+                  <>
+                    {isEdit ? "Save Changes" : "Join Waitlist"}
+                    <Check className="w-4 h-4 ml-1.5" />
+                  </>
+                )}
               </Button>
             )}
           </div>

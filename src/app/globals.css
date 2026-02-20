@@ -293,3 +293,48 @@
 .animate-flow-particle {
   animation: flow-particle 4s ease-in-out infinite;
 }
+
+/* Onboarding step transitions */
+@keyframes step-enter {
+  from {
+    opacity: 0;
+    transform: translateX(var(--step-direction, 20px));
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+    filter: blur(0);
+  }
+}
+
+.animate-step-enter {
+  animation: step-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Pill cascade entrance */
+@keyframes pill-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-pill-enter {
+  opacity: 0;
+  animation: pill-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-step-enter,
+  .animate-pill-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

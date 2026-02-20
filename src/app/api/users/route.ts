@@ -7,7 +7,7 @@ import { ROLES, LEVELS } from "@/lib/utils/constants";
 import { checkRateLimit, getClientIp } from "@/lib/utils/rate-limiter";
 
 const CreateUserSchema = z.object({
-  name: z.string().min(1),
+  name: z.string().optional(),
   resume_text: z.string().optional(),
   prompt_text: z.string().optional(),
   current_roles: z.array(z.enum(ROLES)).optional(),
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     .insert({
       id: user.id,
       email: user.email!,
-      name: data.name,
+      name: data.name?.trim() || null,
       resume_text: data.resume_text ?? null,
       prompt_text: data.prompt_text ?? null,
       current_roles: data.current_roles ?? profile.current_roles,
@@ -92,6 +92,13 @@ export async function POST(request: Request) {
   if (error) {
     console.error("Failed to create user:", error);
     return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
+  }
+
+  // Add user to waitlist as pending (don't let failure break user creation)
+  try {
+    await admin.from("waitlist").insert({ email: user.email! });
+  } catch (e) {
+    console.error("Failed to insert into waitlist:", e);
   }
 
   return NextResponse.json(newUser, { status: 201 });
