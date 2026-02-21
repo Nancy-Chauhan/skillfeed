@@ -6,15 +6,16 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
 
-  // Anthropic
-  ANTHROPIC_API_KEY: z.string().startsWith("sk-ant-"),
+  // LLM — at least one provider must be set
+  ANTHROPIC_API_KEY: z.string().startsWith("sk-ant-").optional(),
+  GEMINI_API_KEY: z.string().min(1).optional(),
 
   // Resend
   RESEND_API_KEY: z.string().startsWith("re_"),
 
   // AgentMail
   AGENTMAIL_API_KEY: z.string().min(1),
-  AGENTMAIL_WEBHOOK_SECRET: z.string().min(1),
+  AGENTMAIL_WEBHOOK_SECRET: z.string().min(1).optional(),
 
   // Cron / Auth
   CRON_SECRET: z.string().min(8),
