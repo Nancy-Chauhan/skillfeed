@@ -9,12 +9,12 @@ const newsletters = [
   { name: "TLDR AI", subject: "GPT-5 is here, Llama 4 benchmarks, AI agents...", color: "border-violet-400/20", domain: "tldr.tech" },
   { name: "The Batch", subject: "Andrew Ng: Why RAG will dominate 2026", color: "border-sky-400/20", domain: "deeplearning.ai" },
   { name: "Ben's Bites", subject: "OpenAI ships Codex, Google fights back...", color: "border-orange-400/20", domain: "bensbites.com" },
-  { name: "ByteByteGo", subject: "System Design: Real-time ML pipelines", color: "border-amber-400/20", domain: "bytebytego.com" },
+  { name: "ByteByteGo", subject: "System Design: How Netflix handles 250M users", color: "border-amber-400/20", domain: "bytebytego.com" },
   { name: "The Neuron", subject: "AI spending hits $200B, Apple's new model...", color: "border-yellow-400/20", domain: "theneuron.ai" },
-  { name: "Import AI", subject: "Scaling laws plateau? New research says...", color: "border-pink-400/20", domain: "importai.net" },
-  { name: "Alpha Signal", subject: "Top AI papers this week: diffusion, RLHF...", color: "border-red-400/20", domain: "alphasignal.ai" },
+  { name: "Import AI", subject: "The skills gap is widening. Here's the data.", color: "border-pink-400/20", domain: "importai.net" },
+  { name: "Alpha Signal", subject: "Top papers this week: agents, reasoning, vision", color: "border-red-400/20", domain: "alphasignal.ai" },
   { name: "Pragmatic Eng.", subject: "How Stripe built their AI assistant", color: "border-emerald-400/20", domain: "pragmaticengineer.com" },
-  { name: "Superhuman", subject: "10 AI tools that replaced my entire stack", color: "border-cyan-400/20", domain: "joinsuperhuman.ai" },
+  { name: "Superhuman", subject: "10 tools senior engineers swear by in 2026", color: "border-cyan-400/20", domain: "joinsuperhuman.ai" },
   { name: "AI Breakfast", subject: "Claude 4.5 deep-dive, Mistral updates...", color: "border-lime-400/20", domain: "aibreakfast.beehiiv.com" },
 ];
 
@@ -69,8 +69,8 @@ export function DistillationVisual() {
                     className="w-5 h-5 rounded shrink-0 mt-0.5"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] text-white/90 font-medium truncate">{nl.name}</p>
-                    <p className="text-[9px] text-white/85 truncate leading-relaxed">{nl.subject}</p>
+                    <p className="text-[10px] text-white/60 font-medium truncate">{nl.name}</p>
+                    <p className="text-[9px] text-white/45 truncate leading-relaxed">{nl.subject}</p>
                   </div>
                 </div>
               </div>
@@ -81,7 +81,7 @@ export function DistillationVisual() {
             className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in"
             style={{ animationDelay: "1.2s", animationFillMode: "forwards" }}
           >
-            <span className="font-mono text-[10px] text-white/90">+40 more...</span>
+            <span className="font-mono text-[10px] text-white/60">+500 more...</span>
           </div>
         </div>
 
@@ -101,8 +101,8 @@ export function DistillationVisual() {
                   className="w-5 h-5 rounded shrink-0 mt-0.5"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] text-white/90 font-medium truncate">{nl.name}</p>
-                  <p className="text-[9px] text-white/85 truncate leading-relaxed">{nl.subject}</p>
+                  <p className="text-[10px] text-white/60 font-medium truncate">{nl.name}</p>
+                  <p className="text-[9px] text-white/45 truncate leading-relaxed">{nl.subject}</p>
                 </div>
               </div>
             </div>
@@ -156,7 +156,7 @@ export function DistillationVisual() {
 
             {/* Subject */}
             <div className="px-4 pt-3 pb-1 flex items-start justify-between">
-              <h3 className="text-[13px] text-white/90 font-medium">Your Daily Brief, Feb 18</h3>
+              <h3 className="text-[13px] text-white/75 font-medium">Your Daily Brief, Feb 18</h3>
               <Star className="w-4 h-4 text-white/50 shrink-0 mt-0.5" />
             </div>
 
@@ -164,14 +164,14 @@ export function DistillationVisual() {
             <div className="px-4 py-2 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500/30 to-emerald-500/30 flex items-center justify-center shrink-0">
-                  <span className="text-[10px] font-bold text-white/90">SF</span>
+                  <span className="text-[10px] font-bold text-white/60">SF</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] text-white/85 font-medium">SkillFeed</span>
-                    <span className="text-[10px] text-white/90 hidden sm:inline">&lt;brief@skillfeed.dev&gt;</span>
+                    <span className="text-[12px] text-white/45 font-medium">SkillFeed</span>
+                    <span className="text-[10px] text-white/35 hidden sm:inline">&lt;brief@skillfeed.dev&gt;</span>
                   </div>
-                  <span className="text-[10px] text-white/90">to me</span>
+                  <span className="text-[10px] text-white/35">to me</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -186,23 +186,23 @@ export function DistillationVisual() {
 
               {/* Newsletter header/branding */}
               <div className="px-3 sm:px-5 pt-5 pb-3 border-b border-white/[0.06] text-center">
-                <p className="font-mono text-[13px] font-semibold text-white/90 tracking-tight">
+                <p className="font-mono text-[13px] font-semibold text-white/60 tracking-tight">
                   skillfeed<span className="text-violet-400">_</span>
                 </p>
-                <p className="text-[10px] text-white/90 mt-1">Your personalized daily brief</p>
+                <p className="text-[10px] text-white/40 mt-1">Your personalized daily brief</p>
               </div>
 
               {/* Career context bar */}
               <div className="px-3 sm:px-5 pt-4 pb-3">
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded bg-violet-400/[0.04] border border-violet-400/[0.08]">
-                  <span className="text-[10px] text-white/85">Your path:</span>
-                  <span className="text-[10px] text-white/90 font-medium">Backend Dev</span>
+                  <span className="text-[10px] text-white/45">Your path:</span>
+                  <span className="text-[10px] text-white/60 font-medium">Backend Dev</span>
                   <span className="text-[10px] text-violet-400/70">→</span>
                   <span className="text-[10px] text-violet-400/80 font-medium">ML Engineer</span>
-                  <span className="text-[10px] text-white/90 sm:ml-auto">intermediate → senior</span>
+                  <span className="text-[10px] text-white/40 sm:ml-auto">intermediate → senior</span>
                 </div>
-                <p className="text-[11px] text-white/85 leading-relaxed mt-2.5">
-                  Good morning! We scanned <span className="text-white/90">50+ sources</span>, filtered <span className="text-white/90">53 duplicates</span>, and found <span className="text-violet-400/80">3 articles</span> that match your transition to ML Engineer.
+                <p className="text-[11px] text-white/45 leading-relaxed mt-2.5">
+                  Good morning! We scanned <span className="text-white/60">50+ sources</span>, filtered <span className="text-white/60">53 duplicates</span>, and found <span className="text-violet-400/80">3 articles</span> that match your transition to ML Engineer.
                 </p>
               </div>
 
@@ -239,8 +239,8 @@ export function DistillationVisual() {
 
               {/* Newsletter footer */}
               <div className="px-3 sm:px-5 py-3 border-t border-white/[0.06] text-center">
-                <p className="text-[9px] text-white/90">
-                  Curated for <span className="text-white/85">Backend Dev</span> <span className="text-violet-400/50">→</span> <span className="text-violet-400/60">ML Engineer</span> &middot; <span className="underline">Unsubscribe</span> &middot; <span className="underline">Preferences</span>
+                <p className="text-[9px] text-white/35">
+                  Curated for <span className="text-white/45">Backend Dev</span> <span className="text-violet-400/50">→</span> <span className="text-violet-400/60">ML Engineer</span> &middot; <span className="underline">Unsubscribe</span> &middot; <span className="underline">Preferences</span>
                 </p>
               </div>
             </div>
@@ -288,17 +288,17 @@ function NewsletterArticle({
       <div className="flex items-start gap-3">
         <span className="text-[11px] font-semibold text-violet-400/50 mt-0.5 shrink-0">{number}.</span>
         <div className="min-w-0 space-y-1">
-          <p className="text-[12px] text-white/90 font-medium leading-snug">{title}</p>
+          <p className="text-[12px] text-white/70 font-medium leading-snug">{title}</p>
           <div className="flex items-center gap-2">
-            <span className="text-[9px] text-white/85">{source}</span>
+            <span className="text-[9px] text-white/45">{source}</span>
             <span className="text-[9px] text-emerald-400/70 bg-emerald-400/10 px-1.5 py-px rounded-sm">{match}% match</span>
           </div>
           {reason && (
-            <p className="text-[10px] text-white/85 leading-relaxed italic">
+            <p className="text-[10px] text-white/45 leading-relaxed italic">
               &quot;{reason}&quot;
             </p>
           )}
-          <p className="text-[10px] text-violet-400/60 hover:text-violet-400/80 cursor-default">
+          <p className="text-[10px] text-violet-400/60">
             Read article →
           </p>
         </div>

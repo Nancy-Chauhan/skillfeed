@@ -30,13 +30,13 @@ export function NewsletterCard({
         <div className="flex-1 min-w-0">
           <p className="text-sm text-white/65 truncate group-hover:text-white/90 transition-colors">{subject}</p>
         </div>
-        <span className="font-mono text-[11px] text-white/50 shrink-0">
+        <span className="font-mono text-[11px] text-white/35 shrink-0">
           {articleCount} articles
         </span>
-        <span className="font-mono text-[11px] text-white/50 shrink-0 w-12 text-right">
+        <span className="font-mono text-[11px] text-white/35 shrink-0 w-12 text-right">
           {date}
         </span>
-        <ChevronRight className="w-3.5 h-3.5 text-white/50 group-hover:text-white/70 transition-colors shrink-0" />
+        <ChevronRight className="w-3.5 h-3.5 text-white/30 group-hover:text-white/55 transition-colors shrink-0" />
       </div>
     </Link>
   );

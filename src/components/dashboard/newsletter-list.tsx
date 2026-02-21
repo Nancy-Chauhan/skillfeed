@@ -10,10 +10,10 @@ export function NewsletterList({ newsletters }: NewsletterListProps) {
   if (newsletters.length === 0) {
     return (
       <div className="text-center py-16 space-y-3 border border-dashed border-white/[0.06] rounded-xl">
-        <Inbox className="w-5 h-5 text-white/50 mx-auto" />
+        <Inbox className="w-5 h-5 text-white/35 mx-auto" />
         <div className="space-y-1">
-          <p className="text-sm text-white/70">No newsletters yet</p>
-          <p className="font-mono text-[11px] text-white/50">
+          <p className="text-sm text-white/55">No newsletters yet</p>
+          <p className="font-mono text-[11px] text-white/35">
             first delivery arriving soon
           </p>
         </div>

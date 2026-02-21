@@ -39,20 +39,20 @@ export default async function WaitlistPage() {
             You&apos;re on the waitlist
           </h1>
 
-          <p className="text-sm text-white/70 leading-relaxed font-mono">
+          <p className="text-sm text-white/55 leading-relaxed font-mono">
             We&apos;ll send you an email at{" "}
             <span className="text-violet-400/80">{user.email}</span>{" "}
             as soon as your spot opens up.
           </p>
 
-          <p className="text-xs text-white/60 font-mono">
+          <p className="text-xs text-white/40 font-mono">
             We&apos;re onboarding the first 50 members now.
           </p>
 
           <form action="/auth/signout" method="post" className="pt-4">
             <Button
               variant="ghost"
-              className="font-mono text-white/60 hover:text-white/80 hover:bg-white/[0.03] cursor-pointer text-[13px]"
+              className="font-mono text-white/45 hover:text-white/70 hover:bg-white/[0.03] cursor-pointer text-[13px]"
             >
               <LogOut className="w-3.5 h-3.5 mr-1.5" />
               sign out

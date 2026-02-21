@@ -14,7 +14,7 @@ export async function Header() {
       <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
           <span className="font-mono text-sm font-semibold text-white tracking-tight">
-            skillfeed<span className="text-emerald-400">_</span>
+            skillfeed<span className="text-violet-400">_</span>
           </span>
         </Link>
         <nav className="flex items-center gap-1">
@@ -22,7 +22,7 @@ export async function Header() {
             <>
               <Link
                 href="/dashboard"
-                className="font-mono text-[13px] text-white/70 hover:text-white/90 transition-colors duration-200 px-3 py-1.5 rounded-md hover:bg-white/[0.05]"
+                className="font-mono text-[13px] text-white/60 hover:text-white/80 transition-colors duration-200 px-3 py-1.5 rounded-md hover:bg-white/[0.05]"
               >
                 dashboard
               </Link>
@@ -30,7 +30,7 @@ export async function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="font-mono text-white/70 hover:text-white/90 hover:bg-white/[0.05] cursor-pointer h-8 text-[13px]"
+                  className="font-mono text-white/55 hover:text-white/80 hover:bg-white/[0.05] cursor-pointer h-8 text-[13px]"
                 >
                   <LogOut className="w-3.5 h-3.5 mr-1.5" />
                   sign out

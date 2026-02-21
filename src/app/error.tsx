@@ -9,8 +9,8 @@ export default function Error({
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#09090B]">
       <div className="text-center space-y-4">
-        <p className="font-mono text-sm text-white/60">500</p>
-        <h1 className="text-lg font-semibold text-white/80">
+        <p className="font-mono text-sm text-white/40">500</p>
+        <h1 className="text-lg font-semibold text-white/70">
           Something went wrong
         </h1>
         <button

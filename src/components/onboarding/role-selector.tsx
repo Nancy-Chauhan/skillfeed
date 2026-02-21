@@ -52,8 +52,8 @@ export function RoleSelector({
 
   return (
     <div className="space-y-3">
-      <p className="text-[13px] text-white/70">
-        {label} <span className="text-white/50">— select all that apply</span>
+      <p className="text-[13px] text-white/60">
+        {label} <span className="text-white/35">— select all that apply</span>
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {roles.map((role, i) => (
@@ -61,12 +61,13 @@ export function RoleSelector({
             key={role}
             type="button"
             onClick={() => toggleRole(role)}
+            aria-pressed={selected.includes(role)}
             style={{ animationDelay: `${i * 25}ms` }}
             className={`animate-pill-enter px-3 py-2.5 rounded-lg border text-sm font-medium cursor-pointer
               transition-all duration-200 active:scale-[0.97] ${
               selected.includes(role)
                 ? "bg-violet-500 text-white border-violet-500 shadow-[0_0_12px_rgba(167,139,250,0.25)]"
-                : "border-white/[0.08] text-white/70 hover:border-white/[0.15] hover:text-white/90"
+                : "border-white/[0.08] text-white/55 hover:border-white/[0.15] hover:text-white/80"
             }`}
           >
             {ROLE_LABELS[role]}
@@ -88,6 +89,7 @@ export function RoleSelector({
                   <button
                     type="button"
                     onClick={() => removeCustomRole(role)}
+                    aria-label={`Remove ${role}`}
                     className="text-white/60 hover:text-white cursor-pointer"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -110,13 +112,13 @@ export function RoleSelector({
                 }}
                 onBlur={() => { if (!inputValue.trim()) setShowInput(false); }}
                 placeholder="e.g. Platform Engineer"
-                className="h-9 px-3 rounded-lg border border-white/[0.08] bg-white/[0.03] text-white text-sm placeholder:text-white/50 focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/20 outline-none flex-1"
+                className="h-9 px-3 rounded-lg border border-white/[0.08] bg-white/[0.03] text-white text-sm placeholder:text-white/30 focus:border-violet-500/40 focus:ring-1 focus:ring-violet-500/20 outline-none flex-1"
               />
               <button
                 type="button"
                 onClick={addCustomRole}
                 disabled={!inputValue.trim()}
-                className="h-9 px-3 rounded-lg bg-white/[0.06] text-white/70 hover:text-white/90 text-sm font-medium cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-default"
+                className="h-9 px-3 rounded-lg bg-white/[0.06] text-white/55 hover:text-white/80 text-sm font-medium cursor-pointer transition-colors disabled:opacity-30 disabled:cursor-default"
               >
                 Add
               </button>
@@ -125,7 +127,7 @@ export function RoleSelector({
             <button
               type="button"
               onClick={handleOpenInput}
-              className="inline-flex items-center gap-1.5 text-[13px] text-white/60 hover:text-white/80 cursor-pointer transition-colors"
+              className="inline-flex items-center gap-1.5 text-[13px] text-white/40 hover:text-white/60 cursor-pointer transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
               Add your own

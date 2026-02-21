@@ -1,6 +1,9 @@
+import { config } from "dotenv";
 import Parser from "rss-parser";
 import { createClient } from "@supabase/supabase-js";
 import Anthropic from "@anthropic-ai/sdk";
+
+config({ path: ".env.local" });
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
