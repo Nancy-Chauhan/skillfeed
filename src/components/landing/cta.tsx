@@ -12,16 +12,16 @@ export function CTA() {
             <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
             <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
             <div className="w-2 h-2 rounded-full bg-white/[0.08]" />
-            <span className="ml-2 font-mono text-[11px] text-white/35">get-started</span>
+            <span className="ml-2 font-mono text-[11px] text-white/60">get-started</span>
           </div>
 
           <div className="p-5 sm:p-8 md:p-16 text-center space-y-5">
             <h2 className="text-2xl md:text-[2.25rem] font-bold text-white tracking-[-0.02em] leading-tight">
               Where do you want to be
               <br />
-              <span className="text-white/50">in 6 months?</span>
+              <span className="text-white/70">in 6 months?</span>
             </h2>
-            <p className="text-sm text-white/50 leading-relaxed max-w-md mx-auto font-mono">
+            <p className="text-sm text-white/70 leading-relaxed max-w-md mx-auto font-mono">
               Define your career goal. We&apos;ll start curating the
               exact content to get you there. Your first brief arrives
               tomorrow morning.
@@ -37,7 +37,7 @@ export function CTA() {
                 </Button>
               </Link>
             </div>
-            <p className="font-mono text-[11px] text-white/35 pt-1">
+            <p className="font-mono text-[11px] text-white/60 pt-1">
               free forever &middot; takes 3 minutes &middot; unsubscribe anytime
             </p>
           </div>

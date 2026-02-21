@@ -53,9 +53,9 @@ export function Features() {
           <h2 className="text-3xl md:text-[2.75rem] font-bold text-white tracking-[-0.02em] leading-tight">
             Your career path
             <br />
-            <span className="text-white/50">drives every recommendation.</span>
+            <span className="text-white/70">drives every recommendation.</span>
           </h2>
-          <p className="text-sm text-white/50 leading-relaxed max-w-md mx-auto font-mono">
+          <p className="text-sm text-white/70 leading-relaxed max-w-md mx-auto font-mono">
             Not just what&apos;s trending. What&apos;s relevant to where you&apos;re headed.
           </p>
         </div>
@@ -75,14 +75,14 @@ export function Features() {
                 </div>
                 <div className="space-y-2 pt-0.5 min-w-0">
                   <div className="flex items-center gap-3 flex-wrap">
-                    <h3 className="text-[15px] font-semibold text-white/90 font-mono">
+                    <h3 className="text-[15px] font-semibold text-white font-mono">
                       {feature.title}
                     </h3>
                     <span className={`text-[10px] font-mono ${feature.accent} opacity-50 px-1.5 py-0.5 rounded border border-current/20`}>
                       {feature.tag}
                     </span>
                   </div>
-                  <p className="text-sm text-white/50 leading-relaxed">
+                  <p className="text-sm text-white/70 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

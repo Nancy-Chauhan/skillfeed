@@ -25,19 +25,19 @@ export function Hero() {
         <h1 className="reveal-delay-1 text-[2rem] xs:text-[2.75rem] sm:text-5xl md:text-6xl lg:text-[4rem] font-bold text-white leading-[1.15] tracking-[-0.03em] mb-4">
           We read every newsletter
           <br />
-          <span className="text-white/50">so you just read </span>
+          <span className="text-white/70">so you just read </span>
           <br className="sm:hidden" />
           <RotatingText />
         </h1>
 
         {/* Value prop — newsletter-first messaging */}
-        <p className="reveal-delay-2 text-base sm:text-lg text-white/70 max-w-xl mx-auto leading-relaxed mb-3">
+        <p className="reveal-delay-2 text-base sm:text-lg text-white/90 max-w-xl mx-auto leading-relaxed mb-3">
           TLDR, The Batch, Pragmatic Engineer, and 50+ more,
           distilled into <span className="text-emerald-400/80">3&#8209;5&nbsp;articles</span> matched to your career path.
         </p>
 
         {/* How it works — one-liner */}
-        <p className="reveal-delay-2 text-[13px] text-white/45 max-w-md mx-auto leading-relaxed font-mono mb-8">
+        <p className="reveal-delay-2 text-[13px] text-white/70 max-w-md mx-auto leading-relaxed font-mono mb-8">
           Tell us your current role → target role. Get a personalized brief every morning.
         </p>
 

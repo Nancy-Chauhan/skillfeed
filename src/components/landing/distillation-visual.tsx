@@ -69,8 +69,8 @@ export function DistillationVisual() {
                     className="w-5 h-5 rounded shrink-0 mt-0.5"
                   />
                   <div className="min-w-0 flex-1">
-                    <p className="text-[10px] text-white/60 font-medium truncate">{nl.name}</p>
-                    <p className="text-[9px] text-white/40 truncate leading-relaxed">{nl.subject}</p>
+                    <p className="text-[10px] text-white/90 font-medium truncate">{nl.name}</p>
+                    <p className="text-[9px] text-white/85 truncate leading-relaxed">{nl.subject}</p>
                   </div>
                 </div>
               </div>
@@ -81,7 +81,7 @@ export function DistillationVisual() {
             className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in"
             style={{ animationDelay: "1.2s", animationFillMode: "forwards" }}
           >
-            <span className="font-mono text-[10px] text-white/30">+40 more...</span>
+            <span className="font-mono text-[10px] text-white/90">+40 more...</span>
           </div>
         </div>
 
@@ -101,8 +101,8 @@ export function DistillationVisual() {
                   className="w-5 h-5 rounded shrink-0 mt-0.5"
                 />
                 <div className="min-w-0 flex-1">
-                  <p className="text-[10px] text-white/60 font-medium truncate">{nl.name}</p>
-                  <p className="text-[9px] text-white/40 truncate leading-relaxed">{nl.subject}</p>
+                  <p className="text-[10px] text-white/90 font-medium truncate">{nl.name}</p>
+                  <p className="text-[9px] text-white/85 truncate leading-relaxed">{nl.subject}</p>
                 </div>
               </div>
             </div>
@@ -147,37 +147,37 @@ export function DistillationVisual() {
             {/* Gmail toolbar */}
             <div className="flex items-center justify-between px-3 py-2 border-b border-white/[0.06] bg-white/[0.02]">
               <div className="flex items-center gap-3">
-                <ArrowLeft className="w-3.5 h-3.5 text-white/15" />
-                <Archive className="w-3.5 h-3.5 text-white/15" />
-                <Trash2 className="w-3.5 h-3.5 text-white/15" />
+                <ArrowLeft className="w-3.5 h-3.5 text-white/50" />
+                <Archive className="w-3.5 h-3.5 text-white/50" />
+                <Trash2 className="w-3.5 h-3.5 text-white/50" />
               </div>
-              <span className="text-[10px] text-white/10">1 of 1</span>
+              <span className="text-[10px] text-white/50">1 of 1</span>
             </div>
 
             {/* Subject */}
             <div className="px-4 pt-3 pb-1 flex items-start justify-between">
-              <h3 className="text-[13px] text-white/80 font-medium">Your Daily Brief, Feb 18</h3>
-              <Star className="w-4 h-4 text-white/10 shrink-0 mt-0.5" />
+              <h3 className="text-[13px] text-white/90 font-medium">Your Daily Brief, Feb 18</h3>
+              <Star className="w-4 h-4 text-white/50 shrink-0 mt-0.5" />
             </div>
 
             {/* Sender row */}
             <div className="px-4 py-2 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500/30 to-emerald-500/30 flex items-center justify-center shrink-0">
-                  <span className="text-[10px] font-bold text-white/60">SF</span>
+                  <span className="text-[10px] font-bold text-white/90">SF</span>
                 </div>
                 <div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] text-white/70 font-medium">SkillFeed</span>
-                    <span className="text-[10px] text-white/30 hidden sm:inline">&lt;brief@skillfeed.dev&gt;</span>
+                    <span className="text-[12px] text-white/85 font-medium">SkillFeed</span>
+                    <span className="text-[10px] text-white/90 hidden sm:inline">&lt;brief@skillfeed.dev&gt;</span>
                   </div>
-                  <span className="text-[10px] text-white/30">to me</span>
+                  <span className="text-[10px] text-white/90">to me</span>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-white/10 hidden sm:inline">7:00 AM</span>
-                <Reply className="w-3.5 h-3.5 text-white/10" />
-                <MoreVertical className="w-3.5 h-3.5 text-white/10 hidden sm:block" />
+                <span className="text-[10px] text-white/50 hidden sm:inline">7:00 AM</span>
+                <Reply className="w-3.5 h-3.5 text-white/50" />
+                <MoreVertical className="w-3.5 h-3.5 text-white/50 hidden sm:block" />
               </div>
             </div>
 
@@ -186,23 +186,23 @@ export function DistillationVisual() {
 
               {/* Newsletter header/branding */}
               <div className="px-3 sm:px-5 pt-5 pb-3 border-b border-white/[0.06] text-center">
-                <p className="font-mono text-[13px] font-semibold text-white/75 tracking-tight">
+                <p className="font-mono text-[13px] font-semibold text-white/90 tracking-tight">
                   skillfeed<span className="text-violet-400">_</span>
                 </p>
-                <p className="text-[10px] text-white/35 mt-1">Your personalized daily brief</p>
+                <p className="text-[10px] text-white/90 mt-1">Your personalized daily brief</p>
               </div>
 
               {/* Career context bar */}
               <div className="px-3 sm:px-5 pt-4 pb-3">
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-1 py-2 px-3 rounded bg-violet-400/[0.04] border border-violet-400/[0.08]">
-                  <span className="text-[10px] text-white/40">Your path:</span>
-                  <span className="text-[10px] text-white/60 font-medium">Backend Dev</span>
+                  <span className="text-[10px] text-white/85">Your path:</span>
+                  <span className="text-[10px] text-white/90 font-medium">Backend Dev</span>
                   <span className="text-[10px] text-violet-400/70">→</span>
                   <span className="text-[10px] text-violet-400/80 font-medium">ML Engineer</span>
-                  <span className="text-[10px] text-white/35 sm:ml-auto">intermediate → senior</span>
+                  <span className="text-[10px] text-white/90 sm:ml-auto">intermediate → senior</span>
                 </div>
-                <p className="text-[11px] text-white/45 leading-relaxed mt-2.5">
-                  Good morning! We scanned <span className="text-white/60">50+ sources</span>, filtered <span className="text-white/60">53 duplicates</span>, and found <span className="text-violet-400/80">3 articles</span> that match your transition to ML Engineer.
+                <p className="text-[11px] text-white/85 leading-relaxed mt-2.5">
+                  Good morning! We scanned <span className="text-white/90">50+ sources</span>, filtered <span className="text-white/90">53 duplicates</span>, and found <span className="text-violet-400/80">3 articles</span> that match your transition to ML Engineer.
                 </p>
               </div>
 
@@ -239,8 +239,8 @@ export function DistillationVisual() {
 
               {/* Newsletter footer */}
               <div className="px-3 sm:px-5 py-3 border-t border-white/[0.06] text-center">
-                <p className="text-[9px] text-white/25">
-                  Curated for <span className="text-white/40">Backend Dev</span> <span className="text-violet-400/50">→</span> <span className="text-violet-400/60">ML Engineer</span> &middot; <span className="underline">Unsubscribe</span> &middot; <span className="underline">Preferences</span>
+                <p className="text-[9px] text-white/90">
+                  Curated for <span className="text-white/85">Backend Dev</span> <span className="text-violet-400/50">→</span> <span className="text-violet-400/60">ML Engineer</span> &middot; <span className="underline">Unsubscribe</span> &middot; <span className="underline">Preferences</span>
                 </p>
               </div>
             </div>
@@ -288,13 +288,13 @@ function NewsletterArticle({
       <div className="flex items-start gap-3">
         <span className="text-[11px] font-semibold text-violet-400/50 mt-0.5 shrink-0">{number}.</span>
         <div className="min-w-0 space-y-1">
-          <p className="text-[12px] text-white/75 font-medium leading-snug">{title}</p>
+          <p className="text-[12px] text-white/90 font-medium leading-snug">{title}</p>
           <div className="flex items-center gap-2">
-            <span className="text-[9px] text-white/40">{source}</span>
+            <span className="text-[9px] text-white/85">{source}</span>
             <span className="text-[9px] text-emerald-400/70 bg-emerald-400/10 px-1.5 py-px rounded-sm">{match}% match</span>
           </div>
           {reason && (
-            <p className="text-[10px] text-white/40 leading-relaxed italic">
+            <p className="text-[10px] text-white/85 leading-relaxed italic">
               &quot;{reason}&quot;
             </p>
           )}

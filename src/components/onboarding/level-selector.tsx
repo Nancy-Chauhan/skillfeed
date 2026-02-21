@@ -17,8 +17,8 @@ export function LevelSelector({
 }: LevelSelectorProps) {
   return (
     <div className="space-y-3">
-      <p className="text-[13px] text-white/40">
-        {label} <span className="text-white/15">— pick one</span>
+      <p className="text-[13px] text-white/70">
+        {label} <span className="text-white/50">— pick one</span>
       </p>
       <div className="grid grid-cols-3 gap-2">
         {levels.map((level, i) => (
@@ -31,7 +31,7 @@ export function LevelSelector({
               transition-all duration-200 active:scale-[0.97] ${
               selected === level
                 ? "bg-violet-500 text-white border-violet-500 shadow-[0_0_12px_rgba(167,139,250,0.25)]"
-                : "border-white/[0.08] text-white/40 hover:border-white/[0.15] hover:text-white/55"
+                : "border-white/[0.08] text-white/70 hover:border-white/[0.15] hover:text-white/90"
             }`}
           >
             {LEVEL_LABELS[level]}

@@ -34,7 +34,7 @@ function LoginContent() {
       <div className="w-full max-w-sm relative z-10">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-[13px] text-white/25 hover:text-white/50 transition-colors mb-10"
+          className="inline-flex items-center gap-2 text-[13px] text-white/60 hover:text-white/80 transition-colors mb-10"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back
@@ -49,7 +49,7 @@ function LoginContent() {
         <div className="space-y-6">
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-white tracking-tight">Sign in</h1>
-            <p className="text-[13px] text-white/35">
+            <p className="text-[13px] text-white/70">
               Continue with your Google account.
             </p>
           </div>
@@ -68,7 +68,7 @@ function LoginContent() {
             {loading ? "Redirecting..." : "Continue with Google"}
           </Button>
 
-          <p className="font-mono text-[11px] text-white/15 text-center">
+          <p className="font-mono text-[11px] text-white/50 text-center">
             secure sign-in via Google
           </p>
         </div>

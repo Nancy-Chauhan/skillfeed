@@ -37,9 +37,9 @@ export function HowItWorks() {
           <h2 className="text-3xl md:text-[2.75rem] font-bold text-white tracking-[-0.02em]">
             From where you are
             <br />
-            <span className="text-white/30">to where you want to be.</span>
+            <span className="text-white/70">to where you want to be.</span>
           </h2>
-          <p className="text-sm text-white/25 leading-relaxed max-w-md mx-auto font-mono">
+          <p className="text-sm text-white/70 leading-relaxed max-w-md mx-auto font-mono">
             Tell us the destination. We&apos;ll build the reading list.
           </p>
         </div>
@@ -55,16 +55,16 @@ export function HowItWorks() {
                 <span className={`font-mono text-[11px] font-bold ${step.accent} opacity-60 shrink-0`}>
                   {step.number}
                 </span>
-                <span className="font-mono text-[11px] text-white/20 truncate">
+                <span className="font-mono text-[11px] text-white/60 truncate">
                   {step.command}
                 </span>
               </div>
 
               <div className="p-5 space-y-3">
-                <h3 className="text-[15px] font-semibold text-white/90">
+                <h3 className="text-[15px] font-semibold text-white">
                   {step.title}
                 </h3>
-                <p className="text-sm text-white/25 leading-relaxed">
+                <p className="text-sm text-white/70 leading-relaxed">
                   {step.description}
                 </p>
                 <p className={`font-mono text-[12px] ${step.accent} opacity-50`}>

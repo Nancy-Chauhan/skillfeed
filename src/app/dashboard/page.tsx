@@ -57,7 +57,7 @@ export default async function DashboardPage() {
             <h1 className="text-2xl font-bold text-white tracking-tight">
               Welcome back, {firstName}
             </h1>
-            <p className="text-[13px] text-white/30 mt-1">Your learning journey at a glance.</p>
+            <p className="text-[13px] text-white/70 mt-1">Your learning journey at a glance.</p>
           </div>
         </div>
 
@@ -76,7 +76,7 @@ export default async function DashboardPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Newsletters</h2>
-              <span className="font-mono text-[11px] text-white/20">
+              <span className="font-mono text-[11px] text-white/60">
                 {(newsletters ?? []).length} delivered
               </span>
             </div>

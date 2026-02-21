@@ -194,7 +194,7 @@ export function ProfileForm({
               <h1 className="text-3xl sm:text-4xl font-bold text-white tracking-tight">
                 Welcome, {greeting}!
               </h1>
-              <p className="text-sm text-white/25 mt-3 max-w-md mx-auto">
+              <p className="text-sm text-white/60 mt-3 max-w-md mx-auto">
                 Just a few quick questions to personalize your feed — takes less than 2 minutes.
               </p>
               <Button
@@ -221,7 +221,7 @@ export function ProfileForm({
                 </h1>
                 <p
                   key={`sub-${step}`}
-                  className="text-sm text-white/25 mt-2 animate-step-enter"
+                  className="text-sm text-white/60 mt-2 animate-step-enter"
                   style={{ ...animStyle, animationDelay: "40ms" }}
                 >
                   {questionSteps[step - 1].subtitle}
@@ -270,14 +270,14 @@ export function ProfileForm({
                       label="Target level"
                     />
                     <div className="space-y-2">
-                      <p className="text-[13px] text-white/40">Your background & goals</p>
+                      <p className="text-[13px] text-white/70">Your background & goals</p>
                       <Textarea
                         id="prompt"
                         placeholder={"e.g. I'm a backend engineer with 3 years of experience in Python and Go. I want to move into ML engineering — specifically building and deploying production ML systems..."}
                         value={formData.prompt_text}
                         onChange={(e) => update("prompt_text", e.target.value)}
                         rows={4}
-                        className="rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/15 resize-none focus:ring-1 focus:ring-violet-500/20"
+                        className="rounded-lg border-white/[0.06] focus:border-violet-500/40 bg-white/[0.03] text-white placeholder:text-white/50 resize-none focus:ring-1 focus:ring-violet-500/20"
                       />
                     </div>
                   </div>
@@ -296,7 +296,7 @@ export function ProfileForm({
                   variant="ghost"
                   onClick={handleBack}
                   disabled={step === 0}
-                  className={`text-white/20 hover:text-white/50 hover:bg-white/[0.04] cursor-pointer rounded-lg ${step === 0 ? "invisible" : ""}`}
+                  className={`text-white/60 hover:text-white/80 hover:bg-white/[0.04] cursor-pointer rounded-lg ${step === 0 ? "invisible" : ""}`}
                 >
                   <ArrowLeft className="w-4 h-4 mr-1.5" />
                   Back
