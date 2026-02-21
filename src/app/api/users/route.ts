@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseProfile } from "@/lib/agents/profile-parser";
-import { ROLES, LEVELS } from "@/lib/utils/constants";
+import { ROLES, LEVELS, type Level } from "@/lib/utils/constants";
 import { checkRateLimit, getClientIp } from "@/lib/utils/rate-limiter";
 
 const CreateUserSchema = z.object({
@@ -12,6 +12,8 @@ const CreateUserSchema = z.object({
   prompt_text: z.string().optional(),
   current_roles: z.array(z.enum(ROLES)).optional(),
   target_roles: z.array(z.enum(ROLES)).optional(),
+  current_level: z.enum(LEVELS).optional(),
+  target_level: z.enum(LEVELS).optional(),
 });
 
 export async function POST(request: Request) {
@@ -80,8 +82,8 @@ export async function POST(request: Request) {
       prompt_text: data.prompt_text ?? null,
       current_roles: data.current_roles ?? profile.current_roles,
       target_roles: data.target_roles ?? profile.target_roles,
-      current_level: profile.current_level,
-      target_level: profile.target_level,
+      current_level: (data.current_level ?? profile.current_level) as Level,
+      target_level: (data.target_level ?? profile.target_level) as Level,
       extracted_keywords: profile.keywords,
       extracted_skills: profile.skills,
       learning_goals: profile.learning_goals,

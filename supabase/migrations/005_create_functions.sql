@@ -62,8 +62,9 @@ as $$
     and a.level in (up.current_level, up.target_level)
     -- Only articles from the last 7 days
     and a.received_at > now() - interval '7 days'
-    -- Only fully processed articles
+    -- Only fully processed articles with a valid URL
     and a.processing_status = 'completed'
+    and a.url is not null
     -- Exclude already-sent articles
     and a.id not in (select article_id from already_sent)
   order by relevance_score desc, a.received_at desc

@@ -3,23 +3,20 @@ import { callClaude } from "@/lib/claude/client";
 import { LEVELS } from "@/lib/utils/constants";
 import type { ComposedNewsletter, MatchedArticle, User } from "@/lib/utils/types";
 
+const FeaturedArticleSchema = z.object({
+  title: z.string().min(1),
+  summary: z.string().min(1),
+  why_it_matters: z.string().min(1),
+  url: z.string().url(),
+  level: z.enum(LEVELS),
+});
+
 const NewsletterSchema = z.object({
-  subject: z.string(),
-  greeting: z.string(),
-  featured_articles: z
-    .array(
-      z.object({
-        title: z.string(),
-        summary: z.string(),
-        why_it_matters: z.string(),
-        url: z.string().nullable(),
-        level: z.enum(LEVELS),
-      })
-    )
-    .min(1)
-    .max(6),
+  subject: z.string().min(1),
+  greeting: z.string().min(1),
+  featured_articles: z.array(FeaturedArticleSchema).min(1).max(6),
   roadmap_items: z.array(z.string()).max(3),
-  closing: z.string(),
+  closing: z.string().min(1),
 });
 
 const SYSTEM_PROMPT = `You are the newsletter composer for SkillFeed, a personalized AI learning platform.
@@ -36,13 +33,18 @@ Your tone should be:
 Produce:
 - subject: A short, warm subject line (e.g., "Your AI Learning Brief, Feb 15")
 - greeting: A personalized greeting referencing their specific career trajectory
-- featured_articles: 4-6 articles with:
-  - title, summary, url, level (from the provided articles)
+- featured_articles: 4-6 articles. EVERY article MUST include ALL of these fields:
+  - title: The article title (copy exactly from the provided articles)
+  - summary: A concise description of what the article covers
   - why_it_matters: 1-2 sentences explaining why THIS article matters for THIS user's specific goals. Reference their current skills and target role.
+  - url: The article URL (copy exactly from the provided articles — never omit, never set to null)
+  - level: The difficulty level (copy exactly from the provided articles)
 - roadmap_items: 2-3 actionable next steps tailored to their learning trajectory. Be specific, not generic.
 - closing: A warm, encouraging closing that reinforces their growth journey
 
 Rules:
+- EVERY featured_article MUST have all 5 fields: title, summary, why_it_matters, url, level. No exceptions.
+- Copy url and level exactly from the input articles — do not modify or omit them.
 - why_it_matters MUST be personalized. Never write generic descriptions.
 - Roadmap items should connect the articles to concrete next actions
 - Keep the tone calm and supportive — no FOMO, no urgency
@@ -68,28 +70,50 @@ export async function composeNewsletter(
 ${articles
   .map(
     (a, i) =>
-      `${i + 1}. "${a.title}" (${a.level}) — ${a.summary ?? "No summary"}\n   URL: ${a.url ?? "none"}\n   Keywords: ${a.keywords.join(", ")}\n   Relevance score: ${a.relevance_score}`
+      `${i + 1}. "${a.title}" (${a.level}) — ${a.summary ?? "No summary"}\n   URL: ${a.url}\n   Keywords: ${a.keywords.join(", ")}\n   Relevance score: ${a.relevance_score}`
   )
   .join("\n\n")}`;
 
   const userMessage = `${userContext}\n\n${articlesContext}`;
-  const response = await callClaude(SYSTEM_PROMPT, userMessage);
 
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(response);
-  } catch {
-    throw new Error(
-      `Failed to parse newsletter composer response: ${response.slice(0, 200)}`
-    );
+  const MAX_ATTEMPTS = 2;
+  let lastError: string | null = null;
+
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    const prompt = attempt === 0
+      ? userMessage
+      : `${userMessage}\n\nYour previous response had validation errors:\n${lastError}\n\nPlease fix and return valid JSON. Every featured_article MUST have: title, summary, why_it_matters, url (valid URL), and level.`;
+
+    const response = await callClaude(SYSTEM_PROMPT, prompt);
+
+    let parsed: Record<string, unknown>;
+    try {
+      parsed = JSON.parse(response);
+    } catch {
+      lastError = `Invalid JSON: ${response.slice(0, 200)}`;
+      console.warn(`Newsletter compose attempt ${attempt + 1} failed: ${lastError}`);
+      continue;
+    }
+
+    // Normalize roadmap_items: some LLMs return objects instead of strings
+    if (Array.isArray(parsed.roadmap_items)) {
+      parsed.roadmap_items = parsed.roadmap_items.map((item: unknown) => {
+        if (typeof item === "string") return item;
+        const obj = item as Record<string, unknown>;
+        return String(obj.text ?? obj.description ?? obj.step ?? Object.values(obj)[0] ?? "");
+      });
+    }
+
+    const result = NewsletterSchema.safeParse(parsed);
+    if (result.success) {
+      return result.data;
+    }
+
+    lastError = JSON.stringify(result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`));
+    console.warn(`Newsletter compose attempt ${attempt + 1} validation failed: ${lastError}`);
   }
 
-  const result = NewsletterSchema.safeParse(parsed);
-  if (!result.success) {
-    throw new Error(
-      `Newsletter failed schema validation: ${JSON.stringify(result.error)}`
-    );
-  }
-
-  return result.data;
+  throw new Error(
+    `Newsletter failed schema validation after ${MAX_ATTEMPTS} attempts: ${lastError}`
+  );
 }

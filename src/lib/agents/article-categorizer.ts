@@ -9,7 +9,7 @@ const ArticleSchema = z.object({
   level: z.enum(LEVELS),
   roles: z.array(z.enum(ROLES)).min(1),
   keywords: z.array(z.string()).min(1),
-  url: z.string().nullable(),
+  url: z.string().url().nullable(),
 });
 
 const ResponseSchema = z.object({
@@ -59,5 +59,8 @@ export async function categorizeArticles(
     return [];
   }
 
-  return result.data.articles;
+  // Drop articles without a URL — they can't be linked in newsletters
+  return result.data.articles.filter(
+    (a): a is typeof a & { url: string } => a.url !== null
+  );
 }

@@ -9,7 +9,7 @@ export interface Article {
   title: string;
   summary: string | null;
   content: string | null;
-  url: string | null;
+  url: string;
   level: Level;
   roles: Role[];
   keywords: string[];
@@ -75,7 +75,7 @@ export interface MatchedArticle {
   id: string;
   title: string;
   summary: string | null;
-  url: string | null;
+  url: string;
   level: Level;
   roles: Role[];
   keywords: string[];
@@ -90,7 +90,7 @@ export interface CategorizedArticle {
   level: Level;
   roles: Role[];
   keywords: string[];
-  url: string | null;
+  url: string;
 }
 
 export interface ParsedProfile {
@@ -110,7 +110,7 @@ export interface ComposedNewsletter {
     title: string;
     summary: string;
     why_it_matters: string;
-    url: string | null;
+    url: string;
     level: Level;
   }[];
   roadmap_items: string[];

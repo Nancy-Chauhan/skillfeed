@@ -84,8 +84,8 @@ export async function processIngestionQueue(): Promise<{
         continue;
       }
 
-      // Insert articles into database
-      const articleRows = articles.map((article) => ({
+      // Insert articles into database (skip any without a URL)
+      const articleRows = articles.filter((a) => a.url).map((article) => ({
         source_email: sourceEmail,
         source_name: sourceName,
         original_subject: subject,
@@ -99,6 +99,19 @@ export async function processIngestionQueue(): Promise<{
         processing_status: "completed" as const,
         received_at: job.created_at,
       }));
+
+      if (articleRows.length === 0) {
+        skipped++;
+        await supabase
+          .from("ingestion_jobs")
+          .update({
+            status: "completed",
+            processed_at: new Date().toISOString(),
+            last_error: "All extracted articles lacked URLs — skipped",
+          })
+          .eq("id", job.id);
+        continue;
+      }
 
       const { error: insertError } = await supabase
         .from("articles")

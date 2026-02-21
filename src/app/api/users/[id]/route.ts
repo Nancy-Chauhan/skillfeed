@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { parseProfile } from "@/lib/agents/profile-parser";
-import { ROLES } from "@/lib/utils/constants";
+import { ROLES, LEVELS } from "@/lib/utils/constants";
 
 const UpdateUserSchema = z.object({
   name: z.string().min(1).optional(),
@@ -11,6 +11,8 @@ const UpdateUserSchema = z.object({
   prompt_text: z.string().optional(),
   current_roles: z.array(z.enum(ROLES)).optional(),
   target_roles: z.array(z.enum(ROLES)).optional(),
+  current_level: z.enum(LEVELS).optional(),
+  target_level: z.enum(LEVELS).optional(),
 });
 
 export async function GET(
@@ -94,8 +96,9 @@ export async function PATCH(
 
     const profile = await parseProfile(resumeText, promptText);
     profileUpdates = {
-      current_level: profile.current_level,
-      target_level: profile.target_level,
+      // User-selected levels take priority over AI-parsed ones
+      current_level: updates.current_level ?? profile.current_level,
+      target_level: updates.target_level ?? profile.target_level,
       extracted_keywords: profile.keywords,
       extracted_skills: profile.skills,
       learning_goals: profile.learning_goals,

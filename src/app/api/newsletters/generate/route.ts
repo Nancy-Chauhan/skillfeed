@@ -3,8 +3,7 @@ import { z } from "zod/v4";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { composeNewsletter } from "@/lib/agents/newsletter-composer";
 import { getResend } from "@/lib/resend/client";
-import { render } from "@react-email/components";
-import { NewsletterEmail } from "@/emails/newsletter-template";
+import { renderNewsletterEmail } from "@/emails/newsletter-template";
 import { MIN_ARTICLES_FOR_NEWSLETTER } from "@/lib/utils/constants";
 import type { User, MatchedArticle } from "@/lib/utils/types";
 import { buildTrackingPixelUrl, buildFeedbackUrl, buildClickTrackingUrl } from "@/lib/metrics/events";
@@ -144,9 +143,12 @@ export async function POST(request: Request) {
 
 
   // Render email HTML with tracking
-  const htmlContent = await render(
-    NewsletterEmail({ newsletter, unsubscribeUrl, trackingPixelUrl, feedbackUrls })
-  );
+  const htmlContent = renderNewsletterEmail({
+    newsletter,
+    unsubscribeUrl,
+    trackingPixelUrl,
+    feedbackUrls,
+  });
 
   // Send via Resend
   const { data: emailResult, error: sendError } = await getResend().emails.send({
