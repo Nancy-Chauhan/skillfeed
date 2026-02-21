@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
-export async function POST(request: Request) {
+async function generateAll(request: Request) {
   // Verify cron secret
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
@@ -59,4 +59,13 @@ export async function POST(request: Request) {
   }
 
   return NextResponse.json({ status: "complete", processed, skipped, failed });
+}
+
+// Vercel crons send GET requests
+export async function GET(request: Request) {
+  return generateAll(request);
+}
+
+export async function POST(request: Request) {
+  return generateAll(request);
 }
