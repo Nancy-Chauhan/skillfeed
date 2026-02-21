@@ -10,8 +10,8 @@ const newsletters = [
   { name: "The Pragmatic Engineer", domain: "pragmaticengineer.com" },
   { name: "AI Breakfast", domain: "aibreakfast.beehiiv.com" },
   { name: "Hacker News", domain: "news.ycombinator.com" },
-  { name: "JavaScript Weekly", domain: "javascriptweekly.com" },
-  { name: "React Newsletter", domain: "reactnewsletter.com" },
+  { name: "Ahead of AI", domain: "magazine.sebastianraschka.com" },
+  { name: "The Algorithm", domain: "technologyreview.com" },
   { name: "Python Weekly", domain: "pythonweekly.com" },
   { name: "Changelog", domain: "changelog.com" },
   { name: "Dev.to", domain: "dev.to" },
@@ -19,12 +19,10 @@ const newsletters = [
 
 export function NewsletterMarquee() {
   return (
-    <section className="py-16 md:py-20 overflow-hidden border-t border-white/[0.04]">
-      <div className="max-w-5xl mx-auto px-6 mb-8">
-        <p className="text-center font-mono text-[11px] text-white/70 tracking-[0.15em] uppercase">
-          // we read these every day so you don&apos;t have to
-        </p>
-      </div>
+    <div className="w-screen relative left-1/2 -translate-x-1/2 overflow-hidden py-6">
+      <p className="text-center font-mono text-[11px] text-white/45 tracking-[0.15em] uppercase mb-5">
+        // newsletters we scan every morning
+      </p>
       <div className="relative">
         <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 z-10 bg-gradient-to-r from-[#09090B] to-transparent pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-32 md:w-48 z-10 bg-gradient-to-l from-[#09090B] to-transparent pointer-events-none" />
@@ -33,7 +31,7 @@ export function NewsletterMarquee() {
           {[...newsletters, ...newsletters].map((item, i) => (
             <div
               key={`${item.name}-${i}`}
-              className="flex-shrink-0 mx-1.5 flex items-center gap-2.5 px-3.5 py-2 rounded-md border border-white/[0.1] bg-white/[0.03] font-mono text-[12px] text-white/70 whitespace-nowrap hover:border-white/[0.15] hover:text-white/90 transition-all duration-300"
+              className="flex-shrink-0 mx-1.5 flex items-center gap-2.5 px-3.5 py-2 rounded-md border border-white/[0.1] bg-white/[0.03] font-mono text-[12px] text-white/55 whitespace-nowrap hover:border-white/[0.15] hover:text-white/80 transition-all duration-300"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -48,6 +46,6 @@ export function NewsletterMarquee() {
           ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

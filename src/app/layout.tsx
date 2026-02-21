@@ -13,23 +13,23 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SkillFeed | Personalized Developer Learning",
+  title: "SkillFeed | AI Career Briefs, Personalized to You",
   description:
-    "AI-curated newsletters matched to your skills, your role, and where you want to go. Learn what matters, skip the noise.",
+    "We read 500+ newsletters so you don't have to. Get a daily brief matched to your career goals — the right articles, zero noise.",
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
   ),
   openGraph: {
-    title: "SkillFeed | Personalized Developer Learning",
+    title: "SkillFeed | AI Career Briefs, Personalized to You",
     description:
-      "AI-curated newsletters matched to your skills, your role, and where you want to go.",
+      "We read 500+ newsletters so you don't have to. Get a daily brief matched to your career goals.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SkillFeed | Personalized Developer Learning",
+    title: "SkillFeed | AI Career Briefs, Personalized to You",
     description:
-      "AI-curated newsletters matched to your skills, your role, and where you want to go.",
+      "We read 500+ newsletters so you don't have to. Get a daily brief matched to your career goals.",
   },
 };
 

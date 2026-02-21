@@ -1,28 +1,28 @@
 const steps = [
   {
     number: "01",
-    command: "$ skillfeed init --profile",
-    title: "Define your career arc",
+    command: "step 1 / set your goals",
+    title: "Tell us where you're headed",
     description:
-      "Tell us your current role, target role, skill level, and what you want to learn. Paste your resume or just describe your goals. AI handles the rest.",
+      "Set your current role, target role, and skill level. Paste your resume or just describe your goals in plain English. Takes about two minutes.",
     accent: "text-violet-400",
     output: "→ backend dev → ML engineer",
   },
   {
     number: "02",
-    command: "$ skillfeed scan --match",
-    title: "AI bridges the gap",
+    command: "step 2 / we distill",
+    title: "500+ newsletters, distilled",
     description:
-      "We scan 50+ newsletters, deduplicate, and match articles to your specific skill gaps. Each one is scored by how relevant it is to your career transition.",
+      "Every morning we scan 500+ newsletters, remove duplicates, and score each article by how relevant it is to your specific skill gaps and career goals.",
     accent: "text-emerald-400",
     output: "→ 53 filtered, 3 matched to your path",
   },
   {
     number: "03",
-    command: "$ skillfeed deliver --brief",
-    title: "Wake up leveled up",
+    command: "step 3 / you level up",
+    title: "Wake up to your brief",
     description:
-      "One email every morning with curated articles, personalized \"why this matters\" context, and a roadmap of concrete next steps for your journey.",
+      "One email every morning with curated articles, personalized context on why each one matters to you, and concrete next steps for your journey.",
     accent: "text-sky-400",
     output: "→ brief sent ✓ + roadmap included",
   },
@@ -35,12 +35,12 @@ export function HowItWorks() {
         <div className="text-center max-w-xl mx-auto mb-20 space-y-5">
           <p className="font-mono text-[11px] text-emerald-400/60 uppercase tracking-[0.15em]">// how-it-works</p>
           <h2 className="text-3xl md:text-[2.75rem] font-bold text-white tracking-[-0.02em]">
-            From where you are
+            From inbox overload
             <br />
-            <span className="text-white/70">to where you want to be.</span>
+            <span className="text-white/50">to career clarity.</span>
           </h2>
-          <p className="text-sm text-white/70 leading-relaxed max-w-md mx-auto font-mono">
-            Tell us the destination. We&apos;ll build the reading list.
+          <p className="text-sm text-white/45 leading-relaxed max-w-md mx-auto font-mono">
+            Three steps. Three minutes. One daily brief built around your goals.
           </p>
         </div>
 
@@ -55,7 +55,7 @@ export function HowItWorks() {
                 <span className={`font-mono text-[11px] font-bold ${step.accent} opacity-60 shrink-0`}>
                   {step.number}
                 </span>
-                <span className="font-mono text-[11px] text-white/60 truncate">
+                <span className="font-mono text-[11px] text-white/40 truncate">
                   {step.command}
                 </span>
               </div>
@@ -64,7 +64,7 @@ export function HowItWorks() {
                 <h3 className="text-[15px] font-semibold text-white">
                   {step.title}
                 </h3>
-                <p className="text-sm text-white/70 leading-relaxed">
+                <p className="text-sm text-white/55 leading-relaxed">
                   {step.description}
                 </p>
                 <p className={`font-mono text-[12px] ${step.accent} opacity-50`}>
