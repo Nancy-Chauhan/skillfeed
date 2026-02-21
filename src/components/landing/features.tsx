@@ -53,9 +53,9 @@ export function Features() {
           <h2 className="text-3xl md:text-[2.75rem] font-bold text-white tracking-[-0.02em] leading-tight">
             Your career path
             <br />
-            <span className="text-white/30">drives every recommendation.</span>
+            <span className="text-white/50">drives every recommendation.</span>
           </h2>
-          <p className="text-sm text-white/25 leading-relaxed max-w-md mx-auto font-mono">
+          <p className="text-sm text-white/50 leading-relaxed max-w-md mx-auto font-mono">
             Not just what&apos;s trending. What&apos;s relevant to where you&apos;re headed.
           </p>
         </div>
@@ -82,7 +82,7 @@ export function Features() {
                       {feature.tag}
                     </span>
                   </div>
-                  <p className="text-sm text-white/25 leading-relaxed">
+                  <p className="text-sm text-white/50 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

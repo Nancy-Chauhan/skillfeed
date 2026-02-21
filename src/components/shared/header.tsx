@@ -22,7 +22,7 @@ export async function Header() {
             <>
               <Link
                 href="/dashboard"
-                className="font-mono text-[13px] text-white/30 hover:text-white/60 transition-colors duration-200 px-3 py-1.5 rounded-md hover:bg-white/[0.03]"
+                className="font-mono text-[13px] text-white/50 hover:text-white/70 transition-colors duration-200 px-3 py-1.5 rounded-md hover:bg-white/[0.05]"
               >
                 dashboard
               </Link>
@@ -30,7 +30,7 @@ export async function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="font-mono text-white/20 hover:text-white/50 hover:bg-white/[0.03] cursor-pointer h-8 text-[13px]"
+                  className="font-mono text-white/40 hover:text-white/60 hover:bg-white/[0.05] cursor-pointer h-8 text-[13px]"
                 >
                   <LogOut className="w-3.5 h-3.5 mr-1.5" />
                   sign out

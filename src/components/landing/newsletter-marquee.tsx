@@ -21,8 +21,8 @@ export function NewsletterMarquee() {
   return (
     <section className="py-16 md:py-20 overflow-hidden border-t border-white/[0.04]">
       <div className="max-w-5xl mx-auto px-6 mb-8">
-        <p className="text-center font-mono text-[11px] text-white/15 tracking-[0.15em] uppercase">
-          // scanning 50+ sources
+        <p className="text-center font-mono text-[11px] text-white/40 tracking-[0.15em] uppercase">
+          // we read these every day so you don&apos;t have to
         </p>
       </div>
       <div className="relative">
@@ -33,7 +33,7 @@ export function NewsletterMarquee() {
           {[...newsletters, ...newsletters].map((item, i) => (
             <div
               key={`${item.name}-${i}`}
-              className="flex-shrink-0 mx-1.5 flex items-center gap-2.5 px-3.5 py-2 rounded-md border border-white/[0.06] bg-white/[0.02] font-mono text-[12px] text-white/20 whitespace-nowrap hover:border-white/[0.1] hover:text-white/35 transition-all duration-300"
+              className="flex-shrink-0 mx-1.5 flex items-center gap-2.5 px-3.5 py-2 rounded-md border border-white/[0.1] bg-white/[0.03] font-mono text-[12px] text-white/50 whitespace-nowrap hover:border-white/[0.15] hover:text-white/70 transition-all duration-300"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -41,7 +41,7 @@ export function NewsletterMarquee() {
                 alt={item.name}
                 width={16}
                 height={16}
-                className="rounded-sm opacity-70"
+                className="rounded-sm opacity-100"
               />
               {item.name}
             </div>
