@@ -65,7 +65,7 @@ export function Features() {
           {features.map((feature, i) => (
             <div
               key={feature.key}
-              className={`group rounded-xl border border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/[0.1] transition-all duration-300 overflow-hidden ${
+              className={`group rounded-xl border border-white/[0.06] bg-[#111113] hover:bg-[#151518] hover:border-white/[0.1] transition-all duration-300 overflow-hidden ${
                 i === 0 || i === 3 ? "md:col-span-2 p-5 md:p-7" : "md:col-span-1 p-5 md:p-6"
               }`}
             >

@@ -4,7 +4,7 @@ const steps = [
     command: "step 1 / set your goals",
     title: "Tell us where you're headed",
     description:
-      "Set your current role, target role, and skill level. Paste your resume or just describe your goals in plain English. Takes about two minutes.",
+      "Your current role, target role, and skill level. Two minutes.",
     accent: "text-violet-400",
     output: "→ backend dev → ML engineer",
   },
@@ -13,7 +13,7 @@ const steps = [
     command: "step 2 / we distill",
     title: "500+ newsletters, distilled",
     description:
-      "Every morning we scan 500+ newsletters, remove duplicates, and score each article by how relevant it is to your specific skill gaps and career goals.",
+      "We scan, deduplicate, and rank every article by relevance to your skill gaps.",
     accent: "text-emerald-400",
     output: "→ 53 filtered, 3 matched to your path",
   },
@@ -22,7 +22,7 @@ const steps = [
     command: "step 3 / you level up",
     title: "Wake up to your brief",
     description:
-      "One email every morning with curated articles, personalized context on why each one matters to you, and concrete next steps for your journey.",
+      "One daily email. Curated articles, why they matter to you, and next steps.",
     accent: "text-sky-400",
     output: "→ brief sent ✓ + roadmap included",
   },
@@ -40,7 +40,7 @@ export function HowItWorks() {
             <span className="text-white/50">to career clarity.</span>
           </h2>
           <p className="text-sm text-white/45 leading-relaxed max-w-md mx-auto font-mono">
-            Three steps. Three minutes. One daily brief built around your goals.
+            Three steps. Two minutes. One daily brief.
           </p>
         </div>
 
@@ -49,9 +49,9 @@ export function HowItWorks() {
           <div className="hidden md:block absolute top-12 left-[20%] right-[20%] h-px border-t border-dashed border-white/[0.06]" />
 
           {steps.map((step) => (
-            <div key={step.number} className="relative rounded-lg border border-white/[0.06] bg-white/[0.02] overflow-hidden">
+            <div key={step.number} className="relative rounded-lg border border-white/[0.06] bg-[#111113] overflow-hidden">
               {/* Step header — terminal style */}
-              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.02] overflow-hidden">
+              <div className="flex items-center gap-2 px-3 sm:px-4 py-2.5 border-b border-white/[0.06] bg-[#0d0d10] overflow-hidden">
                 <span className={`font-mono text-[11px] font-bold ${step.accent} opacity-60 shrink-0`}>
                   {step.number}
                 </span>
