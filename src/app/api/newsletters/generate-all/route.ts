@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { composeNewsletterAuto as composeNewsletter } from "@/lib/agents/newsletter-composer-factory";
 import { getResend } from "@/lib/resend/client";
@@ -7,6 +7,8 @@ import { MIN_ARTICLES_FOR_NEWSLETTER } from "@/lib/utils/constants";
 import type { User, MatchedArticle } from "@/lib/utils/types";
 import { buildTrackingPixelUrl, buildFeedbackUrl, buildClickTrackingUrl } from "@/lib/metrics/events";
 import jwt from "jsonwebtoken";
+
+export const maxDuration = 300;
 
 const CONCURRENCY_LIMIT = 5;
 
@@ -33,10 +35,16 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     return "skipped";
   }
 
-  const today = new Date().toISOString().split("T")[0];
-  if (typedUser.last_newsletter_at?.startsWith(today)) {
-    console.log(`${tag} Skipped — already sent today`);
-    return "skipped";
+  if (typedUser.last_newsletter_at) {
+    const userTz = typedUser.timezone || "UTC";
+    const now = new Date();
+    const todayLocal = now.toLocaleDateString("en-CA", { timeZone: userTz });
+    const lastSentLocal = new Date(typedUser.last_newsletter_at)
+      .toLocaleDateString("en-CA", { timeZone: userTz });
+    if (lastSentLocal === todayLocal) {
+      console.log(`${tag} Skipped — already sent today (${userTz})`);
+      return "skipped";
+    }
   }
 
   const { data: articles, error: matchError } = await supabase.rpc(
@@ -170,47 +178,16 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
   return "sent";
 }
 
-async function generateAll(request: Request) {
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  console.log(`[cron:generate-all] Starting newsletter generation at ${new Date().toISOString()}`);
-
-  const supabase = createAdminClient();
-  const today = new Date().toISOString().split("T")[0];
-
-  const { data: users, error } = await supabase
-    .from("users")
-    .select("id")
-    .eq("is_active", true)
-    .is("unsubscribed_at", null)
-    .or(`last_newsletter_at.is.null,last_newsletter_at.lt.${today}`)
-    .limit(100);
-
-  if (error) {
-    console.error("[cron:generate-all] Failed to fetch users:", error);
-    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
-  }
-
-  if (!users || users.length === 0) {
-    console.log("[cron:generate-all] No eligible users found");
-    return NextResponse.json({ status: "complete", processed: 0, skipped: 0, failed: 0 });
-  }
-
-  console.log(`[cron:generate-all] Fetched ${users.length} eligible users`);
-
+async function processUsers(users: { id: string }[]) {
   let processed = 0;
   let skipped = 0;
   let failed = 0;
 
-  // Process users with concurrency limit
   for (let i = 0; i < users.length; i += CONCURRENCY_LIMIT) {
     const batch = users.slice(i, i + CONCURRENCY_LIMIT);
     console.log(`[cron:generate-all] Processing batch ${Math.floor(i / CONCURRENCY_LIMIT) + 1} (users ${i + 1}-${Math.min(i + CONCURRENCY_LIMIT, users.length)} of ${users.length})`);
     const results = await Promise.allSettled(
-      batch.map((user) => generateForUser(user.id))
+      batch.map((user: { id: string }) => generateForUser(user.id))
     );
 
     for (const result of results) {
@@ -226,7 +203,41 @@ async function generateAll(request: Request) {
   }
 
   console.log(`[cron:generate-all] Complete — sent: ${processed}, skipped: ${skipped}, failed: ${failed}`);
-  return NextResponse.json({ status: "complete", processed, skipped, failed });
+}
+
+async function generateAll(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  console.log(`[cron:generate-all] Hourly newsletter run at ${new Date().toISOString()}`);
+
+  const supabase = createAdminClient();
+
+  const { data: users, error } = await supabase.rpc(
+    "get_users_due_for_newsletter",
+    { p_target_hour: 8 }
+  );
+
+  if (error) {
+    console.error("[cron:generate-all] Failed to fetch users:", error);
+    return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
+  }
+
+  if (!users || users.length === 0) {
+    console.log("[cron:generate-all] No eligible users found");
+    return NextResponse.json({ status: "accepted", queued: 0 });
+  }
+
+  console.log(`[cron:generate-all] Queued ${users.length} users for processing`);
+
+  // Return immediately, process in the background
+  after(async () => {
+    await processUsers(users as { id: string }[]);
+  });
+
+  return NextResponse.json({ status: "accepted", queued: users.length });
 }
 
 // Vercel crons send GET requests

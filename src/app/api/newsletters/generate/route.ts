@@ -57,11 +57,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ status: "skipped", reason: "User inactive or unsubscribed" });
   }
 
-  // Idempotency: skip if already sent today
-  const today = new Date().toISOString().split("T")[0];
-  if (typedUser.last_newsletter_at?.startsWith(today)) {
-    console.log(`${tag} Skipped — already sent today`);
-    return NextResponse.json({ status: "skipped", reason: "Already sent today" });
+  // Idempotency: skip if already sent today (in user's local timezone)
+  if (typedUser.last_newsletter_at) {
+    const userTz = typedUser.timezone || "UTC";
+    const now = new Date();
+    const todayLocal = now.toLocaleDateString("en-CA", { timeZone: userTz });
+    const lastSentLocal = new Date(typedUser.last_newsletter_at)
+      .toLocaleDateString("en-CA", { timeZone: userTz });
+    if (lastSentLocal === todayLocal) {
+      console.log(`${tag} Skipped — already sent today (${userTz})`);
+      return NextResponse.json({ status: "skipped", reason: "Already sent today" });
+    }
   }
 
   // Match articles
