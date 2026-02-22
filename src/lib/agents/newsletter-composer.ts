@@ -56,10 +56,13 @@ export async function composeNewsletter(
   user: User,
   articles: MatchedArticle[]
 ): Promise<ComposedNewsletter> {
+  const allCurrentRoles = [...user.current_roles, ...(user.custom_current_roles ?? [])];
+  const allTargetRoles = [...user.target_roles, ...(user.custom_target_roles ?? [])];
+
   const userContext = `User Profile:
 - Name: ${user.name ?? "there"}
-- Current roles: ${user.current_roles.join(", ")}
-- Target roles: ${user.target_roles.join(", ")}
+- Current roles: ${allCurrentRoles.join(", ")}
+- Target roles: ${allTargetRoles.join(", ")}
 - Current level: ${user.current_level}
 - Target level: ${user.target_level}
 - Skills: ${user.extracted_skills.join(", ")}
