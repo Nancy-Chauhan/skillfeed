@@ -187,8 +187,6 @@ export function renderNewsletterEmail({
           </mj-text>
           <mj-text align="center" font-size="11px" color="#A1A1AA" padding="0">
             <a href="${escapeHtml(unsubscribeUrl)}" style="color:#A1A1AA;text-decoration:underline;">Unsubscribe</a>
-            &nbsp;&middot;&nbsp;
-            <span style="color:#A1A1AA;text-decoration:underline;">Preferences</span>
           </mj-text>
         </mj-column>
       </mj-section>
