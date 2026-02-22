@@ -1,6 +1,6 @@
 import { z } from "zod/v4";
 import { callClaude } from "@/lib/claude/client";
-import { LEVELS } from "@/lib/utils/constants";
+import { LEVELS, ROLE_LABELS, type Role } from "@/lib/utils/constants";
 import type { ComposedNewsletter, MatchedArticle, User } from "@/lib/utils/types";
 
 const FeaturedArticleSchema = z.object({
@@ -52,6 +52,32 @@ Rules:
 
 Respond with JSON only, no markdown fences, no explanation.`;
 
+/** Gemini responseSchema — enforces exact JSON shape at the model level. */
+const NEWSLETTER_RESPONSE_SCHEMA = {
+  type: "object",
+  properties: {
+    subject: { type: "string" },
+    greeting: { type: "string" },
+    featured_articles: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          title: { type: "string" },
+          summary: { type: "string" },
+          why_it_matters: { type: "string" },
+          url: { type: "string" },
+          level: { type: "string", enum: [...LEVELS] },
+        },
+        required: ["title", "summary", "why_it_matters", "url", "level"],
+      },
+    },
+    roadmap_items: { type: "array", items: { type: "string" } },
+    closing: { type: "string" },
+  },
+  required: ["subject", "greeting", "featured_articles", "roadmap_items", "closing"],
+} as const;
+
 export async function composeNewsletter(
   user: User,
   articles: MatchedArticle[]
@@ -59,8 +85,9 @@ export async function composeNewsletter(
   const userName = user.name ?? "there";
   console.log(`[composer] Composing for user "${userName}" with ${articles.length} articles`);
 
-  const allCurrentRoles = [...user.current_roles, ...(user.custom_current_roles ?? [])];
-  const allTargetRoles = [...user.target_roles, ...(user.custom_target_roles ?? [])];
+  const rl = (slug: string) => ROLE_LABELS[slug as Role] ?? slug;
+  const allCurrentRoles = [...user.current_roles.map(rl), ...(user.custom_current_roles ?? [])];
+  const allTargetRoles = [...user.target_roles.map(rl), ...(user.custom_target_roles ?? [])];
 
   const userContext = `User Profile:
 - Name: ${userName}
@@ -90,8 +117,10 @@ ${articles
       ? userMessage
       : `${userMessage}\n\nYour previous response had validation errors:\n${lastError}\n\nPlease fix and return valid JSON. Every featured_article MUST have: title, summary, why_it_matters, url (valid URL), and level.`;
 
-    console.log(`[composer] Attempt ${attempt + 1}: calling Claude (prompt length: ${prompt.length})`);
-    const response = await callClaude(SYSTEM_PROMPT, prompt);
+    console.log(`[composer] Attempt ${attempt + 1}: calling LLM (prompt length: ${prompt.length})`);
+    const response = await callClaude(SYSTEM_PROMPT, prompt, {
+      responseSchema: NEWSLETTER_RESPONSE_SCHEMA as unknown as Record<string, unknown>,
+    });
 
     let parsed: Record<string, unknown>;
     try {

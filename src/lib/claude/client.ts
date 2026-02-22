@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, type Schema } from "@google/generative-ai";
 
 // ── Provider config ─────────────────────────────────────────────
 // Set LLM_PROVIDER=gemini or LLM_PROVIDER=anthropic in .env.local
@@ -48,7 +48,7 @@ const DEFAULT_GEMINI_MODEL = "gemini-2.5-flash";
 function callGemini(
   systemPrompt: string,
   userMessage: string,
-  options?: { maxTokens?: number }
+  options?: { maxTokens?: number; responseSchema?: Record<string, unknown> }
 ): Promise<string> {
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({ model: DEFAULT_GEMINI_MODEL });
@@ -59,6 +59,7 @@ function callGemini(
       systemInstruction: { role: "model", parts: [{ text: systemPrompt }] },
       generationConfig: {
         responseMimeType: "application/json",
+        ...(options?.responseSchema ? { responseSchema: options.responseSchema as unknown as Schema } : {}),
         maxOutputTokens: options?.maxTokens ?? 4096,
       },
     })
@@ -70,7 +71,7 @@ function callGemini(
 export async function callClaude(
   systemPrompt: string,
   userMessage: string,
-  options?: { model?: string; maxTokens?: number }
+  options?: { model?: string; maxTokens?: number; responseSchema?: Record<string, unknown> }
 ): Promise<string> {
   const provider = getProvider();
 

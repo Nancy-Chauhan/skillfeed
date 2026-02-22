@@ -101,6 +101,7 @@ export async function processIngestionQueue(): Promise<{
         message_id: `${job.message_id}:${article.title.slice(0, 50)}`,
         title: article.title,
         summary: article.summary,
+        takeaway: article.takeaway,
         url: article.url,
         level: article.level,
         roles: article.roles,

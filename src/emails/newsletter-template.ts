@@ -72,9 +72,9 @@ export function renderNewsletterEmail({
                   <p style="font-size:13px;line-height:1.6;color:#52525B;margin:0 0 10px 0;">
                     ${escapeHtml(article.summary)}
                   </p>
-                  <p style="font-size:12px;line-height:1.5;color:#71717A;margin:0 0 10px 0;font-style:italic;">
+                  ${article.why_it_matters ? `<p style="font-size:12px;line-height:1.5;color:#71717A;margin:0 0 10px 0;font-style:italic;">
                     &ldquo;${escapeHtml(article.why_it_matters)}&rdquo;
-                  </p>
+                  </p>` : ""}
                   ${readMoreMarkup}
                   ${feedbackMarkup}
                 </td>

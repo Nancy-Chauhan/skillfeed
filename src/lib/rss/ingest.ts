@@ -13,6 +13,7 @@ Return ONLY valid JSON (no markdown fences) with this exact structure:
 {
   "title": "the article title",
   "summary": "2-3 sentence summary of what the article covers and why it's valuable for developers",
+  "takeaway": "A single sentence explaining why this matters for someone in the relevant roles",
   "level": "beginner" | "intermediate" | "senior",
   "roles": ["backend", "ai_engineer", "general"],
   "keywords": ["keyword1", "keyword2", ...]
@@ -22,7 +23,8 @@ Rules:
 - roles: pick 1-3 from: frontend, backend, fullstack, mobile, data_engineer, devops, security, product_manager, engineering_manager, solutions_engineer, ai_engineer, ml_engineer, data_scientist, mlops, ai_product_manager, general
 - level: beginner (tutorials, intros), intermediate (practical guides, patterns), senior (architecture, scale, deep dives)
 - keywords: 3-6 specific technical terms
-- summary: focus on practical value for the developer`;
+- summary: focus on practical value for the developer
+- takeaway: one sentence on why this article matters for the relevant roles`;
 
 interface FeedItem {
   title?: string;
@@ -36,6 +38,7 @@ interface FeedItem {
 async function categorizeArticle(item: FeedItem): Promise<{
   title: string;
   summary: string;
+  takeaway: string;
   level: string;
   roles: string[];
   keywords: string[];
@@ -111,6 +114,7 @@ async function ingestFeed(
       message_id: messageId,
       title: categorized.title,
       summary: categorized.summary,
+      takeaway: categorized.takeaway,
       url: item.link,
       level: categorized.level,
       roles: categorized.roles,

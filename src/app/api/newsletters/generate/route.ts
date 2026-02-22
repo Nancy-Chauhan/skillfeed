@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod/v4";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { composeNewsletter } from "@/lib/agents/newsletter-composer";
+import { composeNewsletterAuto as composeNewsletter } from "@/lib/agents/newsletter-composer-factory";
 import { getResend } from "@/lib/resend/client";
 import { renderNewsletterEmail } from "@/emails/newsletter-template";
 import { MIN_ARTICLES_FOR_NEWSLETTER } from "@/lib/utils/constants";

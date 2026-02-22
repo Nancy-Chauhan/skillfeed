@@ -8,6 +8,7 @@ export interface Article {
   message_id: string;
   title: string;
   summary: string | null;
+  takeaway: string | null;
   content: string | null;
   url: string;
   level: Level;
@@ -77,6 +78,7 @@ export interface MatchedArticle {
   id: string;
   title: string;
   summary: string | null;
+  takeaway: string | null;
   url: string;
   level: Level;
   roles: Role[];
@@ -89,6 +91,7 @@ export interface MatchedArticle {
 export interface CategorizedArticle {
   title: string;
   summary: string;
+  takeaway: string;
   level: Level;
   roles: Role[];
   keywords: string[];
