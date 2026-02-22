@@ -18,7 +18,7 @@ const newsletters = [
   { name: "AI Breakfast", subject: "Claude 4.5 deep-dive, Mistral updates...", color: "border-lime-400/20", domain: "aibreakfast.beehiiv.com" },
 ];
 
-// Fixed positions so they look scattered / overlapping like a messy desk
+// Fixed positions so they look scattered / overlapping like a messy desk (desktop)
 const cardPositions = [
   { top: "0%", left: "5%", rotate: "-3deg", z: 1 },
   { top: "2%", left: "45%", rotate: "2deg", z: 2 },
@@ -30,6 +30,18 @@ const cardPositions = [
   { top: "55%", left: "48%", rotate: "1deg", z: 8 },
   { top: "72%", left: "5%", rotate: "3deg", z: 9 },
   { top: "73%", left: "44%", rotate: "-1.5deg", z: 10 },
+];
+
+// Mobile: compact vertical scatter (8 cards, 2 columns)
+const mobileCardPositions = [
+  { top: "0%", left: "2%", rotate: "-2deg", z: 1 },
+  { top: "1%", left: "48%", rotate: "2.5deg", z: 2 },
+  { top: "22%", left: "5%", rotate: "1.5deg", z: 3 },
+  { top: "24%", left: "50%", rotate: "-1.5deg", z: 4 },
+  { top: "44%", left: "0%", rotate: "-2.5deg", z: 5 },
+  { top: "46%", left: "47%", rotate: "1deg", z: 6 },
+  { top: "66%", left: "4%", rotate: "2deg", z: 7 },
+  { top: "68%", left: "49%", rotate: "-2deg", z: 8 },
 ];
 
 export function DistillationVisual() {
@@ -85,28 +97,43 @@ export function DistillationVisual() {
           </div>
         </div>
 
-        {/* Mobile: horizontal scroll of cards */}
-        <div className="md:hidden flex gap-3 overflow-x-auto pb-4 px-2 -mx-2 scrollbar-none">
-          {newsletters.slice(0, 6).map((nl, i) => (
+        {/* Mobile: vertical scattered cards */}
+        <div className="relative h-[300px] md:hidden">
+          {newsletters.slice(0, 8).map((nl, i) => (
             <div
               key={nl.name}
-              className={`shrink-0 w-[170px] sm:w-[200px] rounded-md border ${nl.color} bg-[#0d0d10] p-2.5`}
-              style={{ transform: `rotate(${i % 2 === 0 ? "-1" : "1"}deg)` }}
+              className="absolute w-[48%] opacity-0 animate-fade-in"
+              style={{
+                top: mobileCardPositions[i].top,
+                left: mobileCardPositions[i].left,
+                transform: `rotate(${mobileCardPositions[i].rotate})`,
+                zIndex: mobileCardPositions[i].z,
+                animationDelay: `${i * 0.08 + 0.3}s`,
+                animationFillMode: "forwards",
+              }}
             >
-              <div className="flex items-start gap-2">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://www.google.com/s2/favicons?domain=${nl.domain}&sz=64`}
-                  alt={nl.name}
-                  className="w-5 h-5 rounded shrink-0 mt-0.5"
-                />
-                <div className="min-w-0 flex-1">
-                  <p className="text-[10px] text-white/60 font-medium truncate">{nl.name}</p>
-                  <p className="text-[9px] text-white/45 truncate leading-relaxed">{nl.subject}</p>
+              <div className={`rounded-md border ${nl.color} bg-[#0d0d10] p-2.5 shadow-[0_2px_8px_rgba(0,0,0,0.3)]`}>
+                <div className="flex items-start gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${nl.domain}&sz=64`}
+                    alt={nl.name}
+                    className="w-5 h-5 rounded shrink-0 mt-0.5"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10px] text-white/60 font-medium truncate">{nl.name}</p>
+                    <p className="text-[9px] text-white/45 truncate leading-relaxed">{nl.subject}</p>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
+          <div
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in"
+            style={{ animationDelay: "1s", animationFillMode: "forwards" }}
+          >
+            <span className="font-mono text-[10px] text-white/50">+500 more...</span>
+          </div>
         </div>
 
         {/* ─── Center: Arrow ─── */}

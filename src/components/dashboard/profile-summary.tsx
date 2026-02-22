@@ -43,7 +43,7 @@ export function ProfileSummary({
           <p className="font-mono text-xs text-white/45 mt-0.5">{email}</p>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="space-y-2.5">
             <p className="font-mono text-[11px] text-white/40 uppercase tracking-wider">current</p>
             <div className="flex flex-wrap gap-1.5">

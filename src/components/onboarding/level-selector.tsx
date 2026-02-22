@@ -20,7 +20,7 @@ export function LevelSelector({
       <p className="text-[13px] text-white/60">
         {label} <span className="text-white/35">— pick one</span>
       </p>
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-1 min-[400px]:grid-cols-3 gap-2">
         {levels.map((level, i) => (
           <button
             key={level}
