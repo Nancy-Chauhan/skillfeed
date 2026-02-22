@@ -10,7 +10,7 @@ export default async function OnboardingPage() {
   // Load existing profile if any (for edit flow)
   const { data: profile } = await admin
     .from("users")
-    .select("id, name, current_roles, target_roles, current_level, target_level, prompt_text")
+    .select("id, name, current_roles, target_roles, custom_current_roles, custom_target_roles, current_level, target_level, prompt_text")
     .eq("email", user.email)
     .single();
 
@@ -42,6 +42,8 @@ export default async function OnboardingPage() {
         id: profile.id,
         current_roles: profile.current_roles,
         target_roles: profile.target_roles,
+        custom_current_roles: profile.custom_current_roles ?? [],
+        custom_target_roles: profile.custom_target_roles ?? [],
         current_level: profile.current_level,
         target_level: profile.target_level,
         prompt_text: profile.prompt_text,

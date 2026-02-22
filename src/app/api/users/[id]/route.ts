@@ -11,6 +11,8 @@ const UpdateUserSchema = z.object({
   prompt_text: z.string().optional(),
   current_roles: z.array(z.enum(ROLES)).optional(),
   target_roles: z.array(z.enum(ROLES)).optional(),
+  custom_current_roles: z.array(z.string().min(1)).optional(),
+  custom_target_roles: z.array(z.string().min(1)).optional(),
   current_level: z.enum(LEVELS).optional(),
   target_level: z.enum(LEVELS).optional(),
 });

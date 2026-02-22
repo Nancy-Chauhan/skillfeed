@@ -26,6 +26,8 @@ export interface User {
   prompt_text: string | null;
   current_roles: Role[];
   target_roles: Role[];
+  custom_current_roles: string[];
+  custom_target_roles: string[];
   current_level: Level;
   target_level: Level;
   extracted_keywords: string[];

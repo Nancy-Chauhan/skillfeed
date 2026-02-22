@@ -12,6 +12,8 @@ const CreateUserSchema = z.object({
   prompt_text: z.string().optional(),
   current_roles: z.array(z.enum(ROLES)).optional(),
   target_roles: z.array(z.enum(ROLES)).optional(),
+  custom_current_roles: z.array(z.string().min(1)).optional(),
+  custom_target_roles: z.array(z.string().min(1)).optional(),
   current_level: z.enum(LEVELS).optional(),
   target_level: z.enum(LEVELS).optional(),
 });
@@ -82,6 +84,8 @@ export async function POST(request: Request) {
       prompt_text: data.prompt_text ?? null,
       current_roles: data.current_roles ?? profile.current_roles,
       target_roles: data.target_roles ?? profile.target_roles,
+      custom_current_roles: data.custom_current_roles ?? [],
+      custom_target_roles: data.custom_target_roles ?? [],
       current_level: (data.current_level ?? profile.current_level) as Level,
       target_level: (data.target_level ?? profile.target_level) as Level,
       extracted_keywords: profile.keywords,

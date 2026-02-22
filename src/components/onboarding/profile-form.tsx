@@ -21,6 +21,8 @@ interface ExistingProfile {
   id: string;
   current_roles: Role[];
   target_roles: Role[];
+  custom_current_roles: string[];
+  custom_target_roles: string[];
   current_level: Level;
   target_level: Level;
   prompt_text: string | null;
@@ -52,8 +54,8 @@ export function ProfileForm({
     current_level: existingProfile?.current_level ?? null,
     target_level: existingProfile?.target_level ?? null,
   });
-  const [customCurrentRoles, setCustomCurrentRoles] = useState<string[]>([]);
-  const [customTargetRoles, setCustomTargetRoles] = useState<string[]>([]);
+  const [customCurrentRoles, setCustomCurrentRoles] = useState<string[]>(existingProfile?.custom_current_roles ?? []);
+  const [customTargetRoles, setCustomTargetRoles] = useState<string[]>(existingProfile?.custom_target_roles ?? []);
 
   const totalSteps = 2;
 
@@ -111,6 +113,8 @@ export function ProfileForm({
         prompt_text: promptText,
         current_roles: formData.current_roles,
         target_roles: formData.target_roles,
+        custom_current_roles: customCurrentRoles,
+        custom_target_roles: customTargetRoles,
         current_level: formData.current_level ?? undefined,
         target_level: formData.target_level ?? undefined,
       };

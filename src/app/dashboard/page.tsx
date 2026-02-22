@@ -65,6 +65,8 @@ export default async function DashboardPage() {
             email={user.email}
             currentRoles={user.current_roles}
             targetRoles={user.target_roles}
+            customCurrentRoles={user.custom_current_roles ?? []}
+            customTargetRoles={user.custom_target_roles ?? []}
             currentLevel={user.current_level}
             targetLevel={user.target_level}
             extractedSkills={user.extracted_skills}

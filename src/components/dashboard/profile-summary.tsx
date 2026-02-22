@@ -9,6 +9,8 @@ interface ProfileSummaryProps {
   email: string;
   currentRoles: Role[];
   targetRoles: Role[];
+  customCurrentRoles: string[];
+  customTargetRoles: string[];
   currentLevel: Level;
   targetLevel: Level;
   extractedSkills: string[];
@@ -20,6 +22,8 @@ export function ProfileSummary({
   email,
   currentRoles,
   targetRoles,
+  customCurrentRoles,
+  customTargetRoles,
   currentLevel,
   targetLevel,
   extractedSkills,
@@ -52,6 +56,11 @@ export function ProfileSummary({
                   {ROLE_LABELS[role]}
                 </Badge>
               ))}
+              {customCurrentRoles.map((role) => (
+                <Badge key={role} variant="secondary" className="font-mono bg-white/[0.04] text-white/70 border border-white/[0.06] rounded-full text-[11px] px-2.5">
+                  {role}
+                </Badge>
+              ))}
             </div>
             <p className="text-sm text-white/70">{LEVEL_LABELS[currentLevel]}</p>
           </div>
@@ -61,6 +70,11 @@ export function ProfileSummary({
               {targetRoles.map((role) => (
                 <Badge key={role} variant="secondary" className="font-mono bg-violet-500/[0.08] text-violet-400/80 border border-violet-500/[0.15] rounded-full text-[11px] px-2.5">
                   {ROLE_LABELS[role]}
+                </Badge>
+              ))}
+              {customTargetRoles.map((role) => (
+                <Badge key={role} variant="secondary" className="font-mono bg-violet-500/[0.08] text-violet-400/80 border border-violet-500/[0.15] rounded-full text-[11px] px-2.5">
+                  {role}
                 </Badge>
               ))}
             </div>
