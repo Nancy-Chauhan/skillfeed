@@ -33,7 +33,7 @@ export function Hero() {
 
         {/* How it works — one-liner */}
         <p className="reveal-delay-2 text-[13px] text-white/45 max-w-md mx-auto leading-relaxed font-mono mb-8">
-          Tell us where you are and where you&apos;re headed. We&apos;ll distill 500+ sources into your daily must-reads.
+          Set your career goals. We distill 500+ sources into your daily must-reads.
         </p>
 
         {/* CTA */}
