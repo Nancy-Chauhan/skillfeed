@@ -5,6 +5,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { parseProfile } from "@/lib/agents/profile-parser";
 import { ROLES, LEVELS, type Level } from "@/lib/utils/constants";
 import { checkRateLimit, getClientIp } from "@/lib/utils/rate-limiter";
+import { renderWaitlistConfirmationEmail } from "@/emails/waitlist-confirmation";
+import { getResend } from "@/lib/resend/client";
 
 const CreateUserSchema = z.object({
   name: z.string().optional(),
@@ -107,6 +109,19 @@ export async function POST(request: Request) {
     await admin.from("waitlist").insert({ email: user.email! });
   } catch (e) {
     console.error("Failed to insert into waitlist:", e);
+  }
+
+  // Send waitlist confirmation email (don't let failure break user creation)
+  try {
+    const html = renderWaitlistConfirmationEmail(user.email!);
+    await getResend().emails.send({
+      from: process.env.EMAIL_FROM ?? "SkillFeed <onboarding@resend.dev>",
+      to: user.email!,
+      subject: "You're on the skillfeed_ waitlist",
+      html,
+    });
+  } catch (e) {
+    console.error("Failed to send waitlist confirmation email:", e);
   }
 
   return NextResponse.json(newUser, { status: 201 });
