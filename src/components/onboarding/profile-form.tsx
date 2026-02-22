@@ -79,8 +79,7 @@ export function ProfileForm({
           && formData.current_level !== null;
       case 2:
         return (formData.target_roles.length > 0 || customTargetRoles.length > 0)
-          && formData.target_level !== null
-          && formData.prompt_text.trim().length > 0;
+          && formData.target_level !== null;
       default:
         return false;
     }
@@ -281,7 +280,7 @@ export function ProfileForm({
                       label="Target level"
                     />
                     <div className="space-y-2">
-                      <p className="text-[13px] text-white/70">Your background & goals</p>
+                      <p className="text-[13px] text-white/70">Your background & goals <span className="text-white/40">(optional)</span></p>
                       <Textarea
                         id="prompt"
                         placeholder={"e.g. I'm a backend engineer with 3 years of experience in Python and Go. I want to move into ML engineering — specifically building and deploying production ML systems..."}
