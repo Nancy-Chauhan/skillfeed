@@ -161,6 +161,7 @@ export function ProfileForm({
 
   return (
     <div className="min-h-screen bg-[#09090B] flex items-center justify-center p-4 pt-16 sm:pt-20 relative overflow-hidden">
+      <div className="fixed inset-0 dot-grid pointer-events-none z-0" />
       {/* Background glow */}
       <div className="absolute top-[8%] left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-violet-500/[0.03] blur-[120px] pointer-events-none" />
 
