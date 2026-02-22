@@ -28,13 +28,14 @@
 
 ## About
 
-SkillFeed is an AI-powered newsletter aggregator that delivers **one personalized daily brief** to developers. It ingests content from 50+ sources (65 RSS feeds and 35 email newsletters), deduplicates articles using Claude AI, and matches them to each user's skills, role, and career goals.
+SkillFeed is an AI-powered newsletter aggregator that delivers **one personalized daily brief** to developers. It ingests content from 100+ sources (65 RSS feeds and 35 email newsletters), categorizes articles using Claude AI, and matches them to each user's skills, role, and career goals. Newsletters are delivered at **8 AM in each user's local timezone**.
 
 ### Key Features
 
 - **AI-Powered Curation** - Claude categorizes articles by role, level, and keywords, then composes personalized newsletters with "why it matters" context
-- **Smart Matching** - PostgreSQL RPC function matches articles using role overlap, level compatibility, and keyword intersection
-- **Multi-Source Ingestion** - Pulls from RSS feeds and email newsletters via AgentMail webhooks
+- **Smart Matching** - Supabase Database Function matches articles using role overlap, level compatibility, and keyword intersection
+- **Timezone-Aware Delivery** - Newsletters arrive at 8 AM in each user's local timezone, powered by an hourly cron via [cron-job.org](https://cron-job.org) (free)
+- **Multi-Source Ingestion** - Pulls from 65 RSS feeds and 35 email newsletters via AgentMail webhooks
 - **Engagement Tracking** - Open rates, click tracking, and per-article feedback (helpful / not helpful)
 - **One-Click Unsubscribe** - JWT-based unsubscribe with `List-Unsubscribe` header support
 
@@ -43,8 +44,9 @@ SkillFeed is an AI-powered newsletter aggregator that delivers **one personalize
 - [Next.js 16](https://nextjs.org) - App Router, React 19, Server Components
 - [Supabase](https://supabase.com) - PostgreSQL, Auth, Row Level Security
 - [Claude API](https://docs.anthropic.com) - Article categorization, profile parsing, newsletter composition
-- [Resend](https://resend.com) + [React Email](https://react.email) - Transactional email delivery
+- [Resend](https://resend.com) + [MJML](https://mjml.io) - Transactional email delivery
 - [AgentMail](https://agentmail.to) - Email ingestion with Svix webhook verification
+- [cron-job.org](https://cron-job.org) - Free external cron for hourly newsletter scheduling
 - [Tailwind CSS v4](https://tailwindcss.com) + [ShadCN UI](https://ui.shadcn.com) - Component library
 - [Bun](https://bun.sh) - Runtime and package manager
 
@@ -58,11 +60,12 @@ SkillFeed is an AI-powered newsletter aggregator that delivers **one personalize
 
 ### Data Flow
 
-1. **Ingest** - 65 RSS feeds and email newsletters arrive via AgentMail webhooks (Svix-verified). Articles enter an async queue with exponential backoff retry.
-2. **Categorize** - Claude AI extracts title, summary, level, roles, keywords, and URL from each article.
-3. **Match** - The `match_articles_for_user()` PostgreSQL function finds the top 15 unread articles from the last 7 days matching each user's profile.
-4. **Compose** - Claude generates a personalized newsletter: featured articles with "why it matters" context and a learning roadmap.
-5. **Deliver** - Resend sends the email with HMAC-signed tracking pixels, click tracking, and feedback URLs.
+1. **Ingest** - 65 RSS feeds and 35 email newsletters arrive via AgentMail webhooks (Svix-verified). Articles enter an async queue with exponential backoff retry.
+2. **Categorize** - Claude AI extracts title, summary, takeaway, level, roles, keywords, and URL from each article.
+3. **Schedule** - Every hour, cron-job.org pings the API. A Supabase Database Function (`get_users_due_for_newsletter`) finds users where it's currently 8 AM in their timezone.
+4. **Match** - The `match_articles_for_user()` Database Function finds the top 15 unread articles from the last 7 days matching each user's profile.
+5. **Compose** - Claude generates a personalized newsletter: featured articles with "why it matters" context and a learning roadmap.
+6. **Deliver** - Next.js `after()` returns 200 immediately, then Resend sends the email with HMAC-signed tracking pixels, click tracking, and feedback URLs in the background.
 
 <br />
 
@@ -80,7 +83,7 @@ src/
 │   └── api/
 │       ├── users/                    # Profile CRUD (POST, GET, PATCH)
 │       ├── newsletters/generate/     # Single user newsletter generation
-│       ├── newsletters/generate-all/ # Daily cron job
+│       ├── newsletters/generate-all/ # Hourly cron (8 AM per timezone)
 │       ├── webhooks/agentmail/       # Email ingestion endpoint
 │       ├── metrics/                  # Open, click, feedback tracking
 │       └── unsubscribe/              # JWT-based one-click unsubscribe
@@ -93,22 +96,25 @@ src/
 │   └── ui/                           # ShadCN primitives
 │
 ├── emails/
-│   └── newsletter-template.tsx       # React Email template
+│   └── newsletter-template.ts        # MJML email template
 │
 ├── lib/
 │   ├── agents/                       # AI agents
 │   │   ├── article-categorizer.ts    # Article → structured data
 │   │   ├── newsletter-composer.ts    # Articles + profile → newsletter
+│   │   ├── newsletter-composer-factory.ts  # LLM vs template mode routing
 │   │   └── profile-parser.ts         # Resume → structured profile
 │   ├── supabase/                     # Admin, server, browser clients
 │   ├── queue/                        # Async ingestion with retry
 │   ├── metrics/                      # HMAC-signed tracking URLs
+│   ├── claude/                       # Unified LLM client (Claude + Gemini)
+│   ├── rss/                          # RSS feed ingestion (65 feeds)
 │   ├── auth/                         # Session helpers
 │   └── utils/                        # Types, constants, rate limiter
 │
 └── middleware.ts                     # Route protection
 
-supabase/migrations/                  # 9 sequential SQL migrations
+supabase/migrations/                  # 17 sequential SQL migrations
 scripts/                              # setup-agentmail, seed-data, ingest-rss, newsletter-subscribe-list
 ```
 
@@ -119,12 +125,15 @@ scripts/                              # setup-agentmail, seed-data, ingest-rss, 
 | Table | Purpose |
 |-------|---------|
 | `articles` | Ingested articles with `roles[]`, `keywords[]`, `level`, `processing_status` |
-| `users` | Developer profiles with current/target roles, skills, learning goals |
+| `users` | Developer profiles with current/target roles, skills, learning goals, timezone |
 | `newsletters_sent` | Delivered newsletters with `article_ids[]`, delivery status, HTML content |
 | `newsletter_events` | Engagement tracking: opens, clicks, feedback per article |
 | `ingestion_jobs` | Async processing queue with retry logic (max 5 attempts) |
+| `waitlist` | Early access gating (pending/approved/rejected) |
 
-**Key RPC:** `match_articles_for_user(user_id)` returns the top 15 matching unread articles from the last 7 days, scored by keyword overlap, filtered by role and level compatibility.
+**Key Database Functions:**
+- `match_articles_for_user(user_id)` - Returns the top 15 matching unread articles from the last 7 days, scored by keyword overlap, filtered by role and level compatibility
+- `get_users_due_for_newsletter(target_hour)` - Returns users where it's currently the target hour in their local timezone and they haven't been sent a newsletter today
 
 <br />
 
@@ -172,15 +181,23 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 Run the migrations in order in your Supabase SQL editor:
 
 ```bash
-supabase/migrations/001_enable_extensions.sql    # pgcrypto
-supabase/migrations/002_create_articles.sql      # Articles table + enums
-supabase/migrations/003_create_users.sql         # Users table
-supabase/migrations/004_create_newsletters.sql   # Newsletters sent
-supabase/migrations/005_create_functions.sql     # match_articles_for_user()
-supabase/migrations/006_create_indexes.sql       # GIN + B-tree indexes
-supabase/migrations/007_enable_rls.sql           # Row Level Security policies
-supabase/migrations/008_create_ingestion_jobs.sql # Async queue
+supabase/migrations/001_enable_extensions.sql       # pgcrypto
+supabase/migrations/002_create_articles.sql         # Articles table + enums
+supabase/migrations/003_create_users.sql            # Users table
+supabase/migrations/004_create_newsletters.sql      # Newsletters sent
+supabase/migrations/005_create_functions.sql        # match_articles_for_user()
+supabase/migrations/006_create_indexes.sql          # GIN + B-tree indexes
+supabase/migrations/007_enable_rls.sql              # Row Level Security policies
+supabase/migrations/008_create_ingestion_jobs.sql   # Async queue
 supabase/migrations/009_create_newsletter_events.sql # Engagement tracking
+supabase/migrations/010_create_waitlist.sql         # Waitlist table
+supabase/migrations/011_expand_user_roles.sql       # Extended role enums
+supabase/migrations/012_require_article_url.sql     # URL required constraint
+supabase/migrations/013_add_custom_roles.sql        # Custom role support
+supabase/migrations/014_add_article_takeaway.sql    # Article takeaway field
+supabase/migrations/015_update_match_function.sql   # Improved matching
+supabase/migrations/016_create_role_labels.sql      # Role display labels
+supabase/migrations/017_timezone_newsletter_scheduling.sql # Timezone-aware scheduling
 ```
 
 ### Run
@@ -211,7 +228,8 @@ bun run scripts/setup-agentmail.ts
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `POST` | `/api/newsletters/generate` | `Bearer CRON_SECRET` | Generate and send newsletter for a single user |
-| `POST` | `/api/newsletters/generate-all` | `Bearer CRON_SECRET` | Daily cron: process all eligible users |
+| `GET/POST` | `/api/newsletters/generate-all` | `Bearer CRON_SECRET` | Hourly cron: process users due at 8 AM local time |
+| `POST` | `/api/cron/ingest` | `Bearer CRON_SECRET` | Ingest RSS feeds + process email queue |
 
 ```bash
 # Send newsletter to a specific user
@@ -248,7 +266,9 @@ curl -X POST http://localhost:3000/api/newsletters/generate \
 1. Push to GitHub
 2. Import project in [Vercel](https://vercel.com)
 3. Add all environment variables from `.env.example`
-4. Deploy - the cron job runs daily at 7 AM UTC via `vercel.json`
+4. Deploy
+5. Set up [cron-job.org](https://cron-job.org) (free) to hit `/api/newsletters/generate-all` every hour with `Authorization: Bearer <CRON_SECRET>` header
+6. Set up a second cron for `/api/cron/ingest` every 6 hours
 
 ### Environment Variables
 
@@ -257,7 +277,8 @@ curl -X POST http://localhost:3000/api/newsletters/generate \
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous key |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (server-side only) |
-| `ANTHROPIC_API_KEY` | Claude API key |
+| `ANTHROPIC_API_KEY` | Claude API key (primary LLM) |
+| `GEMINI_API_KEY` | Google Gemini API key (optional fallback LLM) |
 | `RESEND_API_KEY` | Resend API key for sending emails |
 | `EMAIL_FROM` | Sender address (e.g. `SkillFeed <hello@skillfeed.dev>`) |
 | `AGENTMAIL_API_KEY` | AgentMail API key |
