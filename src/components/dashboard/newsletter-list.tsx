@@ -9,7 +9,7 @@ interface NewsletterListProps {
 export function NewsletterList({ newsletters }: NewsletterListProps) {
   if (newsletters.length === 0) {
     return (
-      <div className="text-center py-16 space-y-3 border border-dashed border-white/[0.06] rounded-xl">
+      <div className="text-center py-16 space-y-3 border border-dashed border-white/[0.06] rounded-xl bg-[#111113]">
         <Inbox className="w-5 h-5 text-white/50 mx-auto" />
         <div className="space-y-1">
           <p className="text-sm text-white/70">No newsletters yet</p>

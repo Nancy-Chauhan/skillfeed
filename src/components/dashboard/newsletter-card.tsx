@@ -25,7 +25,7 @@ export function NewsletterCard({
 
   return (
     <Link href={`/newsletters/${id}`}>
-      <div className="group flex items-center gap-4 px-4 py-3.5 rounded-xl border border-white/[0.04] hover:border-white/[0.08] hover:bg-white/[0.02] transition-all duration-200 cursor-pointer">
+      <div className="group flex items-center gap-4 px-4 py-3.5 rounded-xl border border-white/[0.04] bg-[#111113] hover:border-white/[0.08] hover:bg-[#151518] transition-all duration-200 cursor-pointer">
         <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${isOk ? "bg-emerald-400/60" : deliveryStatus === "failed" ? "bg-red-400/60" : "bg-amber-400/60"}`} />
         <div className="flex-1 min-w-0">
           <p className="text-sm text-white/75 truncate group-hover:text-white/90 transition-colors">{subject}</p>

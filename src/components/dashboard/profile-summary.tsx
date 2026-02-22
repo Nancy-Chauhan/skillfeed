@@ -26,7 +26,7 @@ export function ProfileSummary({
   learningGoals,
 }: ProfileSummaryProps) {
   return (
-    <div className="gradient-border rounded-xl overflow-hidden bg-white/[0.02]">
+    <div className="gradient-border rounded-xl overflow-hidden bg-[#111113]">
       <div className="px-6 py-4 flex items-center justify-between border-b border-white/[0.04]">
         <h2 className="text-[15px] font-semibold text-white">Profile</h2>
         <Link href="/onboarding">
