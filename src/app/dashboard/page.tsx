@@ -44,9 +44,10 @@ export default async function DashboardPage() {
   const firstName = user.name?.split(" ")[0] ?? "there";
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#09090B]">
+    <div className="min-h-screen flex flex-col bg-[#09090B] relative overflow-x-hidden">
+      <div className="fixed inset-0 dot-grid pointer-events-none z-0" />
       <Header />
-      <main className="flex-1 pt-14">
+      <main className="flex-1 pt-14 relative z-10">
         <div className="border-b border-white/[0.04] relative overflow-hidden">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[400px] h-[120px] bg-violet-500/[0.04] blur-[80px] pointer-events-none" />
           <div className="relative max-w-4xl mx-auto px-6 py-10">
@@ -54,7 +55,7 @@ export default async function DashboardPage() {
             <h1 className="text-2xl font-bold text-white tracking-tight">
               Welcome back, {firstName}
             </h1>
-            <p className="text-[13px] text-white/45 mt-1">Your learning journey at a glance.</p>
+            <p className="text-[13px] text-white/60 mt-1">Your learning journey at a glance.</p>
           </div>
         </div>
 
@@ -73,7 +74,7 @@ export default async function DashboardPage() {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold text-white">Newsletters</h2>
-              <span className="font-mono text-[11px] text-white/40">
+              <span className="font-mono text-[11px] text-white/55">
                 {(newsletters ?? []).length} delivered
               </span>
             </div>
