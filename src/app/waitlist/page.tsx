@@ -21,6 +21,7 @@ export default async function WaitlistPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#09090B] px-6 relative overflow-hidden">
+      <div className="fixed inset-0 dot-grid pointer-events-none z-0" />
       <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full bg-violet-500/[0.05] blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-sm relative z-10 text-center">
@@ -39,20 +40,20 @@ export default async function WaitlistPage() {
             You&apos;re on the waitlist
           </h1>
 
-          <p className="text-sm text-white/55 leading-relaxed font-mono">
+          <p className="text-sm text-white/70 leading-relaxed font-mono">
             We&apos;ll send you an email at{" "}
             <span className="text-violet-400/80">{user.email}</span>{" "}
             as soon as your spot opens up.
           </p>
 
-          <p className="text-xs text-white/40 font-mono">
+          <p className="text-xs text-white/55 font-mono">
             We&apos;re onboarding the first 50 members now.
           </p>
 
           <form action="/auth/signout" method="post" className="pt-4">
             <Button
               variant="ghost"
-              className="font-mono text-white/45 hover:text-white/70 hover:bg-white/[0.03] cursor-pointer text-[13px]"
+              className="font-mono text-white/60 hover:text-white/80 hover:bg-white/[0.05] cursor-pointer text-[13px]"
             >
               <LogOut className="w-3.5 h-3.5 mr-1.5" />
               sign out

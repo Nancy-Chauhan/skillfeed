@@ -28,13 +28,14 @@ function LoginContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#09090B] px-6 relative overflow-hidden">
+      <div className="fixed inset-0 dot-grid pointer-events-none z-0" />
       {/* Background glow */}
       <div className="absolute top-[-10%] left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full bg-violet-500/[0.05] blur-[120px] pointer-events-none" />
 
       <div className="w-full max-w-sm relative z-10">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 text-[13px] text-white/45 hover:text-white/70 transition-colors mb-10"
+          className="inline-flex items-center gap-2 text-[13px] text-white/60 hover:text-white/80 transition-colors mb-10"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
           Back
@@ -49,7 +50,7 @@ function LoginContent() {
         <div className="space-y-6">
           <div className="space-y-2">
             <h1 className="text-2xl font-bold text-white tracking-tight">Sign in</h1>
-            <p className="text-[13px] text-white/55">
+            <p className="text-[13px] text-white/70">
               Continue with your Google account.
             </p>
           </div>
@@ -68,7 +69,7 @@ function LoginContent() {
             {loading ? "Redirecting..." : "Continue with Google"}
           </Button>
 
-          <p className="font-mono text-[11px] text-white/35 text-center">
+          <p className="font-mono text-[11px] text-white/50 text-center">
             secure sign-in via Google
           </p>
         </div>
