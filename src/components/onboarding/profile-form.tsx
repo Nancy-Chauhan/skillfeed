@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RoleSelector } from "./role-selector";
@@ -40,7 +39,6 @@ export function ProfileForm({
   redirectTo = "/waitlist",
   existingProfile,
 }: ProfileFormProps) {
-  const router = useRouter();
   const isEdit = !!existingProfile;
   const [step, setStep] = useState(isEdit ? 1 : 0);
   const [direction, setDirection] = useState<1 | -1>(1);
@@ -134,7 +132,7 @@ export function ProfileForm({
         throw new Error(data.error ?? "Something went wrong");
       }
 
-      router.push(redirectTo);
+      window.location.href = redirectTo;
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
       setLoading(false);
