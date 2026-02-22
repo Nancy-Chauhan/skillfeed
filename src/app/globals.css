@@ -329,6 +329,41 @@
   animation: pill-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Scroll-triggered reveal (IntersectionObserver) */
+.scroll-reveal {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(16px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.scroll-visible {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+.scroll-reveal-child > * {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(16px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-child.scroll-visible > *:nth-child(1) { transition-delay: 0s; }
+.scroll-reveal-child.scroll-visible > *:nth-child(2) { transition-delay: 0.1s; }
+.scroll-reveal-child.scroll-visible > *:nth-child(3) { transition-delay: 0.2s; }
+
+.scroll-reveal-child.scroll-visible > * {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-step-enter,
   .animate-pill-enter {
@@ -336,5 +371,12 @@
     opacity: 1;
     transform: none;
     filter: none;
+  }
+  .scroll-reveal,
+  .scroll-reveal-child > * {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
   }
 }

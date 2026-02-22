@@ -1,11 +1,16 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 export function CTA() {
+  const ref = useScrollReveal<HTMLDivElement>();
+
   return (
     <section className="py-16 md:py-32 px-6 border-t border-white/[0.04]">
-      <div className="max-w-2xl mx-auto">
+      <div ref={ref} className="scroll-reveal max-w-2xl mx-auto">
         <div className="relative rounded-xl border border-white/[0.06] bg-[#111113] overflow-hidden">
           {/* Terminal header */}
           <div className="flex items-center gap-1.5 px-4 py-2.5 border-b border-white/[0.06] bg-[#0d0d10]">

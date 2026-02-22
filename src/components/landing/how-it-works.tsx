@@ -1,3 +1,7 @@
+"use client";
+
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+
 const steps = [
   {
     number: "01",
@@ -29,10 +33,13 @@ const steps = [
 ];
 
 export function HowItWorks() {
+  const headerRef = useScrollReveal<HTMLDivElement>();
+  const cardsRef = useScrollReveal<HTMLDivElement>();
+
   return (
     <section id="how-it-works" className="py-16 md:py-24 px-6 border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center max-w-xl mx-auto mb-12 md:mb-20 space-y-5">
+        <div ref={headerRef} className="scroll-reveal text-center max-w-xl mx-auto mb-12 md:mb-20 space-y-5">
           <p className="font-mono text-[11px] text-emerald-400/60 uppercase tracking-[0.15em]">// how-it-works</p>
           <h2 className="text-3xl md:text-[2.75rem] font-bold text-white tracking-[-0.02em]">
             From inbox overload
@@ -44,7 +51,7 @@ export function HowItWorks() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-4 relative">
+        <div ref={cardsRef} className="scroll-reveal-child grid md:grid-cols-3 gap-4 relative">
           {/* Connecting line between steps */}
           <div className="hidden md:block absolute top-12 left-[20%] right-[20%] h-px border-t border-dashed border-white/[0.06]" />
 
