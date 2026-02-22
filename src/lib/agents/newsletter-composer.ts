@@ -56,11 +56,14 @@ export async function composeNewsletter(
   user: User,
   articles: MatchedArticle[]
 ): Promise<ComposedNewsletter> {
+  const userName = user.name ?? "there";
+  console.log(`[composer] Composing for user "${userName}" with ${articles.length} articles`);
+
   const allCurrentRoles = [...user.current_roles, ...(user.custom_current_roles ?? [])];
   const allTargetRoles = [...user.target_roles, ...(user.custom_target_roles ?? [])];
 
   const userContext = `User Profile:
-- Name: ${user.name ?? "there"}
+- Name: ${userName}
 - Current roles: ${allCurrentRoles.join(", ")}
 - Target roles: ${allTargetRoles.join(", ")}
 - Current level: ${user.current_level}
@@ -87,14 +90,16 @@ ${articles
       ? userMessage
       : `${userMessage}\n\nYour previous response had validation errors:\n${lastError}\n\nPlease fix and return valid JSON. Every featured_article MUST have: title, summary, why_it_matters, url (valid URL), and level.`;
 
+    console.log(`[composer] Attempt ${attempt + 1}: calling Claude (prompt length: ${prompt.length})`);
     const response = await callClaude(SYSTEM_PROMPT, prompt);
 
     let parsed: Record<string, unknown>;
     try {
       parsed = JSON.parse(response);
+      console.log(`[composer] Attempt ${attempt + 1}: parsed OK, validating...`);
     } catch {
       lastError = `Invalid JSON: ${response.slice(0, 200)}`;
-      console.warn(`Newsletter compose attempt ${attempt + 1} failed: ${lastError}`);
+      console.warn(`[composer] Attempt ${attempt + 1}: parse failed — ${lastError}`);
       continue;
     }
 
@@ -109,13 +114,15 @@ ${articles
 
     const result = NewsletterSchema.safeParse(parsed);
     if (result.success) {
+      console.log(`[composer] Attempt ${attempt + 1}: validation passed, subject: "${result.data.subject}"`);
       return result.data;
     }
 
     lastError = JSON.stringify(result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`));
-    console.warn(`Newsletter compose attempt ${attempt + 1} validation failed: ${lastError}`);
+    console.warn(`[composer] Attempt ${attempt + 1}: validation failed — ${lastError}`);
   }
 
+  console.error(`[composer] Failed after ${MAX_ATTEMPTS} attempts: ${lastError}`);
   throw new Error(
     `Newsletter failed schema validation after ${MAX_ATTEMPTS} attempts: ${lastError}`
   );

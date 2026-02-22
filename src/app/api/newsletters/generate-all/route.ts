@@ -11,6 +11,8 @@ import jwt from "jsonwebtoken";
 const CONCURRENCY_LIMIT = 5;
 
 async function generateForUser(userId: string): Promise<"sent" | "skipped" | "failed"> {
+  const tag = `[cron:generate-all] [user:${userId}]`;
+  console.log(`${tag} Starting newsletter generation`);
   const supabase = createAdminClient();
 
   const { data: user, error: userError } = await supabase
@@ -19,26 +21,43 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     .eq("id", userId)
     .single();
 
-  if (userError || !user) return "failed";
+  if (userError || !user) {
+    console.log(`${tag} Skipped — user fetch failed: ${userError?.message ?? "no data"}`);
+    return "failed";
+  }
 
   const typedUser = user as User;
 
-  if (!typedUser.is_active || typedUser.unsubscribed_at) return "skipped";
+  if (!typedUser.is_active || typedUser.unsubscribed_at) {
+    console.log(`${tag} Skipped — inactive or unsubscribed`);
+    return "skipped";
+  }
 
   const today = new Date().toISOString().split("T")[0];
-  if (typedUser.last_newsletter_at?.startsWith(today)) return "skipped";
+  if (typedUser.last_newsletter_at?.startsWith(today)) {
+    console.log(`${tag} Skipped — already sent today`);
+    return "skipped";
+  }
 
   const { data: articles, error: matchError } = await supabase.rpc(
     "match_articles_for_user",
     { p_user_id: userId }
   );
 
-  if (matchError) return "failed";
+  if (matchError) {
+    console.log(`${tag} Failed — article match error: ${matchError.message}`);
+    return "failed";
+  }
 
   const matchedArticles = (articles ?? []) as MatchedArticle[];
-  if (matchedArticles.length < MIN_ARTICLES_FOR_NEWSLETTER) return "skipped";
+  if (matchedArticles.length < MIN_ARTICLES_FOR_NEWSLETTER) {
+    console.log(`${tag} Skipped — only ${matchedArticles.length} articles (need ${MIN_ARTICLES_FOR_NEWSLETTER})`);
+    return "skipped";
+  }
 
+  console.log(`${tag} Matched ${matchedArticles.length} articles, composing newsletter...`);
   const newsletter = await composeNewsletter(typedUser, matchedArticles);
+  console.log(`${tag} Newsletter composed, subject: "${newsletter.subject}"`);
 
   const unsubscribeToken = jwt.sign(
     { userId: typedUser.id },
@@ -67,7 +86,10 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     .select("id")
     .single();
 
-  if (insertError || !newsletterRecord) return "failed";
+  if (insertError || !newsletterRecord) {
+    console.log(`${tag} Failed — newsletter record insert error: ${insertError?.message ?? "no data"}`);
+    return "failed";
+  }
 
   const newsletterId = newsletterRecord.id;
   const trackingPixelUrl = buildTrackingPixelUrl(appUrl, newsletterId, typedUser.id);
@@ -93,6 +115,7 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     feedbackUrls,
   });
 
+  console.log(`${tag} Sending email via Resend to ${typedUser.email}...`);
   const { data: emailResult, error: sendError } = await getResend().emails.send({
     from: process.env.EMAIL_FROM ?? "SkillFeed <onboarding@resend.dev>",
     to: typedUser.email,
@@ -105,6 +128,7 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
   });
 
   if (sendError) {
+    console.log(`${tag} Failed — Resend send error: ${sendError.message}`);
     await supabase
       .from("newsletters_sent")
       .update({
@@ -117,7 +141,9 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     return "failed";
   }
 
-  await supabase
+  console.log(`${tag} Email sent via Resend (id: ${emailResult?.id ?? "unknown"})`);
+
+  const { error: updateSentError } = await supabase
     .from("newsletters_sent")
     .update({
       html_content: htmlContent,
@@ -127,11 +153,20 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     })
     .eq("id", newsletterId);
 
-  await supabase
+  if (updateSentError) {
+    console.log(`${tag} Warning — failed to update newsletter status to sent: ${updateSentError.message}`);
+  }
+
+  const { error: updateUserError } = await supabase
     .from("users")
     .update({ last_newsletter_at: new Date().toISOString() })
     .eq("id", typedUser.id);
 
+  if (updateUserError) {
+    console.log(`${tag} Warning — failed to update user last_newsletter_at: ${updateUserError.message}`);
+  }
+
+  console.log(`${tag} Done — sent successfully`);
   return "sent";
 }
 
@@ -140,6 +175,8 @@ async function generateAll(request: Request) {
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  console.log(`[cron:generate-all] Starting newsletter generation at ${new Date().toISOString()}`);
 
   const supabase = createAdminClient();
   const today = new Date().toISOString().split("T")[0];
@@ -153,13 +190,16 @@ async function generateAll(request: Request) {
     .limit(100);
 
   if (error) {
-    console.error("Failed to fetch users:", error);
+    console.error("[cron:generate-all] Failed to fetch users:", error);
     return NextResponse.json({ error: "Failed to fetch users" }, { status: 500 });
   }
 
   if (!users || users.length === 0) {
+    console.log("[cron:generate-all] No eligible users found");
     return NextResponse.json({ status: "complete", processed: 0, skipped: 0, failed: 0 });
   }
+
+  console.log(`[cron:generate-all] Fetched ${users.length} eligible users`);
 
   let processed = 0;
   let skipped = 0;
@@ -168,6 +208,7 @@ async function generateAll(request: Request) {
   // Process users with concurrency limit
   for (let i = 0; i < users.length; i += CONCURRENCY_LIMIT) {
     const batch = users.slice(i, i + CONCURRENCY_LIMIT);
+    console.log(`[cron:generate-all] Processing batch ${Math.floor(i / CONCURRENCY_LIMIT) + 1} (users ${i + 1}-${Math.min(i + CONCURRENCY_LIMIT, users.length)} of ${users.length})`);
     const results = await Promise.allSettled(
       batch.map((user) => generateForUser(user.id))
     );
@@ -178,12 +219,13 @@ async function generateAll(request: Request) {
         else if (result.value === "skipped") skipped++;
         else failed++;
       } else {
-        console.error("Newsletter generation failed:", result.reason);
+        console.error("[cron:generate-all] Newsletter generation rejected:", result.reason);
         failed++;
       }
     }
   }
 
+  console.log(`[cron:generate-all] Complete — sent: ${processed}, skipped: ${skipped}, failed: ${failed}`);
   return NextResponse.json({ status: "complete", processed, skipped, failed });
 }
 

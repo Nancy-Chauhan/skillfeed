@@ -44,13 +44,16 @@ async function categorizeArticle(item: FeedItem): Promise<{
   const userMessage = `Title: ${item.title}\nURL: ${item.link}\n\nContent:\n${content}`;
 
   try {
+    console.log(`[cron:ingest] RSS: categorizing "${item.title}"...`);
     const response = await callClaude(CATEGORIZE_PROMPT, userMessage, {
       maxTokens: 1024,
     });
-    return JSON.parse(response);
+    const parsed = JSON.parse(response);
+    console.log(`[cron:ingest] RSS: categorized "${item.title}" — level: ${parsed.level}, roles: [${parsed.roles?.join(", ")}]`);
+    return parsed;
   } catch (err) {
     console.error(
-      `  Failed to categorize "${item.title}":`,
+      `[cron:ingest] RSS: failed to categorize "${item.title}":`,
       err instanceof Error ? err.message : err
     );
     return null;
@@ -64,20 +67,25 @@ async function ingestFeed(
   const supabase = createAdminClient();
   let feed;
   try {
+    console.log(`[cron:ingest] RSS: fetching "${feedName}" (${feedUrl})`);
     feed = await parser.parseURL(feedUrl);
   } catch (err) {
     console.error(
-      `  Failed to fetch ${feedName}:`,
+      `[cron:ingest] RSS: failed to fetch "${feedName}":`,
       err instanceof Error ? err.message : err
     );
     return 0;
   }
 
   const items = feed.items.slice(0, 5);
+  console.log(`[cron:ingest] RSS: "${feedName}" — ${items.length} items to process`);
   let inserted = 0;
 
   for (const item of items) {
-    if (!item.title || !item.link) continue;
+    if (!item.title || !item.link) {
+      console.log(`[cron:ingest] RSS: "${feedName}" — skipping item with missing title/link`);
+      continue;
+    }
 
     const messageId = `rss:${item.guid ?? item.link}`;
 
@@ -88,7 +96,10 @@ async function ingestFeed(
       .eq("message_id", messageId)
       .single();
 
-    if (existing) continue;
+    if (existing) {
+      console.log(`[cron:ingest] RSS: "${feedName}" — skipping duplicate "${item.title}"`);
+      continue;
+    }
 
     const categorized = await categorizeArticle(item);
     if (!categorized) continue;
@@ -111,12 +122,13 @@ async function ingestFeed(
     });
 
     if (error) {
-      console.error(`  DB insert failed for "${item.title}":`, error.message);
+      console.error(`[cron:ingest] RSS: DB insert failed for "${item.title}": ${error.message}`);
     } else {
       inserted++;
     }
   }
 
+  console.log(`[cron:ingest] RSS: "${feedName}" — ${inserted} new articles inserted`);
   return inserted;
 }
 
@@ -125,6 +137,7 @@ export async function ingestAllFeeds(): Promise<{
   feedsProcessed: number;
   feedsFailed: number;
 }> {
+  console.log(`[cron:ingest] RSS: starting ingestion of ${RSS_FEEDS.length} feeds`);
   let totalInserted = 0;
   let feedsProcessed = 0;
   let feedsFailed = 0;
@@ -134,10 +147,12 @@ export async function ingestAllFeeds(): Promise<{
       const count = await ingestFeed(feed.url, feed.name);
       totalInserted += count;
       feedsProcessed++;
-    } catch {
+    } catch (err) {
+      console.error(`[cron:ingest] RSS: feed "${feed.name}" threw unexpectedly:`, err instanceof Error ? err.message : err);
       feedsFailed++;
     }
   }
 
+  console.log(`[cron:ingest] RSS: all feeds done — ${feedsProcessed} processed, ${totalInserted} total inserted, ${feedsFailed} failed`);
   return { totalInserted, feedsProcessed, feedsFailed };
 }

@@ -16,7 +16,7 @@ export function Hero() {
       <div className="relative z-10 w-full max-w-3xl mx-auto text-center px-6 pt-16 md:pt-24 pb-10 md:pb-16">
         {/* Badge */}
         <div className="reveal mb-6">
-          <span className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md bg-white/[0.03] border border-white/[0.06] font-mono text-[11px] text-violet-400 tracking-wide text-center">
+          <span className="inline-flex items-center justify-center gap-2 px-3.5 py-2 rounded-md bg-[#1a1a2e] border border-white/[0.06] font-mono text-[11px] text-violet-400 tracking-wide text-center">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0 hidden sm:block" />
             Every newsletter. One daily brief. Matched to your goals.
           </span>

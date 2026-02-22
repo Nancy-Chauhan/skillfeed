@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RoleSelector } from "./role-selector";
@@ -56,6 +56,13 @@ export function ProfileForm({
   });
   const [customCurrentRoles, setCustomCurrentRoles] = useState<string[]>(existingProfile?.custom_current_roles ?? []);
   const [customTargetRoles, setCustomTargetRoles] = useState<string[]>(existingProfile?.custom_target_roles ?? []);
+  const [timezone, setTimezone] = useState("UTC");
+
+  useEffect(() => {
+    try {
+      setTimezone(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    } catch {}
+  }, []);
 
   const totalSteps = 2;
 
@@ -117,6 +124,7 @@ export function ProfileForm({
         custom_target_roles: customTargetRoles,
         current_level: formData.current_level ?? undefined,
         target_level: formData.target_level ?? undefined,
+        timezone,
       };
 
       const res = isEdit

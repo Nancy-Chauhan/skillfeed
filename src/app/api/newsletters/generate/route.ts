@@ -33,6 +33,8 @@ export async function POST(request: Request) {
   }
 
   const { userId } = result.data;
+  const tag = `[cron:generate] [user:${userId}]`;
+  console.log(`${tag} Starting single-user newsletter generation`);
   const supabase = createAdminClient();
 
   // Fetch user
@@ -43,6 +45,7 @@ export async function POST(request: Request) {
     .single();
 
   if (userError || !user) {
+    console.log(`${tag} Failed — user not found: ${userError?.message ?? "no data"}`);
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }
 
@@ -50,12 +53,14 @@ export async function POST(request: Request) {
 
   // Check if active
   if (!typedUser.is_active || typedUser.unsubscribed_at) {
+    console.log(`${tag} Skipped — inactive or unsubscribed`);
     return NextResponse.json({ status: "skipped", reason: "User inactive or unsubscribed" });
   }
 
   // Idempotency: skip if already sent today
   const today = new Date().toISOString().split("T")[0];
   if (typedUser.last_newsletter_at?.startsWith(today)) {
+    console.log(`${tag} Skipped — already sent today`);
     return NextResponse.json({ status: "skipped", reason: "Already sent today" });
   }
 
@@ -66,21 +71,24 @@ export async function POST(request: Request) {
   );
 
   if (matchError) {
-    console.error("Article matching failed:", matchError);
+    console.error(`${tag} Failed — article match error: ${matchError.message}`);
     return NextResponse.json({ error: "Matching failed" }, { status: 500 });
   }
 
   const matchedArticles = (articles ?? []) as MatchedArticle[];
 
   if (matchedArticles.length < MIN_ARTICLES_FOR_NEWSLETTER) {
+    console.log(`${tag} Skipped — only ${matchedArticles.length} articles (need ${MIN_ARTICLES_FOR_NEWSLETTER})`);
     return NextResponse.json({
       status: "skipped",
       reason: `Only ${matchedArticles.length} articles matched (minimum ${MIN_ARTICLES_FOR_NEWSLETTER})`,
     });
   }
 
+  console.log(`${tag} Matched ${matchedArticles.length} articles, composing newsletter...`);
   // Compose newsletter
   const newsletter = await composeNewsletter(typedUser, matchedArticles);
+  console.log(`${tag} Newsletter composed, subject: "${newsletter.subject}"`);
 
   // Generate unsubscribe URL
   const unsubscribeToken = jwt.sign(
@@ -115,7 +123,7 @@ export async function POST(request: Request) {
     .single();
 
   if (insertError || !newsletterRecord) {
-    console.error("Failed to create newsletter record:", insertError);
+    console.error(`${tag} Failed — newsletter record insert error: ${insertError?.message ?? "no data"}`);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
   }
 
@@ -151,6 +159,7 @@ export async function POST(request: Request) {
   });
 
   // Send via Resend
+  console.log(`${tag} Sending email via Resend to ${typedUser.email}...`);
   const { data: emailResult, error: sendError } = await getResend().emails.send({
     from: process.env.EMAIL_FROM ?? "SkillFeed <onboarding@resend.dev>",
     to: typedUser.email,
@@ -163,6 +172,7 @@ export async function POST(request: Request) {
   });
 
   if (sendError) {
+    console.log(`${tag} Failed — Resend send error: ${sendError.message}`);
     // Update record as failed
     await supabase
       .from("newsletters_sent")
@@ -176,6 +186,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ error: "Email send failed" }, { status: 500 });
   }
+
+  console.log(`${tag} Email sent via Resend (id: ${emailResult?.id ?? "unknown"})`);
 
   // Update record as sent
   await supabase
@@ -194,6 +206,7 @@ export async function POST(request: Request) {
     .update({ last_newsletter_at: new Date().toISOString() })
     .eq("id", typedUser.id);
 
+  console.log(`${tag} Done — sent successfully`);
   return NextResponse.json({
     status: "sent",
     subject: newsletter.subject,

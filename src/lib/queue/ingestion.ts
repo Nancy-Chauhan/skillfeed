@@ -11,6 +11,7 @@ export async function processIngestionQueue(): Promise<{
   failed: number;
   skipped: number;
 }> {
+  console.log("[cron:ingest] Queue: fetching pending jobs...");
   const supabase = createAdminClient();
   let processed = 0;
   let failed = 0;
@@ -27,15 +28,23 @@ export async function processIngestionQueue(): Promise<{
     .limit(10);
 
   if (fetchError) {
-    console.error("Failed to fetch ingestion jobs:", fetchError);
+    console.error("[cron:ingest] Queue: failed to fetch jobs:", fetchError);
     return { processed: 0, failed: 0, skipped: 0 };
   }
 
   if (!jobs || jobs.length === 0) {
+    console.log("[cron:ingest] Queue: no pending jobs found");
     return { processed: 0, failed: 0, skipped: 0 };
   }
 
+  console.log(`[cron:ingest] Queue: ${jobs.length} jobs fetched, processing...`);
+
   for (const job of jobs as IngestionJob[]) {
+    const payload = job.payload as Record<string, unknown>;
+    const subject = (payload.subject as string) ?? "";
+    const sourceEmail = (payload.from as string) ?? (payload.sender as string) ?? "unknown";
+    console.log(`[cron:ingest] Queue: job ${job.id} — status: ${job.status}, attempt: ${job.attempts + 1}, subject: "${subject}", source: ${sourceEmail}`);
+
     try {
       // Mark as processing
       await supabase
@@ -45,17 +54,15 @@ export async function processIngestionQueue(): Promise<{
         .eq("status", job.status); // Optimistic lock
 
       // Extract email content from payload
-      const payload = job.payload as Record<string, unknown>;
-      const subject = (payload.subject as string) ?? "";
       const body =
         (payload.text as string) ??
         (payload.body as string) ??
         (payload.html as string) ??
         "";
-      const sourceEmail = (payload.from as string) ?? (payload.sender as string) ?? "unknown";
       const sourceName = (payload.from_name as string) ?? null;
 
       if (!body.trim()) {
+        console.log(`[cron:ingest] Queue: job ${job.id} — skipped (empty body)`);
         skipped++;
         await supabase
           .from("ingestion_jobs")
@@ -70,8 +77,10 @@ export async function processIngestionQueue(): Promise<{
 
       // Categorize articles using Claude
       const articles = await categorizeArticles(subject, body);
+      console.log(`[cron:ingest] Queue: job ${job.id} — categorized ${articles.length} articles`);
 
       if (articles.length === 0) {
+        console.log(`[cron:ingest] Queue: job ${job.id} — skipped (no articles extracted)`);
         skipped++;
         await supabase
           .from("ingestion_jobs")
@@ -101,6 +110,7 @@ export async function processIngestionQueue(): Promise<{
       }));
 
       if (articleRows.length === 0) {
+        console.log(`[cron:ingest] Queue: job ${job.id} — skipped (all articles lacked URLs)`);
         skipped++;
         await supabase
           .from("ingestion_jobs")
@@ -121,6 +131,8 @@ export async function processIngestionQueue(): Promise<{
         throw new Error(`Article insert failed: ${insertError.message}`);
       }
 
+      console.log(`[cron:ingest] Queue: job ${job.id} — inserted ${articleRows.length} articles from "${subject}"`);
+
       // Mark job as completed
       await supabase
         .from("ingestion_jobs")
@@ -131,6 +143,7 @@ export async function processIngestionQueue(): Promise<{
         })
         .eq("id", job.id);
 
+      console.log(`[cron:ingest] Queue: job ${job.id} — completed`);
       processed++;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
@@ -156,11 +169,11 @@ export async function processIngestionQueue(): Promise<{
 
       failed++;
       console.error(
-        `Ingestion job ${job.id} failed (attempt ${nextAttempt}):`,
-        errorMessage
+        `[cron:ingest] Queue: job ${job.id} failed (attempt ${nextAttempt}): ${errorMessage}`
       );
     }
   }
 
+  console.log(`[cron:ingest] Queue: complete — ${processed} processed, ${skipped} skipped, ${failed} failed`);
   return { processed, failed, skipped };
 }

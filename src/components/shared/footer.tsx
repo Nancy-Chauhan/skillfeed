@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] relative z-10">
+    <footer className="border-t border-white/[0.06] relative z-10 bg-[#0A0A0B]">
       <div className="max-w-5xl mx-auto px-6 py-10">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <Link href="/" className="font-mono text-sm font-semibold text-white/60">

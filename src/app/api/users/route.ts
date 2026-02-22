@@ -16,6 +16,7 @@ const CreateUserSchema = z.object({
   custom_target_roles: z.array(z.string().min(1)).optional(),
   current_level: z.enum(LEVELS).optional(),
   target_level: z.enum(LEVELS).optional(),
+  timezone: z.string().optional(),
 });
 
 export async function POST(request: Request) {
@@ -88,6 +89,7 @@ export async function POST(request: Request) {
       custom_target_roles: data.custom_target_roles ?? [],
       current_level: (data.current_level ?? profile.current_level) as Level,
       target_level: (data.target_level ?? profile.target_level) as Level,
+      timezone: data.timezone ?? "UTC",
       extracted_keywords: profile.keywords,
       extracted_skills: profile.skills,
       learning_goals: profile.learning_goals,

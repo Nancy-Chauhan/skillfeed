@@ -15,6 +15,7 @@ const UpdateUserSchema = z.object({
   custom_target_roles: z.array(z.string().min(1)).optional(),
   current_level: z.enum(LEVELS).optional(),
   target_level: z.enum(LEVELS).optional(),
+  timezone: z.string().optional(),
 });
 
 export async function GET(
