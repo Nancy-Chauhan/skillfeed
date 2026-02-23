@@ -49,13 +49,14 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
 
   // Claim this user immediately to prevent duplicate sends from overlapping cron runs.
   // Uses optimistic locking: only update if last_newsletter_at hasn't changed since we read it.
+  const previousLastNewsletterAt = typedUser.last_newsletter_at;
   let claimQuery = supabase
     .from("users")
     .update({ last_newsletter_at: new Date().toISOString() })
     .eq("id", typedUser.id);
 
-  if (typedUser.last_newsletter_at) {
-    claimQuery = claimQuery.eq("last_newsletter_at", typedUser.last_newsletter_at);
+  if (previousLastNewsletterAt) {
+    claimQuery = claimQuery.eq("last_newsletter_at", previousLastNewsletterAt);
   } else {
     claimQuery = claimQuery.is("last_newsletter_at", null);
   }
@@ -67,6 +68,14 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     return "skipped";
   }
 
+  // Helper to roll back the claim so the user gets retried on the next cron run
+  const rollbackClaim = async () => {
+    await supabase
+      .from("users")
+      .update({ last_newsletter_at: previousLastNewsletterAt })
+      .eq("id", typedUser.id);
+  };
+
   const { data: articles, error: matchError } = await supabase.rpc(
     "match_articles_for_user",
     { p_user_id: userId }
@@ -74,12 +83,14 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
 
   if (matchError) {
     console.log(`${tag} Failed — article match error: ${matchError.message}`);
+    await rollbackClaim();
     return "failed";
   }
 
   const matchedArticles = (articles ?? []) as MatchedArticle[];
   if (matchedArticles.length < MIN_ARTICLES_FOR_NEWSLETTER) {
     console.log(`${tag} Skipped — only ${matchedArticles.length} articles (need ${MIN_ARTICLES_FOR_NEWSLETTER})`);
+    await rollbackClaim();
     return "skipped";
   }
 
@@ -166,6 +177,7 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
         error_message: sendError.message,
       })
       .eq("id", newsletterId);
+    await rollbackClaim();
     return "failed";
   }
 
