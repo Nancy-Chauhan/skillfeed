@@ -47,6 +47,26 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
     }
   }
 
+  // Claim this user immediately to prevent duplicate sends from overlapping cron runs.
+  // Uses optimistic locking: only update if last_newsletter_at hasn't changed since we read it.
+  let claimQuery = supabase
+    .from("users")
+    .update({ last_newsletter_at: new Date().toISOString() })
+    .eq("id", typedUser.id);
+
+  if (typedUser.last_newsletter_at) {
+    claimQuery = claimQuery.eq("last_newsletter_at", typedUser.last_newsletter_at);
+  } else {
+    claimQuery = claimQuery.is("last_newsletter_at", null);
+  }
+
+  const { data: claimData, error: claimError } = await claimQuery.select("id");
+
+  if (claimError || !claimData || claimData.length === 0) {
+    console.log(`${tag} Skipped — failed to claim user (likely already claimed by another run)`);
+    return "skipped";
+  }
+
   const { data: articles, error: matchError } = await supabase.rpc(
     "match_articles_for_user",
     { p_user_id: userId }
@@ -163,15 +183,6 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
 
   if (updateSentError) {
     console.log(`${tag} Warning — failed to update newsletter status to sent: ${updateSentError.message}`);
-  }
-
-  const { error: updateUserError } = await supabase
-    .from("users")
-    .update({ last_newsletter_at: new Date().toISOString() })
-    .eq("id", typedUser.id);
-
-  if (updateUserError) {
-    console.log(`${tag} Warning — failed to update user last_newsletter_at: ${updateUserError.message}`);
   }
 
   console.log(`${tag} Done — sent successfully`);
