@@ -127,6 +127,7 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
 
   if (insertError || !newsletterRecord) {
     console.log(`${tag} Failed — newsletter record insert error: ${insertError?.message ?? "no data"}`);
+    await rollbackClaim();
     return "failed";
   }
 
