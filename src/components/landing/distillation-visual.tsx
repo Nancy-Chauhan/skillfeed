@@ -308,7 +308,7 @@ export function DistillationVisual() {
                     <div className="flex items-start gap-2">
                       <span className="text-emerald-400/50 text-[10px] mt-px shrink-0">→</span>
                       <p className="text-[10px] text-white/40 leading-relaxed">
-                        Start with the fine-tuning guide — your backend data pipeline experience maps directly to ML training workflows.
+                        Start with the fine-tuning guide. Your backend data pipeline experience maps directly to ML training workflows.
                       </p>
                     </div>
                   </div>

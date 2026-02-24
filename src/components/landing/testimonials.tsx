@@ -13,7 +13,7 @@ const testimonials = [
     accentTo: "to-emerald-500/30",
   },
   {
-    quote: "The personalized 'why this matters' context is what sold me. Not just links — real insight.",
+    quote: "The personalized 'why this matters' context is what sold me. Not just links, real insight.",
     name: "Marcus T.",
     role: "Senior SWE → AI Architect",
     avatar: "MT",

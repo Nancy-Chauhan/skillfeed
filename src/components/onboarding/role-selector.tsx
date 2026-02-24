@@ -53,7 +53,7 @@ export function RoleSelector({
   return (
     <div className="space-y-3">
       <p className="text-[13px] text-white/70">
-        {label} <span className="text-white/50">— select all that apply</span>
+        {label} <span className="text-white/50">- select all that apply</span>
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
         {roles.map((role, i) => (

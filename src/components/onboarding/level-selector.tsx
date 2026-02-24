@@ -18,7 +18,7 @@ export function LevelSelector({
   return (
     <div className="space-y-3">
       <p className="text-[13px] text-white/70">
-        {label} <span className="text-white/50">— pick one</span>
+        {label} <span className="text-white/50">- pick one</span>
       </p>
       <div className="grid grid-cols-1 min-[400px]:grid-cols-3 gap-2">
         {levels.map((level, i) => (

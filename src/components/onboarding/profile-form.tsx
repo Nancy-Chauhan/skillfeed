@@ -160,7 +160,7 @@ export function ProfileForm({
     },
     {
       title: "Where do you want to be?",
-      subtitle: "Pick your targets and tell us your goals — our AI handles the rest.",
+      subtitle: "Pick your targets and tell us your goals. Our AI handles the rest.",
     },
   ];
 
@@ -205,7 +205,7 @@ export function ProfileForm({
                 Welcome, {greeting}!
               </h1>
               <p className="text-sm text-white/60 mt-3 max-w-md mx-auto">
-                Just a few quick questions to personalize your feed — takes less than 2 minutes.
+                Just a few quick questions to personalize your feed. Takes less than 2 minutes.
               </p>
               <Button
                 onClick={handleNext}
@@ -283,7 +283,7 @@ export function ProfileForm({
                       <p className="text-[13px] text-white/70">Your background & goals <span className="text-white/40">(optional)</span></p>
                       <Textarea
                         id="prompt"
-                        placeholder={"e.g. I'm a backend engineer with 3 years of experience in Python and Go. I want to move into ML engineering — specifically building and deploying production ML systems..."}
+                        placeholder={"e.g. I'm a backend engineer with 3 years of experience in Python and Go. I want to move into ML engineering, specifically building and deploying production ML systems..."}
                         value={formData.prompt_text}
                         onChange={(e) => update("prompt_text", e.target.value)}
                         rows={4}
