@@ -7,8 +7,13 @@ const ArticleSchema = z.object({
   title: z.string(),
   summary: z.string(),
   takeaway: z.string(),
-  level: z.enum(LEVELS),
-  roles: z.array(z.enum(ROLES)).min(1),
+  level: z.string().transform((v) =>
+    (LEVELS as readonly string[]).includes(v) ? v as typeof LEVELS[number] : "intermediate" as const
+  ),
+  roles: z.array(z.string()).min(1).transform((arr) => {
+    const valid = arr.filter((r) => (ROLES as readonly string[]).includes(r)) as (typeof ROLES[number])[];
+    return valid.length > 0 ? valid : ["general" as const];
+  }),
   keywords: z.array(z.string()).min(1),
   url: z.string().url().nullable(),
 });

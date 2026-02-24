@@ -2,6 +2,7 @@ import Parser from "rss-parser";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { callClaude } from "@/lib/claude/client";
 import { RSS_FEEDS } from "./feeds";
+import { LEVELS, ROLES } from "@/lib/utils/constants";
 
 const parser = new Parser();
 
@@ -52,6 +53,18 @@ async function categorizeArticle(item: FeedItem): Promise<{
       maxTokens: 1024,
     });
     const parsed = JSON.parse(response);
+
+    // Validate and fix level
+    if (!LEVELS.includes(parsed.level)) {
+      parsed.level = "intermediate";
+    }
+
+    // Validate and fix roles
+    parsed.roles = (parsed.roles ?? []).filter((r: string) =>
+      (ROLES as readonly string[]).includes(r)
+    );
+    if (parsed.roles.length === 0) parsed.roles = ["general"];
+
     console.log(`[cron:ingest] RSS: categorized "${item.title}" — level: ${parsed.level}, roles: [${parsed.roles?.join(", ")}]`);
     return parsed;
   } catch (err) {
