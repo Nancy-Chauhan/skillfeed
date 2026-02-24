@@ -10,18 +10,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  // Debug: return immediately to verify the endpoint is reachable
-  const url = new URL(request.url);
-  const debug = url.searchParams.get("debug");
-  if (debug === "ping") {
-    return NextResponse.json({
-      status: "pong",
-      provider: process.env.LLM_PROVIDER ?? "not set",
-      geminiKeySet: !!process.env.GEMINI_API_KEY,
-      anthropicKeySet: !!process.env.ANTHROPIC_API_KEY,
-    });
-  }
-
   const startTime = Date.now();
   console.log(`[cron:ingest] Starting ingestion at ${new Date().toISOString()}`);
   console.log(`[cron:ingest] LLM_PROVIDER=${process.env.LLM_PROVIDER}, GEMINI_API_KEY set=${!!process.env.GEMINI_API_KEY}, ANTHROPIC_API_KEY set=${!!process.env.ANTHROPIC_API_KEY}`);

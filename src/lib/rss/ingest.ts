@@ -136,27 +136,47 @@ async function ingestFeed(
   return inserted;
 }
 
+// Process feeds in concurrent batches with a time budget
+const BATCH_SIZE = 5;
+const TIME_BUDGET_MS = 50_000; // stop starting new batches after 50s (leaves headroom for response)
+
 export async function ingestAllFeeds(): Promise<{
   totalInserted: number;
   feedsProcessed: number;
   feedsFailed: number;
+  timedOut: boolean;
 }> {
   console.log(`[cron:ingest] RSS: starting ingestion of ${RSS_FEEDS.length} feeds`);
   let totalInserted = 0;
   let feedsProcessed = 0;
   let feedsFailed = 0;
+  let timedOut = false;
+  const startTime = Date.now();
 
-  for (const feed of RSS_FEEDS) {
-    try {
-      const count = await ingestFeed(feed.url, feed.name);
-      totalInserted += count;
-      feedsProcessed++;
-    } catch (err) {
-      console.error(`[cron:ingest] RSS: feed "${feed.name}" threw unexpectedly:`, err instanceof Error ? err.message : err);
-      feedsFailed++;
+  for (let i = 0; i < RSS_FEEDS.length; i += BATCH_SIZE) {
+    if (Date.now() - startTime > TIME_BUDGET_MS) {
+      console.log(`[cron:ingest] RSS: time budget exceeded after ${feedsProcessed} feeds, stopping`);
+      timedOut = true;
+      break;
+    }
+
+    const batch = RSS_FEEDS.slice(i, i + BATCH_SIZE);
+    const results = await Promise.allSettled(
+      batch.map((feed) => ingestFeed(feed.url, feed.name))
+    );
+
+    for (let j = 0; j < results.length; j++) {
+      const result = results[j];
+      if (result.status === "fulfilled") {
+        totalInserted += result.value;
+        feedsProcessed++;
+      } else {
+        console.error(`[cron:ingest] RSS: feed "${batch[j].name}" threw unexpectedly:`, result.reason);
+        feedsFailed++;
+      }
     }
   }
 
-  console.log(`[cron:ingest] RSS: all feeds done — ${feedsProcessed} processed, ${totalInserted} total inserted, ${feedsFailed} failed`);
-  return { totalInserted, feedsProcessed, feedsFailed };
+  console.log(`[cron:ingest] RSS: all feeds done — ${feedsProcessed} processed, ${totalInserted} total inserted, ${feedsFailed} failed, timedOut=${timedOut}`);
+  return { totalInserted, feedsProcessed, feedsFailed, timedOut };
 }
