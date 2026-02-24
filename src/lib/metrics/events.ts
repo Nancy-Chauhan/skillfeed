@@ -38,12 +38,11 @@ export function buildClickTrackingUrl(
   newsletterId: string,
   articleId: string,
   userId: string,
-  originalUrl: string
+  _originalUrl?: string
 ): string {
-  const encodedUrl = encodeURIComponent(originalUrl);
-  const params = { nid: newsletterId, aid: articleId, uid: userId, url: originalUrl };
+  const params = { nid: newsletterId, aid: articleId, uid: userId };
   const sig = signMetricsUrl(params);
-  return `${appUrl}/api/metrics/click?nid=${newsletterId}&aid=${articleId}&uid=${userId}&url=${encodedUrl}&sig=${sig}`;
+  return `${appUrl}/api/metrics/click?nid=${newsletterId}&aid=${articleId}&uid=${userId}&sig=${sig}`;
 }
 
 export function buildFeedbackUrl(

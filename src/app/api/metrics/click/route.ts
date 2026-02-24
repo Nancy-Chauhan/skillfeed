@@ -7,20 +7,31 @@ export async function GET(request: Request) {
   const nid = searchParams.get("nid");
   const aid = searchParams.get("aid");
   const uid = searchParams.get("uid");
-  const url = searchParams.get("url");
   const sig = searchParams.get("sig");
 
-  if (!nid || !aid || !uid || !url || !sig) {
+  if (!nid || !aid || !uid || !sig) {
     return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
   }
 
-  if (!verifyMetricsSignature({ nid, aid, uid, url }, sig)) {
+  if (!verifyMetricsSignature({ nid, aid, uid }, sig)) {
     return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
   }
 
-  // Record click event
+  const supabase = createAdminClient();
+
+  // Look up the article URL from the database
+  const { data: article } = await supabase
+    .from("articles")
+    .select("url")
+    .eq("id", aid)
+    .single();
+
+  if (!article?.url) {
+    return NextResponse.json({ error: "Article not found" }, { status: 404 });
+  }
+
+  // Record click event (don't block the redirect)
   try {
-    const supabase = createAdminClient();
     await supabase.from("newsletter_events").insert({
       newsletter_id: nid,
       user_id: uid,
@@ -31,6 +42,5 @@ export async function GET(request: Request) {
     // Don't block the redirect
   }
 
-  // Redirect to original URL
-  return NextResponse.redirect(url, 302);
+  return NextResponse.redirect(article.url, 302);
 }
