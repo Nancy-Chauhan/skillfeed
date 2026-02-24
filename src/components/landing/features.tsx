@@ -1,4 +1,7 @@
+"use client";
+
 import { GitCompareArrows, Lightbulb, Route, Layers } from "lucide-react";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 
 const features = [
   {
@@ -44,11 +47,14 @@ const features = [
 ];
 
 export function Features() {
+  const headerRef = useScrollReveal<HTMLDivElement>();
+  const gridRef = useScrollReveal<HTMLDivElement>();
+
   return (
-    <section id="features" className="py-12 md:py-20 px-6">
+    <section id="features" className="py-20 md:py-32 px-6 border-t border-white/[0.06]">
       <div className="max-w-5xl mx-auto">
         {/* Section header */}
-        <div className="text-center max-w-xl mx-auto mb-14 md:mb-16 space-y-4">
+        <div ref={headerRef} className="scroll-reveal text-center max-w-xl mx-auto mb-14 md:mb-16 space-y-4">
           <p className="font-mono text-[11px] text-emerald-400/60 uppercase tracking-[0.15em]">// features</p>
           <h2 className="text-3xl md:text-[2.75rem] font-bold text-white tracking-[-0.02em] leading-tight">
             Personalized to your career,
@@ -61,7 +67,7 @@ export function Features() {
         </div>
 
         {/* Bento grid — alternating wide/narrow */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div ref={gridRef} className="scroll-reveal-child grid grid-cols-1 md:grid-cols-3 gap-4">
           {features.map((feature, i) => (
             <div
               key={feature.key}
