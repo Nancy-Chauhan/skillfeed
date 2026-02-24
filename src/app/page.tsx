@@ -1,6 +1,5 @@
 import { Header } from "@/components/shared/header";
 import { Hero } from "@/components/landing/hero";
-import { HowItWorks } from "@/components/landing/how-it-works";
 import { Features } from "@/components/landing/features";
 import { CTA } from "@/components/landing/cta";
 import { Footer } from "@/components/shared/footer";
@@ -13,10 +12,14 @@ export default function LandingPage() {
       <Header />
       <main className="flex-1 relative z-10">
         <Hero />
-        <HowItWorks />
         <Features />
         <CTA />
       </main>
+      {/* Aurora glow band above footer */}
+      <div className="relative z-10">
+        <div className="aurora-glow h-px w-full" />
+        <div className="aurora-glow h-24 w-full opacity-40 blur-2xl -mt-12 pointer-events-none" />
+      </div>
       <Footer />
     </div>
   );

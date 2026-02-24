@@ -365,6 +365,49 @@
   transform: translateY(0);
 }
 
+/* Distill beam animations */
+@keyframes distill-pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes distill-flow {
+  0% { top: 10%; opacity: 0; }
+  15% { opacity: 0.7; }
+  85% { opacity: 0.3; }
+  100% { top: 85%; opacity: 0; }
+}
+
+.animate-distill-pulse {
+  animation: distill-pulse 2.5s ease-in-out infinite;
+}
+
+.animate-distill-flow {
+  animation: distill-flow 3s ease-in-out infinite;
+}
+
+/* Aurora glow for page bottom */
+@keyframes aurora-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.aurora-glow {
+  background: linear-gradient(
+    90deg,
+    rgba(167, 139, 250, 0) 0%,
+    rgba(167, 139, 250, 0.08) 20%,
+    rgba(139, 92, 246, 0.12) 35%,
+    rgba(52, 211, 153, 0.08) 50%,
+    rgba(56, 189, 248, 0.06) 65%,
+    rgba(167, 139, 250, 0.08) 80%,
+    rgba(167, 139, 250, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: aurora-shift 8s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-step-enter,
   .animate-pill-enter {
