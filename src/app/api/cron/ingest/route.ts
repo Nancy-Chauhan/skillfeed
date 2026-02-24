@@ -12,23 +12,35 @@ export async function POST(request: Request) {
 
   const startTime = Date.now();
   console.log(`[cron:ingest] Starting ingestion at ${new Date().toISOString()}`);
+  console.log(`[cron:ingest] LLM_PROVIDER=${process.env.LLM_PROVIDER}, GEMINI_API_KEY set=${!!process.env.GEMINI_API_KEY}, ANTHROPIC_API_KEY set=${!!process.env.ANTHROPIC_API_KEY}`);
 
-  // Step 1: Ingest RSS feeds
-  console.log("[cron:ingest] RSS: starting feed ingestion...");
-  const rssResult = await ingestAllFeeds();
-  console.log(`[cron:ingest] RSS: done — ${rssResult.feedsProcessed} feeds processed, ${rssResult.totalInserted} articles inserted, ${rssResult.feedsFailed} feeds failed`);
+  try {
+    // Step 1: Ingest RSS feeds
+    console.log("[cron:ingest] RSS: starting feed ingestion...");
+    const rssResult = await ingestAllFeeds();
+    console.log(`[cron:ingest] RSS: done — ${rssResult.feedsProcessed} feeds processed, ${rssResult.totalInserted} articles inserted, ${rssResult.feedsFailed} feeds failed`);
 
-  // Step 2: Process email ingestion queue
-  console.log("[cron:ingest] Queue: starting queue processing...");
-  const queueResult = await processIngestionQueue();
-  console.log(`[cron:ingest] Queue: done — ${queueResult.processed} processed, ${queueResult.skipped} skipped, ${queueResult.failed} failed`);
+    // Step 2: Process email ingestion queue
+    console.log("[cron:ingest] Queue: starting queue processing...");
+    const queueResult = await processIngestionQueue();
+    console.log(`[cron:ingest] Queue: done — ${queueResult.processed} processed, ${queueResult.skipped} skipped, ${queueResult.failed} failed`);
 
-  const durationMs = Date.now() - startTime;
-  console.log(`[cron:ingest] Complete in ${durationMs}ms`);
+    const durationMs = Date.now() - startTime;
+    console.log(`[cron:ingest] Complete in ${durationMs}ms`);
 
-  return NextResponse.json({
-    status: "complete",
-    rss: rssResult,
-    queue: queueResult,
-  });
+    return NextResponse.json({
+      status: "complete",
+      rss: rssResult,
+      queue: queueResult,
+    });
+  } catch (err) {
+    const durationMs = Date.now() - startTime;
+    const message = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack : undefined;
+    console.error(`[cron:ingest] FATAL after ${durationMs}ms:`, message, stack);
+    return NextResponse.json(
+      { status: "error", error: message, durationMs },
+      { status: 500 }
+    );
+  }
 }
