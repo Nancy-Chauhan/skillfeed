@@ -386,6 +386,18 @@
   animation: distill-flow 3s ease-in-out infinite;
 }
 
+/* Arrow flow animation for distillation visual */
+@keyframes arrow-flow {
+  0% { opacity: 0; transform: translateX(-12px); }
+  20% { opacity: 0.7; }
+  80% { opacity: 0.4; }
+  100% { opacity: 0; transform: translateX(12px); }
+}
+
+.animate-arrow-flow {
+  animation: arrow-flow 2s ease-in-out infinite;
+}
+
 /* Aurora glow for page bottom */
 @keyframes aurora-shift {
   0% { background-position: 0% 50%; }
