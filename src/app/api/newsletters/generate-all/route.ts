@@ -98,6 +98,22 @@ async function generateForUser(userId: string): Promise<"sent" | "skipped" | "fa
   const newsletter = await composeNewsletter(typedUser, matchedArticles);
   console.log(`${tag} Newsletter composed, subject: "${newsletter.subject}"`);
 
+  // Filter out articles with empty/invalid URLs or missing content
+  newsletter.featured_articles = newsletter.featured_articles.filter((a) => {
+    try {
+      return a.title?.trim() && a.url?.trim() && a.summary?.trim() && new URL(a.url);
+    } catch {
+      console.log(`${tag} Dropped article with invalid URL: "${a.title}" -> "${a.url}"`);
+      return false;
+    }
+  });
+
+  if (newsletter.featured_articles.length === 0) {
+    console.log(`${tag} Skipped -- no valid articles after filtering`);
+    await rollbackClaim();
+    return "skipped";
+  }
+
   const unsubscribeToken = jwt.sign(
     { userId: typedUser.id },
     process.env.JWT_SECRET!,

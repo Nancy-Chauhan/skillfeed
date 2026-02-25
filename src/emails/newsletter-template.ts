@@ -34,7 +34,11 @@ export function renderNewsletterEmail({
   trackingPixelUrl,
   feedbackUrls,
 }: NewsletterEmailProps): string {
-  const articlesMarkup = newsletter.featured_articles
+  const validArticles = newsletter.featured_articles.filter(
+    (a) => a.title?.trim() && a.url?.trim() && a.summary?.trim()
+  );
+
+  const articlesMarkup = validArticles
     .map((article, i) => {
       const titleContent = `<a href="${escapeHtml(article.url)}" style="color:#18181B;text-decoration:none;">${escapeHtml(article.title)}</a>`;
 
