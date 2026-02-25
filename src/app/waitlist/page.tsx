@@ -8,6 +8,17 @@ export default async function WaitlistPage() {
   const user = await requireAuth();
   const admin = createAdminClient();
 
+  // No profile means onboarding was never completed
+  const { data: profile } = await admin
+    .from("users")
+    .select("id")
+    .eq("email", user.email)
+    .single();
+
+  if (!profile) {
+    redirect("/onboarding");
+  }
+
   // If already approved, send them to dashboard
   const { data: entry } = await admin
     .from("waitlist")
