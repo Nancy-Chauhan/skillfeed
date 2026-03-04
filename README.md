@@ -36,6 +36,7 @@ SkillFeed is an AI-powered newsletter aggregator that delivers **one personalize
 - **Smart Matching** - Supabase Database Function matches articles using role overlap, level compatibility, and keyword intersection
 - **Timezone-Aware Delivery** - Newsletters arrive at 8 AM in each user's local timezone, powered by an hourly cron via [cron-job.org](https://cron-job.org) (free)
 - **Multi-Source Ingestion** - Pulls from 65 RSS feeds and 35 email newsletters via AgentMail webhooks
+- **LLM Flexibility** - Claude (primary) with Gemini fallback; configurable via `LLM_PROVIDER` env var
 - **Engagement Tracking** - Open rates, click tracking, and per-article feedback (helpful / not helpful)
 - **One-Click Unsubscribe** - JWT-based unsubscribe with `List-Unsubscribe` header support
 
@@ -61,7 +62,7 @@ SkillFeed is an AI-powered newsletter aggregator that delivers **one personalize
 ### Data Flow
 
 1. **Ingest** - 65 RSS feeds and 35 email newsletters arrive via AgentMail webhooks (Svix-verified). Articles enter an async queue with exponential backoff retry.
-2. **Categorize** - Claude AI extracts title, summary, takeaway, level, roles, keywords, and URL from each article.
+2. **Categorize** - Claude AI (or Gemini fallback) extracts title, summary, takeaway, level, roles, keywords, and URL from each article.
 3. **Schedule** - Every hour, cron-job.org pings the API. A Supabase Database Function (`get_users_due_for_newsletter`) finds users where it's currently 8 AM in their timezone.
 4. **Match** - The `match_articles_for_user()` Database Function finds the top 15 unread articles from the last 7 days matching each user's profile.
 5. **Compose** - Claude generates a personalized newsletter: featured articles with "why it matters" context and a learning roadmap.
@@ -85,7 +86,11 @@ src/
 │       ├── newsletters/generate/     # Single user newsletter generation
 │       ├── newsletters/generate-all/ # Hourly cron (8 AM per timezone)
 │       ├── webhooks/agentmail/       # Email ingestion endpoint
+│       ├── cron/ingest/              # RSS + email queue ingestion cron
+│       ├── feedback/                 # Text feedback submission
+│       ├── feedback/emoji/           # One-click emoji feedback (HMAC)
 │       ├── metrics/                  # Open, click, feedback tracking
+│       ├── waitlist/approve/         # Approve waitlist entry
 │       └── unsubscribe/              # JWT-based one-click unsubscribe
 │
 ├── components/
@@ -103,6 +108,7 @@ src/
 │   │   ├── article-categorizer.ts    # Article → structured data
 │   │   ├── newsletter-composer.ts    # Articles + profile → newsletter
 │   │   ├── newsletter-composer-factory.ts  # LLM vs template mode routing
+│   │   ├── newsletter-composer-template.ts  # Template-based fallback composer
 │   │   └── profile-parser.ts         # Resume → structured profile
 │   ├── supabase/                     # Admin, server, browser clients
 │   ├── queue/                        # Async ingestion with retry
@@ -115,7 +121,7 @@ src/
 └── middleware.ts                     # Route protection
 
 supabase/migrations/                  # 17 sequential SQL migrations
-scripts/                              # setup-agentmail, seed-data, ingest-rss, newsletter-subscribe-list
+scripts/                              # setup-agentmail, seed-data, ingest-rss, approve-user, and more
 ```
 
 <br />
@@ -217,6 +223,21 @@ bun run scripts/newsletter-subscribe-list.ts
 
 # Set up AgentMail inbox (optional)
 bun run scripts/setup-agentmail.ts
+
+# Approve a waitlisted user
+bun run scripts/approve-user.ts
+
+# Delete a user
+bun run scripts/delete-user.ts
+
+# Fetch AgentMail inbox
+bun run scripts/fetch-agentmail.ts
+
+# Ingest from AgentMail
+bun run scripts/ingest-agentmail.ts
+
+# Send feedback collection email
+bun run scripts/send-feedback-email.ts
 ```
 
 <br />
@@ -255,6 +276,9 @@ curl -X POST http://localhost:3000/api/newsletters/generate \
 | `GET` | `/api/metrics/open` | HMAC | 1x1 tracking pixel for email opens |
 | `GET` | `/api/metrics/click` | HMAC | Click tracking with redirect |
 | `GET` | `/api/metrics/feedback` | HMAC | Per-article helpful/not helpful |
+| `POST` | `/api/feedback` | None | Submit text feedback |
+| `GET` | `/api/feedback/emoji` | HMAC | One-click emoji rating from email |
+| `POST` | `/api/waitlist/approve` | `Bearer CRON_SECRET` | Approve a waitlist entry |
 | `GET` | `/api/unsubscribe` | JWT | One-click unsubscribe |
 
 <br />
@@ -269,6 +293,16 @@ curl -X POST http://localhost:3000/api/newsletters/generate \
 4. Deploy
 5. Set up [cron-job.org](https://cron-job.org) (free) to hit `/api/newsletters/generate-all` every hour with `Authorization: Bearer <CRON_SECRET>` header
 6. Set up a second cron for `/api/cron/ingest` every 6 hours
+
+### Docker
+
+1. Copy `.env.example` to `.env` and fill in values
+2. Build and run:
+   ```bash
+   docker compose -f docker-compose.deploy.yml up -d --build
+   ```
+3. The app runs on port 3000 behind the `app_network` Docker network
+4. Set up cron-job.org as described in the Vercel section
 
 ### Environment Variables
 
@@ -285,6 +319,8 @@ curl -X POST http://localhost:3000/api/newsletters/generate \
 | `AGENTMAIL_WEBHOOK_SECRET` | Svix webhook verification secret |
 | `CRON_SECRET` | Bearer token for cron job authentication |
 | `JWT_SECRET` | Secret for signing unsubscribe tokens |
+| `LLM_PROVIDER` | `anthropic` or `gemini` (defaults to gemini if `GEMINI_API_KEY` set) |
+| `NEWSLETTER_COMPOSER_MODE` | `llm` (default) or `template` for non-AI composition |
 | `NEXT_PUBLIC_APP_URL` | Public app URL for tracking links |
 
 <br />
